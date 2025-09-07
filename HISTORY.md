@@ -1,3 +1,8 @@
+# 7.0.x
+> Breaking Change
+- Introduce OneTerminal&reg; branding and namespace
+
+
 # 6.3.x
 > Feature Change | Breaking Change
 - Introduce gRPC terminal routing
