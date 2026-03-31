@@ -14,6 +14,7 @@ using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Server;
+using OneImlx.Terminal.Server.Grpc;
 using OneImlx.Terminal.Server.Extensions;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;

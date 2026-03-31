@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
@@ -12,7 +9,7 @@ using OneImlx.Terminal.Shared;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace OneImlx.Terminal.Server
+namespace OneImlx.Terminal.Server.Grpc
 {
     /// <summary>
     /// Represents the gRPC service responsible for managing gRPC communication in the <c>OneImlx</c> terminal framework.
@@ -77,7 +74,7 @@ namespace OneImlx.Terminal.Server
         }
 
         // Private fields to hold injected dependencies and state information.
-        private readonly ILogger<TerminalGrpcMapService> logger;
+        private readonly ILogger<TerminalGrpcMapService> logger; 
         private readonly ITerminalProcessor terminalProcessor;
         private readonly ITerminalRouter<TerminalGrpcRouterContext> terminalRouter;
     }

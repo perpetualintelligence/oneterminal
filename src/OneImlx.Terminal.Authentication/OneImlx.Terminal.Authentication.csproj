@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\build\props\PackageLicense.props" />
+    <Import Project="..\..\build\props\Package.props" />
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Graph" Version="5.91.0" />
-        <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.76.0" />
+        <PackageReference Include="Microsoft.Graph" Version="5.103.0" />
+        <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.83.1" />
     </ItemGroup>
 
     <!--

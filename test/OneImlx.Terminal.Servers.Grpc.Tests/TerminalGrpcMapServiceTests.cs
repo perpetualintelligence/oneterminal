@@ -1,25 +1,22 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using FluentAssertions;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
 using Moq;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Runtime;
-using OneImlx.Test.FluentAssertions;
-using Xunit;
+using OneImlx.Terminal.Server.Grpc;
 using OneImlx.Terminal.Shared;
+using OneImlx.Test.FluentAssertions;
+using System;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace OneImlx.Terminal.Server
 {
@@ -31,8 +28,6 @@ namespace OneImlx.Terminal.Server
             mockTerminalRouter = new Mock<ITerminalRouter<TerminalGrpcRouterContext>>();
             mockLogger = new Mock<ILogger<TerminalGrpcMapService>>();
             mockProcessor = new Mock<ITerminalProcessor>();
-            terminalTokenSource = new CancellationTokenSource();
-            commandTokenSource = new CancellationTokenSource();
 
             // Create an instance of TerminalGrpcMapService with the mocked dependencies
             terminalGrpcMapService = new TerminalGrpcMapService(mockTerminalRouter.Object, mockProcessor.Object, mockLogger.Object);
@@ -99,12 +94,10 @@ namespace OneImlx.Terminal.Server
                 .WithErrorDescription("The terminal gRPC router is not running.");
         }
 
-        private readonly CancellationTokenSource commandTokenSource;
         private readonly Mock<ILogger<TerminalGrpcMapService>> mockLogger;
         private readonly Mock<ITerminalProcessor> mockProcessor;
         private readonly Mock<ITerminalRouter<TerminalGrpcRouterContext>> mockTerminalRouter;
         private readonly TerminalGrpcMapService terminalGrpcMapService;
-        private readonly CancellationTokenSource terminalTokenSource;
         private readonly ServerCallContext testServerCallContext;
     }
 }

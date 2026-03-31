@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>OneImlx.Terminal.Apps.TestServer</RootNamespace>
@@ -11,7 +11,7 @@
 	  <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.*-* " />
       <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.*-* " />
       <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
       <!--<PackageReference Include="OneImlx.Terminal" Version="6.0.0-preview.241214387" />-->
   </ItemGroup>
 

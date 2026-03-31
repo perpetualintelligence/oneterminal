@@ -1,13 +1,10 @@
-/*
-    Copyright 2019-2025 (c) Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 syntax = "proto3";
 
-option csharp_namespace = "OneImlx.Terminal.Server";
+option csharp_namespace = "OneImlx.Terminal.Server.Grpc";
 
 // The OneImlx terminal router command service to request the command.
 service TerminalGrpcRouterProto {

@@ -76,7 +76,7 @@ namespace OneImlx.Terminal.Dynamics
 #if DEBUG
             configuration = "Debug";
 #endif
-            var version = "net9.0";
+            var version = "net10.0";
 
             // Define the relative path to Terminal.DependentAssembly.dll from the unit test binary output directory
             var relativePathToDependentAssembly = Path.Combine("..", "..", "..", "..", "OneImlx.Terminal.DependentAssembly", "bin", configuration, version);

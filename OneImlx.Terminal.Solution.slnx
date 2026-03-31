@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/build/">
+    <File Path=".github/package_version.env" />
+    <File Path="build/props/Package.props" />
+    <File Path="build/props/Test.props" />
+    <File Path="global.json" />
+    <File Path="HISTORY.md" />
+    <File Path="NOTICE.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/OneImlx.Terminal.Authentication/OneImlx.Terminal.Authentication.csproj" />
+    <Project Path="src/OneImlx.Terminal.Client/OneImlx.Terminal.Client.csproj" />
+    <Project Path="src/OneImlx.Terminal.Server.Grpc/OneImlx.Terminal.Server.Grpc.csproj" />
+    <Project Path="src/OneImlx.Terminal.Server/OneImlx.Terminal.Server.csproj" />
+    <Project Path="src/OneImlx.Terminal.Shared/OneImlx.Terminal.Shared.csproj" />
+    <Project Path="src/OneImlx.Terminal/OneImlx.Terminal.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/OneImlx.Terminal.Authentication.Tests/OneImlx.Terminal.Authentication.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Client.Tests/OneImlx.Terminal.Client.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.DependentAssembly/OneImlx.Terminal.DependentAssembly.csproj" />
+    <Project Path="test/OneImlx.Terminal.Server.Tests/OneImlx.Terminal.Server.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Servers.Grpc.Tests/OneImlx.Terminal.Servers.Grpc.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Shared.Tests/OneImlx.Terminal.Shared.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Tests/OneImlx.Terminal.Tests.csproj" />
+  </Folder>
+</Solution>

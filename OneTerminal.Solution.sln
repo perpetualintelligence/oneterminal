@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.31911.260
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11201.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9BD50919-76C1-424C-BD98-F870E6DE8903}"
 EndProject
@@ -11,8 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{1A8779C7
 	ProjectSection(SolutionItems) = preProject
 		build\scripts\coverage.ps1 = build\scripts\coverage.ps1
 		global.json = global.json
-		NOTICE.md = NOTICE.md
 		HISTORY.md = HISTORY.md
+		NOTICE.md = NOTICE.md
 		nuget.config = nuget.config
 		build\props\Package.props = build\props\Package.props
 		.github\package_version.env = .github\package_version.env
@@ -73,6 +73,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneImlx.Terminal.Shared", "src\OneImlx.Terminal.Shared\OneImlx.Terminal.Shared.csproj", "{1A967022-7558-41A8-B6F9-598ABC41114F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneImlx.Terminal.Shared.Tests", "test\OneImlx.Terminal.Shared.Tests\OneImlx.Terminal.Shared.Tests.csproj", "{3C8CFE66-B177-4643-AFA1-432DC681BC1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneImlx.Terminal.Server.Grpc", "src\OneImlx.Terminal.Server.Grpc\OneImlx.Terminal.Server.Grpc.csproj", "{A3AD2742-3DC2-404C-923B-87C682958008}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneImlx.Terminal.Servers.Grpc.Tests", "test\OneImlx.Terminal.Servers.Grpc.Tests\OneImlx.Terminal.Servers.Grpc.Tests.csproj", "{724F1F8A-2399-4B2F-BE86-87176A270A59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -156,6 +160,14 @@ Global
 		{3C8CFE66-B177-4643-AFA1-432DC681BC1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C8CFE66-B177-4643-AFA1-432DC681BC1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C8CFE66-B177-4643-AFA1-432DC681BC1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3AD2742-3DC2-404C-923B-87C682958008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3AD2742-3DC2-404C-923B-87C682958008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3AD2742-3DC2-404C-923B-87C682958008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3AD2742-3DC2-404C-923B-87C682958008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{724F1F8A-2399-4B2F-BE86-87176A270A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{724F1F8A-2399-4B2F-BE86-87176A270A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{724F1F8A-2399-4B2F-BE86-87176A270A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{724F1F8A-2399-4B2F-BE86-87176A270A59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,6 +199,8 @@ Global
 		{FACD5548-501D-4E29-8932-6110D10222E4} = {E3A2F609-5E85-4740-8899-6A2B777BE31B}
 		{1A967022-7558-41A8-B6F9-598ABC41114F} = {9BD50919-76C1-424C-BD98-F870E6DE8903}
 		{3C8CFE66-B177-4643-AFA1-432DC681BC1E} = {E3A2F609-5E85-4740-8899-6A2B777BE31B}
+		{A3AD2742-3DC2-404C-923B-87C682958008} = {9BD50919-76C1-424C-BD98-F870E6DE8903}
+		{724F1F8A-2399-4B2F-BE86-87176A270A59} = {E3A2F609-5E85-4740-8899-6A2B777BE31B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FB18F489-0BCB-4389-AE92-18E7DBEA4818}
