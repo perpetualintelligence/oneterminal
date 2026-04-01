@@ -82,9 +82,9 @@ namespace OneImlx.Terminal.Commands.Handlers
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode("test_checker_error").WithErrorDescription("test_checker_error_desc");
         }
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -350,7 +350,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             terminalHelpProvider.HelpCalled.Should().BeFalse();
         }
 
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
@@ -383,7 +383,7 @@ namespace OneImlx.Terminal.Commands.Handlers
 
             handler = new CommandHandler(commandRuntime, terminalOptions, terminalHelpProvider, new LoggerFactory().CreateLogger<CommandHandler>(), terminalEventHandler);
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -512,7 +512,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         private CommandHandler handler = null!;
         private Tuple<CommandDescriptor, Command> helpAliasCommand = null!;
         private Tuple<CommandDescriptor, Command> helpIdCommand = null!;
-        private License license = null!;
+        private Licensing.License license = null!;
         private MockLicenseCheckerInner licenseChecker = null!;
         private CommandContext routerContext = null!;
         private TerminalRouterContext routingContext = null!;

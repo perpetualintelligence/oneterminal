@@ -9,7 +9,6 @@ using Moq;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Runtime;
-using OneImlx.Terminal.Server.Grpc;
 using OneImlx.Terminal.Shared;
 using OneImlx.Test.FluentAssertions;
 using System;
@@ -18,7 +17,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OneImlx.Terminal.Server
+namespace OneImlx.Terminal.Server.Grpc
 {
     public class TerminalGrpcMapServiceTests
     {

@@ -10,6 +10,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/OneImlx.Terminal.Authentication/OneImlx.Terminal.Authentication.csproj" />
+    <Project Path="src/OneImlx.Terminal.Client.Grpc/OneImlx.Terminal.Client.Grpc.csproj" Id="66a74c14-ea0d-4163-8d75-4f376b690536" />
     <Project Path="src/OneImlx.Terminal.Client/OneImlx.Terminal.Client.csproj" />
     <Project Path="src/OneImlx.Terminal.Server.Grpc/OneImlx.Terminal.Server.Grpc.csproj" />
     <Project Path="src/OneImlx.Terminal.Server/OneImlx.Terminal.Server.csproj" />
@@ -18,10 +19,11 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/OneImlx.Terminal.Authentication.Tests/OneImlx.Terminal.Authentication.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Client.Grpc.Tests/OneImlx.Terminal.Client.Grpc.Tests.csproj" Id="20cb11f0-9b10-4a0c-b649-9a780293ab08" />
     <Project Path="test/OneImlx.Terminal.Client.Tests/OneImlx.Terminal.Client.Tests.csproj" />
     <Project Path="test/OneImlx.Terminal.DependentAssembly/OneImlx.Terminal.DependentAssembly.csproj" />
     <Project Path="test/OneImlx.Terminal.Server.Tests/OneImlx.Terminal.Server.Tests.csproj" />
-    <Project Path="test/OneImlx.Terminal.Servers.Grpc.Tests/OneImlx.Terminal.Servers.Grpc.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Servers.Grpc.Tests/OneImlx.Terminal.Server.Grpc.Tests.csproj" />
     <Project Path="test/OneImlx.Terminal.Shared.Tests/OneImlx.Terminal.Shared.Tests.csproj" />
     <Project Path="test/OneImlx.Terminal.Tests/OneImlx.Terminal.Tests.csproj" />
   </Folder>

@@ -24,7 +24,7 @@
         <Protobuf Include="Protos\oneimlx_terminal.proto" GrpcServices="Server" />
         <PackageReference Include="Google.Protobuf" Version="3.34.1" />
         <PackageReference Include="Grpc.Net.Common" Version="2.76.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.78.0">
+        <PackageReference Include="Grpc.Tools" Version="2.80.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -45,22 +45,5 @@
             </ItemGroup>
         </Otherwise>
     </Choose>
-
-  <ItemGroup>
-    <None Include="..\..\LICENSE" Link="LICENSE">
-      <PackagePath></PackagePath>
-      <Pack>true</Pack>
-    </None>
-    <None Include="..\..\NOTICE.md" Link="NOTICE.md">
-      <PackagePath></PackagePath>
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Protos\oneimlx_terminal.proto">
-      <GrpcServices>Server</GrpcServices>
-    </None>
-  </ItemGroup>
 
 </Project>

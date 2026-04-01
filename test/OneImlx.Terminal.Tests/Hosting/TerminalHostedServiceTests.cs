@@ -61,14 +61,14 @@ namespace OneImlx.Terminal.Hosting
             mockCliEventsHostedService = new MockTerminalEventsHostedService(host.Services, terminalIOptions, mockTerminalConsole, mockExceptionPublisher, logger);
         }
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -86,11 +86,11 @@ namespace OneImlx.Terminal.Hosting
         [Fact]
         public void StartAsync_Default_ShouldPrint_MandatoryLicenseInfo_For_Custom_RND()
         {
-            License community = new(ProductCatalog.TerminalPlanCustom, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
+            Licensing.License community = new(ProductCatalog.TerminalPlanCustom, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
 
             // use reflection to call
             MethodInfo? printLic = defaultCliHostedService.GetType().BaseType!.GetMethod("PrintWarningIfDemoAsync", BindingFlags.Instance | BindingFlags.NonPublic);
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(printLic);
+            printLic.Should().NotBeNull();
             printLic.Invoke(defaultCliHostedService, [community]);
 
             logger.Messages.Should().BeEmpty();
@@ -99,11 +99,11 @@ namespace OneImlx.Terminal.Hosting
         [Fact]
         public void StartAsync_Default_ShouldPrint_MandatoryLicenseInfoFor_Demo_Education()
         {
-            License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.Educational, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
+            Licensing.License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.Educational, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
 
             // use reflection to call
             MethodInfo? printLic = defaultCliHostedService.GetType().BaseType!.GetMethod("PrintWarningIfDemoAsync", BindingFlags.Instance | BindingFlags.NonPublic);
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(printLic);
+            printLic.Should().NotBeNull();
             printLic.Invoke(defaultCliHostedService, [community]);
 
             logger.Messages.Should().BeEmpty();
@@ -115,11 +115,11 @@ namespace OneImlx.Terminal.Hosting
         [Fact]
         public void StartAsync_Default_ShouldPrint_MandatoryLicenseInfoFor_Demo_RND()
         {
-            License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
+            Licensing.License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
 
             // use reflection to call
             MethodInfo? printLic = defaultCliHostedService.GetType().BaseType!.GetMethod("PrintWarningIfDemoAsync", BindingFlags.Instance | BindingFlags.NonPublic);
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(printLic);
+            printLic.Should().NotBeNull();
             printLic.Invoke(defaultCliHostedService, [community]);
 
             logger.Messages.Should().BeEmpty();
@@ -180,7 +180,7 @@ namespace OneImlx.Terminal.Hosting
                 services.AddSingleton<IConfigurationOptionsChecker>(mockOptionsChecker);
                 services.AddSingleton<ITerminalTextHandler, TerminalTextHandler>();
             });
-            host = await hostBuilder.StartAsync();
+            host = await hostBuilder.StartAsync(cancellationToken: TestContext.Current.CancellationToken);
 
             defaultCliHostedService = new MockTerminalHostedService(host.Services, terminalIOptions, mockTerminalConsole, mockExceptionPublisher, logger);
             await defaultCliHostedService.StartAsync(CancellationToken.None);
@@ -222,7 +222,7 @@ namespace OneImlx.Terminal.Hosting
                 services.AddSingleton<IConfigurationOptionsChecker>(mockOptionsChecker);
                 services.AddSingleton<ITerminalTextHandler>(textHandler);
             });
-            host = await hostBuilder.StartAsync();
+            host = await hostBuilder.StartAsync(cancellationToken: TestContext.Current.CancellationToken);
 
             defaultCliHostedService = new MockTerminalHostedService(host.Services, terminalIOptions, mockTerminalConsole, mockExceptionPublisher, logger);
             await defaultCliHostedService.StartAsync(CancellationToken.None);
