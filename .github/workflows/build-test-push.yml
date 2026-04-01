@@ -159,11 +159,33 @@ jobs:
         nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
         registry: ${{ env.PI_PUBLISH_REGISTRY }}
 
+    # Publish OneImlx.Terminal.Server.Grpc
+    - name: OneImlx.Terminal.Server.Grpc
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Server.Grpc
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
     # Publish OneImlx.Terminal.Client
     - name: OneImlx.Terminal.Client
       uses: ./.github/actions/push-package
       with:
         project: OneImlx.Terminal.Client
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
+    # Publish OneImlx.Terminal.Client.Grpc
+    - name: OneImlx.Terminal.Client.Grpc
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Client.Grpc
         config: Release
         version: ${{ env.PI_CI_PACKAGE_VERSION }}
         ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}

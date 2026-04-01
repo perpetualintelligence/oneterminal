@@ -32,7 +32,7 @@ on:
         description: 'The package name to delete'
         required: true
         options:
-        - PerpetualIntelligence.Cli
+        - OneImlx.Terminal
         - All
         default: 'All'  
 
@@ -71,10 +71,18 @@ jobs:
           package-name: ${{ env.PI_DELETE_PACKAGES }}
           min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
       
-      # Delete PerpetualIntelligence.Shared
-      - name: Delete PerpetualIntelligence.Cli
+      # Delete OneImlx.Terminal.Shared
+      - name: Delete OneImlx.Terminal.Shared
         if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
         uses: actions/delete-package-versions@v2       
         with:
-          package-name: PerpetualIntelligence.Cli
+          package-name: OneImlx.Terminal.Shared
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal
+      - name: Delete OneImlx.Terminal
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v2       
+        with:
+          package-name: OneImlx.Terminal
           min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
