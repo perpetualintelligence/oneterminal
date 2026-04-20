@@ -58,7 +58,7 @@ namespace OneImlx.Terminal.Client.Extensions
 
             // Verify that the HTTP request content was correct
             _capturedRequest!.RequestUri.Should().Be(new Uri("http://localhost/oneimlx/terminal/httprouter"));
-            TerminalInputOutput? actualContent = await _capturedRequest.Content!.ReadFromJsonAsync<TerminalInputOutput>();
+            TerminalInputOutput? actualContent = await _capturedRequest.Content!.ReadFromJsonAsync<TerminalInputOutput>(cancellationToken: TestContext.Current.CancellationToken);
             actualContent.Should().NotBeNull();
             actualContent!.Count.Should().Be(3);
 
@@ -87,7 +87,7 @@ namespace OneImlx.Terminal.Client.Extensions
 
             // Verify that the HTTP request content was correct
             _capturedRequest!.RequestUri.Should().Be(new Uri("http://localhost/oneimlx/terminal/httprouter"));
-            TerminalInputOutput? actualContent = await _capturedRequest.Content!.ReadFromJsonAsync<TerminalInputOutput>();
+            TerminalInputOutput? actualContent = await _capturedRequest.Content!.ReadFromJsonAsync<TerminalInputOutput>(cancellationToken: TestContext.Current.CancellationToken);
             actualContent.Should().NotBeNull();
             actualContent!.Count.Should().Be(1);
             actualContent[0].Id.Should().Be("cmd1");

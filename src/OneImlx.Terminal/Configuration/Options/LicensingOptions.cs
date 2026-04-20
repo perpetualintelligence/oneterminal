@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Licensing;
@@ -36,7 +33,7 @@ namespace OneImlx.Terminal.Configuration.Options
         /// </para>
         /// <para>
         /// <c>NOTE:</c> This option can be set if you have an active commercial plans
-        /// <see cref="TerminalLicensePlans.Enterprise"/> or <see cref="TerminalLicensePlans.Corporate"/>. It is a
+        /// <see cref="ProductCatalog.TerminalPlanEnterprise"/> or <see cref="ProductCatalog.TerminalPlanCorporate"/>. It is a
         /// violation of licensing terms to deploy or continue using the framework without an active commercial license plan.
         /// </para>
         /// </remarks>
