@@ -68,7 +68,7 @@ namespace OneImlx.Terminal.Server
             TerminalInputOutput? input = await httpContext.Request.ReadFromJsonAsync<TerminalInputOutput>();
             if (input == null || input.Count <= 0)
             {
-                throw new TerminalException(TerminalErrors.MissingCommand, "The input requests are missing in the HTTP route.");
+                throw new TerminalException(TerminalErrors.MissingCommand, "The terminal input JSON is missing in the HTTP request.");
             }
 
             string? clientIp = httpContext.Connection.RemoteIpAddress?.ToString();

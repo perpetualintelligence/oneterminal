@@ -77,11 +77,9 @@ namespace OneImlx.Terminal.Apps.TestClient
             var host = builder.Build();
             await host.StartAsync();
 
-            // Setup the terminal start context
+            // Start running the terminal router with the console context
             TerminalConsoleRouterContext terminalConsoleRouterContext = new(TerminalStartMode.Console);
-
-            // Run the terminal router
-            await host.RunTerminalRouterAsync<TerminalConsoleRouter, TerminalConsoleRouterContext>(terminalConsoleRouterContext);
+            await host.RunTerminalRouterBlockingAsync<TerminalConsoleRouter, TerminalConsoleRouterContext>(terminalConsoleRouterContext);
 
             // Wait for the host to shut down
             await host.WaitForShutdownAsync();

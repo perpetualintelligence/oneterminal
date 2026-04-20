@@ -112,7 +112,7 @@ namespace OneImlx.Terminal.Runtime.Tests
             // Act
             var tcpRouter = CreateTcpRouter();
             var routerTask = tcpRouter.RunAsync(context);
-            await Task.Delay(1500); // Let it run for a bit
+            await Task.Delay(1500, TestContext.Current.CancellationToken); // Let it run for a bit
             await routerTask;
 
             // Logs
