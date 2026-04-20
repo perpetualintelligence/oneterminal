@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -79,7 +76,7 @@ namespace OneImlx.Terminal.Runtime.Tests
 
             // Send a real TCP message
             var sentBytes = await SendTcpMessageAsync(TerminalInputOutput.Single("id1", "test message"), routerIpEndpoint);
-            await Task.Delay(200); // Allow time for processing
+            await Task.Delay(200, TestContext.Current.CancellationToken); // Allow time for processing
             terminalTokenSource.Cancel(); // Stop the router
             await routerTask;
 
@@ -167,7 +164,7 @@ namespace OneImlx.Terminal.Runtime.Tests
 
             // Act
             var routerTask = tcpRouter.RunAsync(context);
-            await Task.Delay(1000); // Let the router start
+            await Task.Delay(1000, TestContext.Current.CancellationToken); // Let the router start
             terminalTokenSource.Cancel(); // Cancel the task to stop it
             await routerTask;
 
@@ -191,7 +188,7 @@ namespace OneImlx.Terminal.Runtime.Tests
 
             // Start the router and stop after a brief delay
             var routerTask = tcpRouter.RunAsync(context);
-            await Task.Delay(500);
+            await Task.Delay(500, TestContext.Current.CancellationToken);
 
             // Start 5 clients concurrently
             var clientTasks = new List<Task<(byte[], int)>>();
@@ -209,7 +206,7 @@ namespace OneImlx.Terminal.Runtime.Tests
 
             // Wait for all client tasks to complete and give time for server to process.
             (byte[], int)[] sentBytesArray = await Task.WhenAll(clientTasks);
-            await Task.Delay(2000);
+            await Task.Delay(2000, TestContext.Current.CancellationToken);
 
             // Stop the router
             terminalTokenSource.Cancel();
@@ -241,7 +238,7 @@ namespace OneImlx.Terminal.Runtime.Tests
 
             // Start the router and allow it to initialize
             var routerTask = tcpRouter.RunAsync(context);
-            await Task.Delay(500);
+            await Task.Delay(500, TestContext.Current.CancellationToken);
 
             // Start 5 clients concurrently, each sending a batch of delimited messages
             var clientTasks = new List<Task<(byte[], int)>>();
@@ -265,7 +262,7 @@ namespace OneImlx.Terminal.Runtime.Tests
 
             // Wait for all client tasks to complete and give time for server to process
             (byte[], int)[] sentBytesArray = await Task.WhenAll(clientTasks);
-            await Task.Delay(2000);
+            await Task.Delay(2000, TestContext.Current.CancellationToken);
 
             // Stop the router
             terminalTokenSource.Cancel();
