@@ -5,9 +5,9 @@
     <PropertyGroup>
         <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
         <Description>
-            A cross-platform hosting framework for `OneImlx.Terminal` server apps, with ASP.NET Core hosting.
+            Cross-platform server framework for hosting `OneImlx.Terminal` applications and servers over TCP, UDP, and HTTP.
         </Description>
-        <PackageTags>terminal cli options flags commands oneimlx unicode grpc http</PackageTags>
+        <PackageTags>terminal cli options flags commands oneimlx unicode tcp udp http</PackageTags>
     </PropertyGroup>
 
     <!--

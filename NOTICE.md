@@ -1,29 +1,29 @@
 # NOTICE
 
-_Last updated: April 4, 2025_
+_Last updated: April 21, 2026_
 
-This project utilizes the following open-source frameworks, tools, and libraries:
+This project uses the following open-source frameworks, tools, and libraries:
 
-> **Note:** Only direct dependencies are listed below. Transitive dependencies of NuGet packages are not explicitly included.
+> **Note:** Only direct dependencies are listed. Transitive NuGet dependencies are not included.
 
-We extend our sincere thanks to the developers and maintainers of these open-source components for their valuable contributions to the community.
+We thank the developers and maintainers of these components.
 
 ## Frameworks
 - .NET Framework 4.8  
 - .NET Standard 2.0  
 - .NET Standard 2.1  
-- .NET 8 and later  
+- .NET 8+  
 - ASP.NET Core  
 
 ## Libraries
-- [xUnit](https://xunit.net/) — Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)  
-- [Moq](https://github.com/moq/moq4) — Licensed under the [BSD-3-Clause License](https://opensource.org/licenses/BSD-3-Clause)  
-- [FluentAssertions v7](https://www.nuget.org/packages/FluentAssertions) — Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)  
-- [coverlet](https://www.nuget.org/packages/coverlet.collector) — Licensed under the [MIT License](https://opensource.org/licenses/MIT)  
-- [ReportGenerator](https://github.com/danielpalme/ReportGenerator) — Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)  
-- [gRPC](https://grpc.io/) — Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)  
-- [Google Protocol Buffers](https://developers.google.com/protocol-buffers) — Licensed under the [BSD-3-Clause License](https://opensource.org/licenses/BSD-3-Clause)  
-- [Serilog](https://serilog.net/) — Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)  
-- [Microsoft Fluent UI](https://www.microsoft.com/design/fluent/#/) — Licensed under the [MIT License](https://opensource.org/licenses/MIT)  
-- [FAST](https://fast.design/) — Licensed under the [MIT License](https://opensource.org/licenses/MIT)  
-- [DocFx](https://dotnet.github.io/docfx/) — Licensed under the [MIT License](https://opensource.org/licenses/MIT)
+- [xUnit](https://github.com/xunit/xunit) — [License](https://github.com/xunit/xunit/blob/main/LICENSE)  
+- [Moq](https://github.com/moq/moq4) — [License](https://github.com/moq/moq4/blob/main/License.txt)  
+- [FluentAssertions](https://github.com/fluentassertions/fluentassertions) — [License](https://github.com/fluentassertions/fluentassertions/blob/main/LICENSE)  
+- [coverlet.collector](https://github.com/coverlet-coverage/coverlet) — [License](https://github.com/coverlet-coverage/coverlet/blob/master/LICENSE)  
+- [ReportGenerator](https://github.com/danielpalme/ReportGenerator) — [License](https://github.com/danielpalme/ReportGenerator/blob/main/LICENSE.txt)  
+- [gRPC](https://github.com/grpc/grpc) — [License](https://github.com/grpc/grpc/blob/master/LICENSE)  
+- [Google Protocol Buffers](https://github.com/protocolbuffers/protobuf) — [License](https://github.com/protocolbuffers/protobuf/blob/main/LICENSE)  
+- [Serilog](https://github.com/serilog/serilog) — [License](https://github.com/serilog/serilog/blob/dev/LICENSE)  
+- [Microsoft Fluent UI](https://github.com/microsoft/fluentui) — [License](https://github.com/microsoft/fluentui/blob/master/LICENSE)  
+- [FAST](https://github.com/microsoft/fast) — [License](https://github.com/microsoft/fast/blob/main/LICENSE)  
+- [DocFX](https://github.com/dotnet/docfx) — [License](https://github.com/dotnet/docfx/blob/main/LICENSE)  

@@ -1,7 +1,8 @@
 # 7.0.x
 > Breaking Change
-- Introduce OneTerminal&reg; branding and namespace
-
+- Introduce OneTerminal&reg; as branding
+- Support running Terminal router alongside ASP.NET API server in the same process
+- gRPC moved to separate packages: `OneImlx.Terminal.<Server|Client>.Grpc` for modularity and flexibility
 
 # 6.3.x
 > Feature Change | Breaking Change
