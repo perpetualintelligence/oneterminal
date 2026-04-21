@@ -1,4 +1,5 @@
 using OneImlx.Shared.Licensing;
+using OneImlx.Terminal.Apps.TestApiServer.Runners;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
@@ -6,7 +7,6 @@ using OneImlx.Terminal.Server;
 using OneImlx.Terminal.Server.Extensions;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
-using System;
 using System.Net;
 using System.Text;
 
@@ -18,11 +18,6 @@ namespace OneImlx.Terminal.Apps.TestApiServer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddAuthorization();
-
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
 
             // Configure Terminal Framework
             builder.Services.AddHostedService<TestApiServerHostedService>();
@@ -40,26 +35,29 @@ namespace OneImlx.Terminal.Apps.TestApiServer
                 });
 
             terminalBuilder.AddTerminalRouter<TerminalHttpRouter, TerminalHttpRouterContext>();
+            terminalBuilder.AddDeclarativeAssembly<TestApiServerRunner>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
 
             app.UseHttpsRedirection();
-            app.UseAuthorization();
 
-            // Test endpoint - Standard API
-            app.MapGet("/api/pingdotnet", () => Results.Ok(new { message = "API Server is running", timestamp = DateTime.UtcNow }));
+            // Sample .NET API endpoint
+            app.MapGet("/api/pingdotnet", (HttpRequest request, IServiceProvider services) =>
+            {
+                ITerminalConsole terminalConsole = services.GetRequiredService<ITerminalConsole>();
+                terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, "ASP.NET API: Ping endpoint (HttpGet) called!").Wait();
 
-            // Test endpoint - Terminal Router Status
+                return Results.Ok(new { request = request.Path.Value, timestamp = DateTime.UtcNow, status="OK" });
+            });
+
+            // Sample .NET API endpoint to get status from terminal services
             app.MapGet("/api/pingterminal", (IServiceProvider services) =>
             {
-                var router = services.GetService<ITerminalRouter<TerminalHttpRouterContext>>();
-                var processor = services.GetService<ITerminalProcessor>();
+                var router = services.GetRequiredService<ITerminalRouter<TerminalHttpRouterContext>>();
+                var processor = services.GetRequiredService<ITerminalProcessor>();
+                ITerminalConsole terminalConsole = services.GetRequiredService<ITerminalConsole>();
+                terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, "ASP.NET API: Ping endpoint (HttpGet) called!").Wait();
 
                 return Results.Ok(new
                 {
