@@ -55,7 +55,7 @@ namespace OneImlx.Terminal.Runtime
 
             // Run router for 1 second
             var routerTask = udpRouter.RunAsync(context);
-            await Task.Delay(1000);
+            await Task.Delay(1000, TestContext.Current.CancellationToken);
             await routerTask;
 
             // Assert that the exception is passed to the exception handler with correct details

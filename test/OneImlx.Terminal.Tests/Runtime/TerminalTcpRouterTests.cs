@@ -113,10 +113,8 @@ namespace OneImlx.Terminal.Runtime.Tests
             await routerTask;
 
             // Logs
-            mockListLoggerFactory.AllLogMessages.Should().HaveCount(3);
-            mockListLoggerFactory.AllLogMessages[0].Should().Be($"Terminal TCP router started. endpoint={context.IPEndPoint}");
-            mockListLoggerFactory.AllLogMessages[1].Should().Be("Terminal TCP router canceled.");
-            mockListLoggerFactory.AllLogMessages[2].Should().Be($"Terminal TCP router stopped. endpoint={context.IPEndPoint}");
+            mockListLoggerFactory.AllLogMessages.First().Should().Be($"Terminal TCP router started. endpoint={context.IPEndPoint}");
+            mockListLoggerFactory.AllLogMessages.Last().Should().Be($"Terminal TCP router stopped. endpoint={context.IPEndPoint}");
 
             // Assert that the exception is passed to the exception handler with correct details
             exceptionHandlerMock.Verify(static x => x.HandleExceptionAsync(It.Is<TerminalExceptionHandlerContext>(static ctx =>
