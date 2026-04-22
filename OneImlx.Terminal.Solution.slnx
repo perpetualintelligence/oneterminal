@@ -1,7 +1,8 @@
 <Solution>
   <Folder Name="/apps/" />
   <Folder Name="/apps/s2s/">
-    <Project Path="apps/api/OneImlx.Terminal.Apps.ApiServer/TestApiServer.csproj" Id="00d9caac-cf4c-442f-9951-50d13add82d6" />
+    <File Path="apps/s2s/README.md" />
+    <Project Path="apps/s2s/TestApiServer/TestApiServer.csproj" />
     <Project Path="apps/s2s/TestClient/TestClient.csproj" />
     <Project Path="apps/s2s/TestServer/TestServer.csproj" />
   </Folder>

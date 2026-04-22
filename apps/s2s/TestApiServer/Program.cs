@@ -46,7 +46,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer
             app.MapGet("/api/pingdotnet", (HttpRequest request, IServiceProvider services) =>
             {
                 ITerminalConsole terminalConsole = services.GetRequiredService<ITerminalConsole>();
-                terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, "ASP.NET API: Ping endpoint (HttpGet) called!").Wait();
+                terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, "ASP.NET API: Ping /api/pingdotnet").Wait();
 
                 return Results.Ok(new { request = request.Path.Value, timestamp = DateTime.UtcNow, status="OK" });
             });
@@ -57,7 +57,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer
                 var router = services.GetRequiredService<ITerminalRouter<TerminalHttpRouterContext>>();
                 var processor = services.GetRequiredService<ITerminalProcessor>();
                 ITerminalConsole terminalConsole = services.GetRequiredService<ITerminalConsole>();
-                terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, "ASP.NET API: Ping endpoint (HttpGet) called!").Wait();
+                terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, "ASP.NET API: Ping /api/pingterminal").Wait();
 
                 return Results.Ok(new
                 {
