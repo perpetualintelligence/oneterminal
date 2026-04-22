@@ -43,4 +43,4 @@ Explore our licensing, redistribution, and pricing policies:
 For more information explore our [conceptual documentation](https://docs.perpetualintelligence.com/articles/terminal/intro.html).
 
 ## Feedback
-Your feedback helps shape `OneImlx.Terminal`. For suggestions, issues, or queries, please visit our [GitHub Issues](https://github.com/PerpetualIntelligence/terminal/issues).
+Your feedback helps shape `OneImlx.Terminal`. For suggestions, issues, or queries, please visit our [GitHub Issues](https://github.com/perpetualintelligence/oneterminal/issues).
