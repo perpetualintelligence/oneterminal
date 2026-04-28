@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -31,6 +28,11 @@ namespace OneImlx.Terminal.Runtime
         /// The terminal starts as a UDP server that listens to an incoming message.
         /// </summary>
         Udp = 4,
+
+        /// <summary>
+        /// The terminal starts as a Pulsar consumer that listens to incoming messages from Pulsar topics.
+        /// </summary>
+        Pulsar = 5,
 
         /// <summary>
         /// The terminal starts as a console server or a console application and listens to an incoming user message.

@@ -99,7 +99,7 @@ namespace OneImlx.Terminal.Extensions
 
             // Set up the host to return the mock service provider
             mockHost.Setup(x => x.Services).Returns(mockServiceProvider.Object);
-            Task backgroundTask = mockHost.Object.RunTerminalRouterBackgroundAsync<ITerminalRouter<TerminalRouterContext>, TerminalRouterContext>(terminalRouterContext);
+            mockHost.Object.RunTerminalRouterBackground<ITerminalRouter<TerminalRouterContext>, TerminalRouterContext>(terminalRouterContext);
 
             // Validates non-blocking: method returned before router completed
             await Task.Delay(100, TestContext.Current.CancellationToken);

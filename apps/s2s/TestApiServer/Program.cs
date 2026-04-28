@@ -73,7 +73,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer
             // Initialize Terminal HTTP Router
             var endpoint = new IPEndPoint(IPAddress.Loopback, 0);
             var context = new TerminalHttpRouterContext(endpoint, TerminalStartMode.Http, null, null);
-            app.RunTerminalRouterBackgroundAsync<TerminalHttpRouter, TerminalHttpRouterContext>(context);
+            app.RunTerminalRouterBackground<TerminalHttpRouter, TerminalHttpRouterContext>(context);
 
             // Run both API server and Terminal HTTP router concurrently
             app.Run();

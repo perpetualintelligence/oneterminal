@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Client.Grpc.Extensions
 {
     /// <summary>
-    /// Provides extension methods for interacting with terminal server over various network protocols.
+    /// Provides extension methods for interacting with terminal server over gRPC.
     /// </summary>
-    public static class ClientExtensions
+    public static class GrpcClientExtensions
     {
         /// <summary>
         /// Sends a <see cref="TerminalInputOutput"/> object to a terminal server via a gRPC request.

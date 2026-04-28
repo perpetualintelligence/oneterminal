@@ -1,15 +1,12 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Shared;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -79,7 +76,6 @@ namespace OneImlx.Terminal.Runtime
             }
         }
 
-        // Private fields to hold injected dependencies and state information.
         private readonly ILogger<TerminalGrpcRouter> logger;
         private readonly IOptions<TerminalOptions> options;
         private readonly ITerminalProcessor terminalProcessor;

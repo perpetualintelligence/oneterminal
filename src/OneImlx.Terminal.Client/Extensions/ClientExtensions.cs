@@ -96,8 +96,6 @@ namespace OneImlx.Terminal.Client.Extensions
 
             // Create a new array for the message with the delimiter appended
             byte[] messageWithDelimiter = TerminalServices.DelimitBytes(JsonSerializer.SerializeToUtf8Bytes(input, serializeOptions), inputDelimiter);
-
-            // Write the combined message in a single operation
             NetworkStream networkStream = tcpClient.GetStream();
             await networkStream.WriteAsync(messageWithDelimiter, 0, messageWithDelimiter.Length, cancellationToken);
             await networkStream.FlushAsync(cancellationToken);

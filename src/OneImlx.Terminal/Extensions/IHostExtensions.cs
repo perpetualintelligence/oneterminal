@@ -45,7 +45,7 @@ namespace OneImlx.Terminal.Extensions
         /// <param name="context">The routing context.</param>
         /// <typeparam name="TRouter">The terminal router type.</typeparam>
         /// <typeparam name="TContext">The terminal router context type.</typeparam>
-        public static Task RunTerminalRouterBackgroundAsync<TRouter, TContext>(this IHost host, TContext context)
+        public static void RunTerminalRouterBackground<TRouter, TContext>(this IHost host, TContext context)
             where TRouter : class, ITerminalRouter<TContext>
             where TContext : TerminalRouterContext
         {
@@ -58,7 +58,7 @@ namespace OneImlx.Terminal.Extensions
 
             // Now run the router in a background task without blocking
             ITerminalRouter<TContext> router = host.Services.GetRequiredService<ITerminalRouter<TContext>>();
-            return router.RunAsync(context);
+            router.RunAsync(context);
         }
     }
 }
