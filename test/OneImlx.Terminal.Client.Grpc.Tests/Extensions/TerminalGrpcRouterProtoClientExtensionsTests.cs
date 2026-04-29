@@ -2,13 +2,13 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Grpc.Core;
 using Moq;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OneImlx.Terminal.Client.Grpc.Extensions

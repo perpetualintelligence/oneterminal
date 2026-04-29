@@ -78,24 +78,27 @@ namespace OneImlx.Terminal.Server.Pulsar
                 // Asynchronously consume messages from the Pulsar topic and process them until cancellation is requested.
                 IConsumer<byte[]> consumer = terminalPulsarAccessor.GetConsumer();
                 IProducer<byte[]> producer = terminalPulsarAccessor.GetProducer();
-                await foreach (var message in consumer.Messages(context.TerminalCancellationToken))
+                while (!context.TerminalCancellationToken.IsCancellationRequested)
                 {
-                    try
+                    await foreach (var message in consumer.Messages(context.TerminalCancellationToken))
                     {
-                        TerminalInputOutput? input = JsonSerializer.Deserialize<TerminalInputOutput>(message.Data.ToArray());
-                        if (input == null || input.Count <= 0)
+                        try
                         {
-                            throw new TerminalException(TerminalErrors.MissingCommand, "The input requests are missing in the Pulsar message.");
-                        }
+                            TerminalInputOutput? input = JsonSerializer.Deserialize<TerminalInputOutput>(message.Data.ToArray());
+                            if (input == null || input.Count <= 0)
+                            {
+                                throw new TerminalException(TerminalErrors.MissingCommand, "The input requests are missing in the Pulsar message.");
+                            }
 
-                        await terminalProcessor.ExecuteAsync(input);
-                        byte[] outputJson = JsonSerializer.SerializeToUtf8Bytes(input);
-                        await producer.Send(outputJson, context.TerminalCancellationToken);
-                        await consumer.Acknowledge(message, context.TerminalCancellationToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        await exceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null));
+                            await terminalProcessor.ExecuteAsync(input);
+                            byte[] outputJson = JsonSerializer.SerializeToUtf8Bytes(input);
+                            await producer.Send(outputJson, context.TerminalCancellationToken);
+                            await consumer.Acknowledge(message, context.TerminalCancellationToken);
+                        }
+                        catch (Exception ex)
+                        {
+                            await exceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null));
+                        }
                     }
                 }
             }
