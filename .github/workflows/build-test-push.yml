@@ -170,6 +170,17 @@ jobs:
         nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
         registry: ${{ env.PI_PUBLISH_REGISTRY }}
 
+    # Publish OneImlx.Terminal.Server.Pulsar
+    - name: OneImlx.Terminal.Server.Pulsar
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Server.Pulsar
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
     # Publish OneImlx.Terminal.Client
     - name: OneImlx.Terminal.Client
       uses: ./.github/actions/push-package
@@ -186,6 +197,17 @@ jobs:
       uses: ./.github/actions/push-package
       with:
         project: OneImlx.Terminal.Client.Grpc
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
+    # Publish OneImlx.Terminal.Server.Pulsar
+    - name: OneImlx.Terminal.Client.Pulsar
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Client.Pulsar
         config: Release
         version: ${{ env.PI_CI_PACKAGE_VERSION }}
         ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
