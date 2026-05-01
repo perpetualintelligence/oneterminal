@@ -4,6 +4,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\OneImlx.Terminal.Authentication\OneImlx.Terminal.Authentication.csproj" />
+        <ProjectReference Include="..\OneImlx.Terminal.Testing\OneImlx.Terminal.Testing.csproj" />
     </ItemGroup>
 
 </Project>

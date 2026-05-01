@@ -7,8 +7,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
-using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Testing.Mocks;
 using OneImlx.Test.FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OneImlx.Terminal.Runtime.Tests
+namespace OneImlx.Terminal.Server
 {
     public class TerminalTcpRouterTests
     {

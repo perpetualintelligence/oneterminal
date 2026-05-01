@@ -3,6 +3,7 @@
 - Introduce OneTerminal&reg; as branding
 - Support running Terminal router alongside ASP.NET API server in the same process
 - gRPC moved to separate packages: `OneImlx.Terminal.<Server|Client>.Grpc` for modularity and flexibility
+- UDP, TCP, HTTP moved to separate packages: `OneImlx.Terminal.<Server|Client>` for modularity and flexibility
 
 # 6.3.x
 > Feature Change | Breaking Change

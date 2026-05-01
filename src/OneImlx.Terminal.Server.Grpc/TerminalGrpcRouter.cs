@@ -5,10 +5,11 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using System.Threading.Tasks;
 
-namespace OneImlx.Terminal.Runtime
+namespace OneImlx.Terminal.Server.Grpc
 {
     /// <summary>
     /// Represents the gRPC router responsible for managing gRPC communication in the terminal. This router handles

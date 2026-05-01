@@ -1,18 +1,16 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 
-namespace OneImlx.Terminal.Runtime
+namespace OneImlx.Terminal.Server
 {
     /// <summary>
     /// Represents the HTTP router responsible for managing HTTP communication in the terminal. This router handles
@@ -87,6 +85,7 @@ namespace OneImlx.Terminal.Runtime
 
         // Private fields to hold injected dependencies and state information.
         private readonly ICommandRouter commandRouter;
+
         private readonly ITerminalExceptionHandler exceptionHandler;
         private readonly ILogger<TerminalHttpRouter> logger;
         private readonly IOptions<TerminalOptions> options;

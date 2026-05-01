@@ -36,6 +36,7 @@
     <Project Path="test/OneImlx.Terminal.Server.Pulsar.Tests/OneImlx.Terminal.Server.Pulsar.Tests.csproj" />
     <Project Path="test/OneImlx.Terminal.Server.Tests/OneImlx.Terminal.Server.Tests.csproj" />
     <Project Path="test/OneImlx.Terminal.Shared.Tests/OneImlx.Terminal.Shared.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Testing/OneImlx.Terminal.Testing.csproj" Id="661743c0-3a12-47df-a7fd-0f2b0f7191ba" />
     <Project Path="test/OneImlx.Terminal.Tests/OneImlx.Terminal.Tests.csproj" />
   </Folder>
 </Solution>

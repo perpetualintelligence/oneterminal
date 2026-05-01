@@ -1,16 +1,14 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using OneImlx.Terminal.Configuration.Options;
-using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Server;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Testing.Mocks;
 using System;
 using System.Net;
 using System.Net.Sockets;

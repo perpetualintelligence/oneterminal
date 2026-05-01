@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Shared.Attributes.Validation;
 using OneImlx.Terminal.Commands;
@@ -19,7 +16,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 
-namespace OneImlx.Terminals.Integration.Mocks
+namespace OneImlx.Terminal.Dynamics.Mocks
 {
     internal class MockPublishedAssemblyLoader : ITerminalCommandSourceAssemblyLoader<PublishedCommandSourceContext>
     {

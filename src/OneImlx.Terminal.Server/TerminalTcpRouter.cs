@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 
-namespace OneImlx.Terminal.Runtime
+namespace OneImlx.Terminal.Server
 {
     /// <summary>
     /// The default <see cref="ITerminalRouter{TContext}"/> for TCP client-server communication.

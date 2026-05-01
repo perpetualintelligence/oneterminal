@@ -1,19 +1,18 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using OneImlx.Terminal.Runtime;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 
-namespace OneImlx.Terminal.Runtime
+namespace OneImlx.Terminal.Server
 {
     /// <summary>
-    /// The <see cref="TerminalUdpRouter"/> connection context.
+    /// The <see cref="TerminalTcpRouter"/> connection context.
     /// </summary>
-    public sealed class TerminalUdpRouterContext : TerminalRouterContext
+    public sealed class TerminalTcpRouterContext : TerminalRouterContext
     {
         /// <summary>
         /// Initialize a new instance.
@@ -21,8 +20,8 @@ namespace OneImlx.Terminal.Runtime
         /// <param name="iPEndPoint">The network IP endpoint server will connect.</param>
         /// <param name="startMode">The terminal start mode.</param>
         /// <param name="customProperties">The custom properties.</param>
-        /// <param name="arguments">The arguments.</param>
-        public TerminalUdpRouterContext(
+        /// <param name="arguments">The command line arguments.</param>
+        public TerminalTcpRouterContext(
             IPEndPoint iPEndPoint,
             TerminalStartMode startMode,
             Dictionary<string, object>? customProperties = null,
@@ -33,7 +32,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         /// <summary>
-        /// The network IP endpoint terminal will connect.
+        /// The IP endpoint for the <see cref="TcpListener"/>. The clients need to send the messages to this end point.
         /// </summary>
         public IPEndPoint IPEndPoint { get; private set; }
     }

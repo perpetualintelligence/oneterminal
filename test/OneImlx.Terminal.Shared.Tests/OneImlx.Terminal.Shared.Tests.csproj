@@ -4,6 +4,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\OneImlx.Terminal.Shared\OneImlx.Terminal.Shared.csproj" />
+        <ProjectReference Include="..\OneImlx.Terminal.Testing\OneImlx.Terminal.Testing.csproj" />
     </ItemGroup>
 
 </Project>
