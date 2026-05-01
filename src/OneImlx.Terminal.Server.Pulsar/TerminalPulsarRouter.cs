@@ -76,31 +76,26 @@ namespace OneImlx.Terminal.Server.Pulsar
                 terminalProcessor.StartProcessing(context, background: false);
 
                 // Asynchronously consume messages from the Pulsar topic and process them until cancellation is requested.
+                // The Messages is an extension method that yields messages as they arrive, until cancelled.
                 IConsumer<byte[]> consumer = terminalPulsarAccessor.GetConsumer();
                 IProducer<byte[]> producer = terminalPulsarAccessor.GetProducer();
-                while (!context.TerminalCancellationToken.IsCancellationRequested)
+                await foreach (var message in consumer.Messages(context.TerminalCancellationToken))
                 {
-                    await foreach (var message in consumer.Messages(context.TerminalCancellationToken))
+                    TerminalInputOutput? input = JsonSerializer.Deserialize<TerminalInputOutput>(message.Data.ToArray());
+                    if (input == null || input.Count <= 0)
                     {
-                        try
-                        {
-                            TerminalInputOutput? input = JsonSerializer.Deserialize<TerminalInputOutput>(message.Data.ToArray());
-                            if (input == null || input.Count <= 0)
-                            {
-                                throw new TerminalException(TerminalErrors.MissingCommand, "The input requests are missing in the Pulsar message.");
-                            }
-
-                            await terminalProcessor.ExecuteAsync(input);
-                            byte[] outputJson = JsonSerializer.SerializeToUtf8Bytes(input);
-                            await producer.Send(outputJson, context.TerminalCancellationToken);
-                            await consumer.Acknowledge(message, context.TerminalCancellationToken);
-                        }
-                        catch (Exception ex)
-                        {
-                            await exceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null));
-                        }
+                        throw new TerminalException(TerminalErrors.MissingCommand, "The input requests are missing in the Pulsar message.");
                     }
+
+                    await terminalProcessor.ExecuteAsync(input);
+                    byte[] outputJson = JsonSerializer.SerializeToUtf8Bytes(input);
+                    await producer.Send(outputJson, context.TerminalCancellationToken);
+                    await consumer.Acknowledge(message, context.TerminalCancellationToken);
                 }
+            }
+            catch (Exception ex)
+            {
+                await exceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null));
             }
             finally
             {

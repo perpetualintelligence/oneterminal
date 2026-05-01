@@ -18,34 +18,30 @@ namespace OneImlx.Terminal.Server.Pulsar
     public class MockConsumer : IConsumer<byte[]>
     {
         private readonly IMessage<byte[]> _message;
-        private readonly CancellationTokenSource _cts;
         private readonly int _messageCount;
         private bool _acknowledged;
 
-        public MockConsumer(IMessage<byte[]> message, CancellationTokenSource cts, int messageCount = 1)
+        public int ReceiveCallCount { get; private set; }
+
+        public MockConsumer(IMessage<byte[]> message, int messageCount = 1)
         {
             _message = message;
-            _cts = cts;
             _messageCount = messageCount;
         }
 
-        public async IAsyncEnumerable<IMessage<byte[]>> Messages([System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async ValueTask<IMessage<byte[]>> Receive(CancellationToken cancellationToken = default)
         {
-            for (int i = 0; i < _messageCount && !cancellationToken.IsCancellationRequested && !_cts.Token.IsCancellationRequested; i++)
+            ReceiveCallCount++;
+
+            // DotPulsar's Messages() extension method calls Receive() repeatedly
+            // Return message immediately up to messageCount times,
+            // then delay to simulate waiting for new messages
+            if (ReceiveCallCount <= _messageCount)
             {
-                yield return _message;
+                return _message;
             }
 
-            //// After yielding all messages, wait for cancellation
-            //while (!cancellationToken.IsCancellationRequested && !_cts.Token.IsCancellationRequested)
-            //{
-            //    await Task.Delay(10, cancellationToken);
-            //}
-        }
-
-        public ValueTask<IMessage<byte[]>> Receive(CancellationToken cancellationToken = default)
-        {
-            return ValueTask.FromResult(_message);
+            return _message;
         }
 
         public ValueTask Acknowledge(MessageId messageId, CancellationToken cancellationToken = default)

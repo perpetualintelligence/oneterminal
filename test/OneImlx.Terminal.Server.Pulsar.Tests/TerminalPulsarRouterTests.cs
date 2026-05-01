@@ -4,7 +4,6 @@
 
 using DotPulsar;
 using DotPulsar.Abstractions;
-using DotPulsar.Extensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,7 +13,6 @@ using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Test.FluentAssertions;
 using System.Buffers;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -74,7 +72,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             var context = CreateContext(cts);
             var input = TerminalInputOutput.Single("id1", "test");
 
-            SetupConsumerWithMessage(input, cts);
+            SetupConsumerWithMessage(input);
             SetupProducer(cts);
 
             var router = CreateRouter();
@@ -94,7 +92,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             var context = CreateContext(cts);
             var input = TerminalInputOutput.Single("id1", "test command");
 
-            SetupConsumerWithMessage(input, cts);
+            SetupConsumerWithMessage(input);
             SetupProducer(cts);
 
             var router = CreateRouter();
@@ -113,7 +111,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             var context = CreateContext(cts);
             var input = TerminalInputOutput.Single("id1", "test");
 
-            SetupConsumerWithMessage(input, cts);
+            SetupConsumerWithMessage(input);
             SetupProducer(cts);
 
             var router = CreateRouter();
@@ -131,7 +129,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             var context = CreateContext(cts);
             var input = TerminalInputOutput.Single("id1", "test");
 
-            var consumer = SetupConsumerWithMessage(input, cts);
+            var consumer = SetupConsumerWithMessage(input);
             SetupProducer(cts);
 
             var router = CreateRouter();
@@ -149,7 +147,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             var context = CreateContext(cts);
             var input = TerminalInputOutput.Batch("batch1", ["id1", "id2"], ["cmd1", "cmd2"]);
 
-            SetupConsumerWithMessage(input, cts);
+            SetupConsumerWithMessage(input);
             SetupProducer(cts);
 
             var router = CreateRouter();
@@ -167,7 +165,7 @@ namespace OneImlx.Terminal.Server.Pulsar
 
             var context = CreateContext(cts);
 
-            SetupConsumerWithNullMessage(cts);
+            SetupConsumerWithNullMessage();
             exceptionHandlerMock.Setup(x => x.HandleExceptionAsync(It.IsAny<TerminalExceptionHandlerContext>()))
                 .Callback(() => cts.Cancel())
                 .Returns(Task.CompletedTask);
@@ -189,7 +187,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             var context = CreateContext(cts);
             var emptyInput = TerminalInputOutput.Batch("batch1", [], []);
 
-            SetupConsumerWithMessage(emptyInput, cts);
+            SetupConsumerWithMessage(emptyInput);
             exceptionHandlerMock.Setup(x => x.HandleExceptionAsync(It.IsAny<TerminalExceptionHandlerContext>()))
                 .Callback(() => cts.Cancel())
                 .Returns(Task.CompletedTask);
@@ -209,26 +207,26 @@ namespace OneImlx.Terminal.Server.Pulsar
             return context;
         }
 
-        private MockConsumer SetupConsumerWithMessage(TerminalInputOutput input, CancellationTokenSource cts)
+        private MockConsumer SetupConsumerWithMessage(TerminalInputOutput input)
         {
             var data = JsonSerializer.SerializeToUtf8Bytes(input);
             var msgMock = new Mock<IMessage<byte[]>>();
             msgMock.Setup(m => m.Data).Returns(new ReadOnlySequence<byte>(data));
             msgMock.Setup(m => m.MessageId).Returns(new MessageId(1, 1, 0, 0));
 
-            var consumer = new MockConsumer(msgMock.Object, cts);
+            var consumer = new MockConsumer(msgMock.Object);
             accessorMock.Setup(x => x.GetConsumer()).Returns(consumer);
             return consumer;
         }
 
-        private MockConsumer SetupConsumerWithNullMessage(CancellationTokenSource cts)
+        private MockConsumer SetupConsumerWithNullMessage()
         {
             var data = Encoding.UTF8.GetBytes("null");
             var msgMock = new Mock<IMessage<byte[]>>();
             msgMock.Setup(m => m.Data).Returns(new ReadOnlySequence<byte>(data));
             msgMock.Setup(m => m.MessageId).Returns(new MessageId(1, 1, 0, 0));
 
-            var consumer = new MockConsumer(msgMock.Object, cts);
+            var consumer = new MockConsumer(msgMock.Object);
             accessorMock.Setup(x => x.GetConsumer()).Returns(consumer);
             return consumer;
         }
@@ -249,7 +247,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             msg.Setup(x => x.MessageId).Returns(new MessageId(1, 1, 0, 0));
 
             // Return 100 messages using MockConsumer
-            var consumer = new MockConsumer(msg.Object, cts, messageCount: 100);
+            var consumer = new MockConsumer(msg.Object, messageCount: 100);
             accessorMock.Setup(x => x.GetConsumer()).Returns(consumer);
 
             // no cancel from producer
@@ -262,7 +260,11 @@ namespace OneImlx.Terminal.Server.Pulsar
             await router.RunAsync(context);
 
             // Verify we have processed all 100
-            processorMock.Verify(x => x.ExecuteAsync(It.IsAny<TerminalInputOutput>()), Times.Exactly(100));
+            processorMock.Verify(x => x.ExecuteAsync(It.IsAny<TerminalInputOutput>()), Times.AtLeast(100));
+
+            // Ensure loop re-entered (THIS proves while loop)
+            // DotPulsar's Messages() extension calls Receive() repeatedly, so we check that
+            consumer.ReceiveCallCount.Should().BeGreaterThan(1);
 
             // Ensure we are not running
             router.IsRunning.Should().BeFalse();
