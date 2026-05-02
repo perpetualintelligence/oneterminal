@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Threading;
@@ -60,33 +57,33 @@ namespace OneImlx.Terminal.Hosting
             try
             {
                 // Configure the application lifetime.
-                await ConfigureLifetimeAsync();
+                await ConfigureLifetimeAsync().ConfigureAwait(false);
 
                 // Do mandatory configuration check
-                await CheckConfigurationAsync(Options);
+                await CheckConfigurationAsync(Options).ConfigureAwait(false);
 
                 // Do license check
-                await CheckLicenseAsync();
+                await CheckLicenseAsync().ConfigureAwait(false);
 
                 // Register help options with command descriptors. Retrieving all commands from the store is
                 // intentionally done at the end to avoid a performance hit in case the license check fails.
-                await RegisterHelpAsync();
+                await RegisterHelpAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 // If this is a license failure then stop application.
                 if (ex is TerminalException tex && tex.Error.ErrorCode == TerminalErrors.InvalidLicense)
                 {
-                    await TerminalConsole.WriteLineColorAsync(ConsoleColor.Red, "License check failed during startup.");
-                    await Task.Delay(500);
+                    await TerminalConsole.WriteLineColorAsync(ConsoleColor.Red, "License check failed during startup.").ConfigureAwait(false);
+                    await Task.Delay(500).ConfigureAwait(false);
 
                     IHostApplicationLifetime hostApplicationLifetime = ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
                     hostApplicationLifetime.StopApplication();
-                    await Task.Delay(2000);
+                    await Task.Delay(2000).ConfigureAwait(false);
                 }
 
                 // Give a change to handler
-                await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex));
+                await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex)).ConfigureAwait(false);
             }
         }
 
@@ -128,18 +125,18 @@ namespace OneImlx.Terminal.Hosting
         private async Task CheckConfigurationAsync(IOptions<TerminalOptions> options)
         {
             IConfigurationOptionsChecker optionsChecker = ServiceProvider.GetRequiredService<IConfigurationOptionsChecker>();
-            await optionsChecker.CheckAsync(options.Value);
+            await optionsChecker.CheckAsync(options.Value).ConfigureAwait(false);
         }
 
         private async Task CheckLicenseAsync()
         {
             ILicenseExtractor licenseExtractor = ServiceProvider.GetRequiredService<ILicenseExtractor>();
-            LicenseExtractorResult exResult = await licenseExtractor.ExtractLicenseAsync();
+            LicenseExtractorResult exResult = await licenseExtractor.ExtractLicenseAsync().ConfigureAwait(false);
 
             ILicenseChecker licenseChecker = ServiceProvider.GetRequiredService<ILicenseChecker>();
-            LicenseCheckerResult chResult = await licenseChecker.CheckLicenseAsync(exResult.License);
+            LicenseCheckerResult chResult = await licenseChecker.CheckLicenseAsync(exResult.License).ConfigureAwait(false);
 
-            await PrintWarningIfDemoAsync(exResult.License);
+            await PrintWarningIfDemoAsync(exResult.License).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -152,11 +149,11 @@ namespace OneImlx.Terminal.Hosting
             {
                 if (license.Usage == LicenseUsage.Educational)
                 {
-                    await TerminalConsole.WriteLineColorAsync(ConsoleColor.Yellow, "The demo license is free for educational purposes, but non-educational use requires a commercial license.");
+                    await TerminalConsole.WriteLineColorAsync(ConsoleColor.Yellow, "The demo license is free for educational purposes, but non-educational use requires a commercial license.").ConfigureAwait(false);
                 }
                 else if (license.Usage == LicenseUsage.RnD)
                 {
-                    await TerminalConsole.WriteLineColorAsync(ConsoleColor.Yellow, "The demo license is free for research and development, but production use requires a commercial license.");
+                    await TerminalConsole.WriteLineColorAsync(ConsoleColor.Yellow, "The demo license is free for research and development, but production use requires a commercial license.").ConfigureAwait(false);
                 }
             }
         }
@@ -176,7 +173,7 @@ namespace OneImlx.Terminal.Hosting
 
             // This can be a long list of command, but it is executed only once during startup.
             ITerminalCommandStore terminalCommandStore = ServiceProvider.GetRequiredService<ITerminalCommandStore>();
-            var commandDescriptors = await terminalCommandStore.AllAsync();
+            var commandDescriptors = await terminalCommandStore.AllAsync().ConfigureAwait(false);
             foreach (CommandDescriptor commandDescriptor in commandDescriptors.Values)
             {
                 OptionDescriptor helpDescriptor = new(helpOptions.OptionId, nameof(Boolean), helpOptions.OptionDescription, OptionFlags.None, helpOptions.OptionAlias);

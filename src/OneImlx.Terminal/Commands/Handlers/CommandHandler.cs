@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Threading.Tasks;
@@ -47,7 +44,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             logger.LogDebug("Handle request. request={0}", context.Request.Id);
 
             // Check and run the command
-            Tuple<CommandCheckerResult, CommandRunnerResult> result = await CheckAndRunCommandInnerAsync(context);
+            Tuple<CommandCheckerResult, CommandRunnerResult> result = await CheckAndRunCommandInnerAsync(context).ConfigureAwait(false);
 
             // Return the processed result
             context.Result = new CommandResult(result.Item1, result.Item2);
@@ -64,13 +61,13 @@ namespace OneImlx.Terminal.Commands.Handlers
                 ))
             {
                 logger.LogDebug("Found help option. option={0}", helpOption != null ? helpOption.Id : "?");
-                CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, runHelp: true);
+                CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, runHelp: true).ConfigureAwait(false);
                 return new Tuple<CommandCheckerResult, CommandRunnerResult>(new CommandCheckerResult(), runnerResult);
             }
             else
             {
-                CommandCheckerResult checkerResult = await CheckCommandInnerAsync(context);
-                CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, runHelp: false);
+                CommandCheckerResult checkerResult = await CheckCommandInnerAsync(context).ConfigureAwait(false);
+                CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, runHelp: false).ConfigureAwait(false);
                 return new Tuple<CommandCheckerResult, CommandRunnerResult>(checkerResult, runnerResult);
             }
         }
@@ -83,18 +80,18 @@ namespace OneImlx.Terminal.Commands.Handlers
             if (terminalEventHandler != null)
             {
                 logger.LogDebug("Fire event. event={0} command={1}", nameof(terminalEventHandler.BeforeCommandCheckAsync), command.Id);
-                await terminalEventHandler.BeforeCommandCheckAsync(command);
+                await terminalEventHandler.BeforeCommandCheckAsync(command).ConfigureAwait(false);
             }
 
             // Find the checker and check the command
             ICommandChecker commandChecker = commandRuntime.ResolveCommandChecker(command.Descriptor);
-            var result = await commandChecker.CheckCommandAsync(context);
+            var result = await commandChecker.CheckCommandAsync(context).ConfigureAwait(false);
 
             // Issue a after check event if configured
             if (terminalEventHandler != null)
             {
                 logger.LogDebug("Fire event. event={0} command={1}", nameof(terminalEventHandler.AfterCommandCheckAsync), command.Id);
-                await terminalEventHandler.AfterCommandCheckAsync(command, result);
+                await terminalEventHandler.AfterCommandCheckAsync(command, result).ConfigureAwait(false);
             }
 
             return result;
@@ -108,7 +105,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             if (terminalEventHandler != null)
             {
                 logger.LogDebug("Fire event. event={0} command={1}", nameof(terminalEventHandler.BeforeCommandRunAsync), command.Id);
-                await terminalEventHandler.BeforeCommandRunAsync(command);
+                await terminalEventHandler.BeforeCommandRunAsync(command).ConfigureAwait(false);
             }
 
             // Find the runner to run the command
@@ -119,18 +116,18 @@ namespace OneImlx.Terminal.Commands.Handlers
             if (runHelp)
             {
                 logger.LogDebug("Skip runner. Delegate to help provider. type={0}", terminalHelpProvider.GetType().Name);
-                runnerResult = await commandRunner.DelegateHelpAsync(context, terminalHelpProvider, logger);
+                runnerResult = await commandRunner.DelegateHelpAsync(context, terminalHelpProvider, logger).ConfigureAwait(false);
             }
             else
             {
-                runnerResult = await commandRunner.DelegateRunAsync(context, logger);
+                runnerResult = await commandRunner.DelegateRunAsync(context, logger).ConfigureAwait(false);
             }
 
             // Issue a after run event if configured
             if (terminalEventHandler != null)
             {
                 logger.LogDebug("Fire event. event={0} command={1}", nameof(terminalEventHandler.AfterCommandRunAsync), command.Id);
-                await terminalEventHandler.AfterCommandRunAsync(command, runnerResult);
+                await terminalEventHandler.AfterCommandRunAsync(command, runnerResult).ConfigureAwait(false);
             }
 
             return runnerResult;

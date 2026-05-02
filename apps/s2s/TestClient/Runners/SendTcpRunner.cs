@@ -26,12 +26,14 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     {
         public SendTcpRunner(IOptions<TerminalOptions> terminalOptions,
                              ITerminalTextHandler terminalTextHandler,
+                             ITerminalBytesParser terminalBytesParser,
                              ITerminalConsole terminalConsole,
                              IConfiguration configuration,
                              ITerminalExceptionHandler terminalExceptionHandler)
         {
             this.terminalOptions = terminalOptions ?? throw new ArgumentNullException(nameof(terminalOptions));
             this.terminalTextHandler = terminalTextHandler;
+            this.terminalBytesParser = terminalBytesParser;
             this.terminalConsole = terminalConsole;
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.terminalExceptionHandler = terminalExceptionHandler;
@@ -85,7 +87,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
 
                     if (bytesRead > 0)
                     {
-                        byte[][] outputs = buffer.Take(bytesRead).ToArray().Split(terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
+                        byte[][] outputs = terminalBytesParser.Split(buffer.Take(bytesRead).ToArray(), terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
                         foreach (byte[] opt in outputs)
                         {
                             TerminalInputOutput? output = JsonSerializer.Deserialize<TerminalInputOutput>(opt);
@@ -213,6 +215,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         private readonly ITerminalExceptionHandler terminalExceptionHandler;
         private readonly IOptions<TerminalOptions> terminalOptions;
         private readonly ITerminalTextHandler terminalTextHandler;
+        private readonly ITerminalBytesParser terminalBytesParser;
         private int _commandCount;
     }
 }

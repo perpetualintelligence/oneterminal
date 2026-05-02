@@ -8,15 +8,17 @@ using System.Diagnostics;
 using System.Linq;
 using Xunit;
 
-namespace OneImlx.Terminal.Extensions
+namespace OneImlx.Terminal.Runtime
 {
-    public class ByteArrayExtensionsTests
+    public class TerminalBytesParserTests
     {
         private readonly ITestOutputHelper output;
+        private readonly TerminalBytesParser parser;
 
-        public ByteArrayExtensionsTests(ITestOutputHelper output)
+        public TerminalBytesParserTests(ITestOutputHelper output)
         {
             this.output = output;
+            this.parser = new TerminalBytesParser();
         }
 
         [Fact]
@@ -27,7 +29,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(3);
@@ -45,7 +47,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(2);
@@ -62,7 +64,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(3);
@@ -80,7 +82,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(1);
@@ -96,7 +98,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(2);
@@ -113,7 +115,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(1);
@@ -129,7 +131,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().BeEmpty();
@@ -144,7 +146,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(1);
@@ -162,7 +164,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, ignoreEmpty, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, ignoreEmpty, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(1);
@@ -178,7 +180,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(4);
@@ -197,7 +199,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(2);
@@ -214,7 +216,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(4);
@@ -233,7 +235,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().BeEmpty();
@@ -251,7 +253,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0xFF;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(2);
@@ -275,7 +277,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0xFF;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(101); // 100 segments + 1 empty at end
@@ -301,7 +303,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0xFF;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(100);
@@ -323,7 +325,7 @@ namespace OneImlx.Terminal.Extensions
             byte[] source = [1, delimiter, 2, 3, delimiter, 4, 5];
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(3);
@@ -341,7 +343,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            var result = source.Split(delimiter, false, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, false, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(3);
@@ -368,7 +370,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1E;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(3);
@@ -393,7 +395,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1E;
 
             // Act
-            var result = source.Split(delimiter, true, out var endsWithDelimiter);
+            var result = parser.Split(source, delimiter, true, out var endsWithDelimiter);
 
             // Assert
             result.Should().HaveCount(2);
@@ -410,7 +412,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            Action act = () => source.Split(delimiter, false, out _);
+            Action act = () => parser.Split(source, delimiter, false, out _);
 
             // Assert
             act.Should().Throw<ArgumentException>()
@@ -425,7 +427,7 @@ namespace OneImlx.Terminal.Extensions
             byte delimiter = 0x1F;
 
             // Act
-            Action act = () => source.Split(delimiter, false, out _);
+            Action act = () => parser.Split(source, delimiter, false, out _);
 
             // Assert
             act.Should().Throw<ArgumentException>()
@@ -443,14 +445,14 @@ namespace OneImlx.Terminal.Extensions
             // Warmup
             for (int i = 0; i < 100; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
 
             // Act
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
             sw.Stop();
 
@@ -473,14 +475,14 @@ namespace OneImlx.Terminal.Extensions
             // Warmup
             for (int i = 0; i < 10; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
 
             // Act
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
             sw.Stop();
 
@@ -503,14 +505,14 @@ namespace OneImlx.Terminal.Extensions
             // Warmup
             for (int i = 0; i < 5; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
 
             // Act
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
             sw.Stop();
 
@@ -533,14 +535,14 @@ namespace OneImlx.Terminal.Extensions
             // Warmup
             for (int i = 0; i < 10; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
 
             // Act
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
             sw.Stop();
 
@@ -564,14 +566,14 @@ namespace OneImlx.Terminal.Extensions
             // Warmup
             for (int i = 0; i < 100; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
 
             // Act
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
             sw.Stop();
 
@@ -594,22 +596,22 @@ namespace OneImlx.Terminal.Extensions
             // Warmup
             for (int i = 0; i < 50; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
-                _ = buffer.Split(delimiter, false, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, false, out _);
             }
 
             // Act
             var sw1 = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                _ = buffer.Split(delimiter, true, out _);
+                _ = parser.Split(buffer, delimiter, true, out _);
             }
             sw1.Stop();
 
             var sw2 = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                _ = buffer.Split(delimiter, false, out _);
+                _ = parser.Split(buffer, delimiter, false, out _);
             }
             sw2.Stop();
 

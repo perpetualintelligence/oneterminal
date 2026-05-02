@@ -4,12 +4,12 @@
 
 using System;
 
-namespace OneImlx.Terminal.Extensions
+namespace OneImlx.Terminal.Runtime
 {
     /// <summary>
-    /// Provides extension methods for <see cref="byte"/> arrays.
+    /// Default <see cref="ITerminalBytesParser"/>.
     /// </summary>
-    public static class ByteArrayExtensions
+    public sealed class TerminalBytesParser : ITerminalBytesParser
     {
         /// <summary>
         /// Splits a byte array into segments based on a delimiter.
@@ -19,7 +19,7 @@ namespace OneImlx.Terminal.Extensions
         /// <param name="ignoreEmpty">Indicates whether to ignore empty segments.</param>
         /// <param name="endsWithDelimiter">Indicates whether the source array ends with the delimiter.</param>
         /// <returns>An array of byte arrays representing the segments.</returns>
-        public static byte[][] Split(this byte[] buffer, byte delimiter, bool ignoreEmpty, out bool endsWithDelimiter)
+        public byte[][] Split(byte[] buffer, byte delimiter, bool ignoreEmpty, out bool endsWithDelimiter)
         {
             if (buffer == null || buffer.Length == 0)
             {

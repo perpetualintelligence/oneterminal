@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using OneImlx.Shared.Infrastructure;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
-using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Concurrent;
@@ -36,18 +35,21 @@ namespace OneImlx.Terminal.Runtime
         /// <param name="terminalExceptionHandler">The handler for exceptions thrown during command processing.</param>
         /// <param name="terminalOptions">Configuration options for the terminal.</param>
         /// <param name="textHandler">The terminal text handler.</param>
+        /// <param name="terminalBytesParser">The terminal bytes parser.</param>
         /// <param name="logger">Logger for logging operations within the queue.</param>
         public TerminalProcessor(
             ICommandRouter commandRouter,
             ITerminalExceptionHandler terminalExceptionHandler,
             IOptions<TerminalOptions> terminalOptions,
             ITerminalTextHandler textHandler,
+            ITerminalBytesParser terminalBytesParser,
             ILogger<TerminalProcessor> logger)
         {
             this.commandRouter = commandRouter;
             this.terminalExceptionHandler = terminalExceptionHandler;
             this.terminalOptions = terminalOptions;
             this.textHandler = textHandler;
+            this.terminalBytesParser = terminalBytesParser;
             this.logger = logger;
 
             processedRequests = [];
@@ -151,7 +153,7 @@ namespace OneImlx.Terminal.Runtime
             var combinedTask = Task.WhenAll(requestProcessing, responseProcessing);
             if (combinedTask.Status != TaskStatus.RanToCompletion)
             {
-                var task = await Task.WhenAny(combinedTask, Task.Delay(timeout));
+                var task = await Task.WhenAny(combinedTask, Task.Delay(timeout)).ConfigureAwait(false);
                 if (task != combinedTask)
                 {
                     return true;
@@ -184,7 +186,7 @@ namespace OneImlx.Terminal.Runtime
             }
 
             // Split the input stream into batches using the stream delimiter
-            byte[][] rawInputs = previousStream.ToArray().Split(terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out bool endsWithDelimiter);
+            byte[][] rawInputs = terminalBytesParser.Split(previousStream.ToArray(), terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out bool endsWithDelimiter);
             previousStream.Clear();
 
             // Check if the last batch ends with the delimiter
@@ -227,7 +229,7 @@ namespace OneImlx.Terminal.Runtime
         {
             try
             {
-                await Task.Delay(Timeout.Infinite, cancellationToken);
+                await Task.Delay(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {
@@ -253,10 +255,10 @@ namespace OneImlx.Terminal.Runtime
 
             // Reusable properties dictionary to avoid allocation per request
             Dictionary<string, object> properties = new()
-            {
-                { TerminalIdentifiers.SenderEndpointToken, senderEndpoint },
-                { TerminalIdentifiers.SenderIdToken, senderId }
-            };
+                {
+                    { TerminalIdentifiers.SenderEndpointToken, senderEndpoint },
+                    { TerminalIdentifiers.SenderIdToken, senderId }
+                };
 
             for (int idx = 0; idx < terminalOutput.Count; ++idx)
             {
@@ -279,9 +281,9 @@ namespace OneImlx.Terminal.Runtime
                     var context = new CommandContext(request, terminalRouterContext, properties);
 
                     var routeTask = commandRouter.RouteCommandAsync(context);
-                    if (await Task.WhenAny(routeTask, Task.Delay(timeout, cancellationToken)) == routeTask)
+                    if (await Task.WhenAny(routeTask, Task.Delay(timeout, cancellationToken)).ConfigureAwait(false) == routeTask)
                     {
-                        CommandResult result = await routeTask;
+                        CommandResult result = await routeTask.ConfigureAwait(false);
                         object? value = null;
                         if (result.RunnerResult != null)
                         {
@@ -410,6 +412,7 @@ namespace OneImlx.Terminal.Runtime
         private readonly ITerminalExceptionHandler terminalExceptionHandler;
         private readonly IOptions<TerminalOptions> terminalOptions;
         private readonly ITerminalTextHandler textHandler;
+        private readonly ITerminalBytesParser terminalBytesParser;
         private readonly ConcurrentQueue<TerminalInputOutput> unprocessedIOs;
         private Func<TerminalInputOutput, Task>? handler;
         private Task requestProcessing;

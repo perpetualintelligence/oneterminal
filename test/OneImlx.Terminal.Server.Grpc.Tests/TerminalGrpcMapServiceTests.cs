@@ -43,6 +43,7 @@ namespace OneImlx.Terminal.Server.Grpc
                 Mock.Of<ICommandRouter>(), Mock.Of<ITerminalExceptionHandler>(),
                 Microsoft.Extensions.Options.Options.Create(new TerminalOptions()),
                 new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII),
+                new TerminalBytesParser(),
                 Mock.Of<ILogger<TerminalProcessor>>());
 
             // Ensure the terminal router is running

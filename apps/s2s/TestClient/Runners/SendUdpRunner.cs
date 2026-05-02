@@ -28,12 +28,14 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             IOptions<TerminalOptions> terminalOptions,
             ITerminalTextHandler terminalTextHandler,
             ITerminalConsole terminalConsole,
+            ITerminalBytesParser terminalBytesParser,
             IConfiguration configuration,
             ITerminalExceptionHandler terminalExceptionHandler)
         {
             this.terminalOptions = terminalOptions;
             this.terminalTextHandler = terminalTextHandler;
             this.terminalConsole = terminalConsole;
+            this.terminalBytesParser = terminalBytesParser;
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.terminalExceptionHandler = terminalExceptionHandler;
         }
@@ -83,7 +85,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                     }
 
                     var udpResult = await udpClient.ReceiveAsync();
-                    var outputs = udpResult.Buffer.Split(terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
+                    var outputs = terminalBytesParser.Split(udpResult.Buffer, terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
                     foreach (var opt in outputs)
                     {
                         TerminalInputOutput? output = JsonSerializer.Deserialize<TerminalInputOutput>(opt);
@@ -187,6 +189,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         private readonly IConfiguration configuration;
         private readonly Stopwatch stopwatch = new();
         private readonly ITerminalConsole terminalConsole;
+        private readonly ITerminalBytesParser terminalBytesParser;
         private readonly ITerminalExceptionHandler terminalExceptionHandler;
         private readonly IOptions<TerminalOptions> terminalOptions;
         private readonly ITerminalTextHandler terminalTextHandler;

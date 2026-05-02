@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Threading.Tasks;
@@ -64,11 +61,11 @@ namespace OneImlx.Terminal.Commands
                 if (asyncEventHandler != null)
                 {
                     logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.BeforeCommandRouteAsync), context.Request.Id);
-                    await asyncEventHandler.BeforeCommandRouteAsync(context.Request);
+                    await asyncEventHandler.BeforeCommandRouteAsync(context.Request).ConfigureAwait(false);
                 }
 
                 // Ensure we have the license extracted before routing
-                License license = await licenseExtractor.GetLicenseAsync() ?? throw new TerminalException(TerminalErrors.InvalidLicense, "Failed to extract a valid license. Please configure the hosted service correctly.");               
+                License license = await licenseExtractor.GetLicenseAsync().ConfigureAwait(false) ?? throw new TerminalException(TerminalErrors.InvalidLicense, "Failed to extract a valid license. Please configure the hosted service correctly.");
                 if (license.Failed != null)
                 {
                     throw new TerminalException(license.Failed);
@@ -77,11 +74,11 @@ namespace OneImlx.Terminal.Commands
                 logger.LogDebug("Get license. id={0} tenant={1} plan={2}", license.Claims.Id, license.Claims.TenantId, license.Plan);
 
                 // Parse the command
-                await commandParser.ParseCommandAsync(context);
+                await commandParser.ParseCommandAsync(context).ConfigureAwait(false);
                 parsedCommand = context.ParsedCommand;
 
                 // Handle the command
-                await commandHandler.HandleCommandAsync(context);
+                await commandHandler.HandleCommandAsync(context).ConfigureAwait(false);
 
                 // Ensure we have result.
                 result = context.EnsureResult();
@@ -92,7 +89,7 @@ namespace OneImlx.Terminal.Commands
                 if (asyncEventHandler != null)
                 {
                     logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.AfterCommandRouteAsync), context.Request.Id);
-                    await asyncEventHandler.AfterCommandRouteAsync(context.Request, parsedCommand?.Command, result);
+                    await asyncEventHandler.AfterCommandRouteAsync(context.Request, parsedCommand?.Command, result).ConfigureAwait(false);
                 }
 
                 logger.LogDebug("End command router. request={0}", context.Request.Id);
