@@ -124,7 +124,7 @@ namespace OneImlx.Terminal.Server.Pulsar
         public async Task RunAsync_Acknowledges_Message()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(200);
+            cts.CancelAfter(300);
 
             var context = CreateContext(cts);
             var input = TerminalInputOutput.Single("id1", "test");

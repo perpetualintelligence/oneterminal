@@ -7,6 +7,7 @@ using OneImlx.Terminal.Server;
 using OneImlx.Terminal.Server.Extensions;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
+using Serilog;
 using System.Net;
 using System.Text;
 
@@ -18,6 +19,11 @@ namespace OneImlx.Terminal.Apps.TestApiServer
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Logging configuration
+            builder.Logging.ClearProviders();
+            var loggerConfig = new LoggerConfiguration()
+                .MinimumLevel.Error();
+            Log.Logger = loggerConfig.CreateLogger();
 
             // Configure Terminal Framework
             builder.Services.AddHostedService<TestApiServerHostedService>();

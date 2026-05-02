@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 namespace OneImlx.Terminal.Shared
 {
@@ -84,5 +81,10 @@ namespace OneImlx.Terminal.Shared
         /// The validation certificate thumbprint.
         /// </summary>
         public const string ValidationThumbprint = "4F8B2E863986461B5FA7F32FD1E8C9E34D914666";
+
+        /// <summary>
+        /// The unknown identifier used for unknown values.
+        /// </summary>
+        public const string Unknown = "$unknown$";
     }
 }
