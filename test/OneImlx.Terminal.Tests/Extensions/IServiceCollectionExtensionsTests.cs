@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -85,6 +82,7 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ITerminalCommandStore>().Should().BeOfType<TerminalInMemoryCommandStore>();
             provider.GetService<ITerminalTextHandler>().Should().BeOfType<TerminalTextHandler>();
             provider.GetService<ITerminalExceptionHandler>().Should().BeOfType<TerminalConsoleExceptionHandler>();
+            provider.GetService<ITerminalBytesParser>().Should().BeOfType<TerminalBytesParser>();
 
             // Command Router
             provider.GetService<ICommandRouter>().Should().BeOfType<CommandRouter>();
@@ -135,6 +133,7 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ITerminalCommandStore>().Should().BeOfType<TerminalInMemoryCommandStore>();
             provider.GetService<ITerminalTextHandler>().Should().BeOfType<TerminalTextHandler>();
             provider.GetService<ITerminalExceptionHandler>().Should().BeOfType<TerminalLoggerExceptionHandler>();
+            provider.GetService<ITerminalBytesParser>().Should().BeOfType<TerminalBytesParser>();
 
             provider.GetService<ITerminalCommandStore>().Should().NotBeNull();
             provider.GetService<ITerminalTextHandler>().Should().NotBeNull();

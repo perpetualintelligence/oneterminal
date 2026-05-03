@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,6 +40,17 @@ namespace OneImlx.Terminal.Extensions
             }
 
             terminalBuilder = serviceDescriptors.CreateTerminalBuilder(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode));
+        }
+
+        [Fact]
+        public void AddBytesParserShouldCorrectlyInitiaize()
+        {
+            terminalBuilder.AddBytesParser<TerminalBytesParser>();
+
+            var arg = terminalBuilder.Services.FirstOrDefault(e => e.ServiceType.Equals(typeof(ITerminalBytesParser)));
+            arg.Should().NotBeNull();
+            arg.Lifetime.Should().Be(ServiceLifetime.Singleton);
+            arg.ImplementationType.Should().Be<TerminalBytesParser>();
         }
 
         [Fact]

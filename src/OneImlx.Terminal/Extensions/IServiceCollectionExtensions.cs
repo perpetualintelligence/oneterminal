@@ -1,11 +1,7 @@
-/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OneImlx.Terminal.Commands;
@@ -16,6 +12,7 @@ using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Stores;
+using System;
 
 namespace OneImlx.Terminal.Extensions
 {
@@ -183,12 +180,13 @@ namespace OneImlx.Terminal.Extensions
             }
 
             return services.AddTerminal<TStore>(textHandler, setupAction)
-                   .AddCommandRouter<CommandRouter, CommandHandler, CommandResolver>()
-                   .AddCommandParser<CommandParser, TerminalRequestQueueParser>()
-                   .AddOptionChecker<DataTypeMapper<Option>, OptionChecker>()
-                   .AddArgumentChecker<DataTypeMapper<Argument>, ArgumentChecker>()
-                   .AddExceptionHandler<TException>()
-                   .AddHelpProvider<THelp>();
+                    .AddBytesParser<TerminalBytesParser>()
+                    .AddCommandRouter<CommandRouter, CommandHandler, CommandResolver>()
+                    .AddCommandParser<CommandParser, TerminalRequestQueueParser>()
+                    .AddOptionChecker<DataTypeMapper<Option>, OptionChecker>()
+                    .AddArgumentChecker<DataTypeMapper<Argument>, ArgumentChecker>()
+                    .AddExceptionHandler<TException>()
+                    .AddHelpProvider<THelp>();
         }
 
         /// <summary>

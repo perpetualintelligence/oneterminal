@@ -1,15 +1,7 @@
-/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -20,13 +12,18 @@ using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Dynamics;
 using OneImlx.Terminal.Events;
 using OneImlx.Terminal.Hosting;
-using OneImlx.Terminal.Dynamics;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
-using OneImlx.Terminal.Stores;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Stores;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
 
 namespace OneImlx.Terminal.Extensions
 {
@@ -35,6 +32,18 @@ namespace OneImlx.Terminal.Extensions
     /// </summary>
     public static class ITerminalBuilderExtensions
     {
+        /// <summary>
+        /// Adds the <see cref="ITerminalBytesParser"/> to the service collection.
+        /// </summary>
+        /// <typeparam name="TBytesParser"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ITerminalBuilder AddBytesParser<TBytesParser>(this ITerminalBuilder builder) where TBytesParser : class, ITerminalBytesParser
+        {
+            builder.Services.AddSingleton<ITerminalBytesParser, TBytesParser>();
+            return builder;
+        }
+
         /// <summary>
         /// Adds the <see cref="IDataTypeMapper{TValue}"/> and <see cref="IArgumentChecker"/> to the service collection.
         /// </summary>
