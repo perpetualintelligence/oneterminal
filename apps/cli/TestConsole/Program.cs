@@ -48,7 +48,7 @@ namespace OneImlx.Terminal.Apps.Test
 
             // NOTE: Specify your demo or commercial license file. Specify your application id.
             TerminalTextHandler textHandler = new(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
-            ITerminalBuilder terminalBuilder = collection.AddTerminalConsole<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(textHandler,
+            ITerminalBuilder terminalBuilder = collection.AddTerminalConsole<TerminalInMemoryCommandStore>(textHandler,
                 options =>
                 {
                     options.Id = TerminalIdentifiers.TestApplicationId;

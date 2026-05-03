@@ -1,18 +1,10 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FluentAssertions;
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
@@ -23,6 +15,11 @@ using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Stores;
+using System;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OneImlx.Terminal.Hosting
@@ -158,7 +155,7 @@ namespace OneImlx.Terminal.Hosting
             hostBuilder = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddTerminal<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode))
+                services.AddTerminalConsole<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode), options => { })
                     .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.SubCommand, CommandFlags.None)
                         .DefineOption("id1", nameof(Int32), "test opt1", OptionFlags.None, "alias_id1").Add()
                     .Checker<MockCommandChecker>()
@@ -205,7 +202,7 @@ namespace OneImlx.Terminal.Hosting
             hostBuilder = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddTerminal<TerminalInMemoryCommandStore>(textHandler)
+                services.AddTerminalConsole<TerminalInMemoryCommandStore>(textHandler, options => { })
                     .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.SubCommand, CommandFlags.None)
                         .Checker<MockCommandChecker>()
                         .Add()

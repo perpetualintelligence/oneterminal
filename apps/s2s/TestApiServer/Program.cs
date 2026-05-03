@@ -29,7 +29,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer
             builder.Services.AddHostedService<TestApiServerHostedService>();
             builder.Services.AddScoped<TerminalHttpMapService>();
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.UTF8);
-            ITerminalBuilder terminalBuilder = builder.Services.AddTerminalConsole<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+            ITerminalBuilder terminalBuilder = builder.Services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII),
                 options =>
                 {
