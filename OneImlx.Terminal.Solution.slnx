@@ -4,7 +4,7 @@
     <Project Path="apps/auth/TestMsal/TestMsal.csproj" />
   </Folder>
   <Folder Name="/apps/cli/">
-    <Project Path="apps/cli/TestConsole/Test.csproj" />
+    <Project Path="apps/cli/TestConsole/TestConsole.csproj" />
   </Folder>
   <Folder Name="/apps/s2s/">
     <File Path="apps/s2s/README.md" />
