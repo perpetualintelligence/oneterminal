@@ -1,5 +1,11 @@
 <Solution>
   <Folder Name="/apps/" />
+  <Folder Name="/apps/auth/">
+    <Project Path="apps/auth/TestMsal/TestMsal.csproj" />
+  </Folder>
+  <Folder Name="/apps/cli/">
+    <Project Path="apps/cli/TestConsole/Test.csproj" />
+  </Folder>
   <Folder Name="/apps/s2s/">
     <File Path="apps/s2s/README.md" />
     <Project Path="apps/s2s/TestApiServer/TestApiServer.csproj" />
