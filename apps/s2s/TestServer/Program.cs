@@ -261,7 +261,7 @@ namespace OneImlx.Terminal.Apps.TestServer
             host = app;
 
             // Map the HTTP service to the terminal commands endpoint
-            app.MapTerminalHttp();
+            app.MapTerminalHttp("/oneimlx/terminal/httprouter");
 
             await app.StartAsync();
             await StartRouterAsync();

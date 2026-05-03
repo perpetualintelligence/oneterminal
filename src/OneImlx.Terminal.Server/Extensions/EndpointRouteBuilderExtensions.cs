@@ -17,15 +17,14 @@ namespace OneImlx.Terminal.Server.Extensions
         /// Maps the terminal HTTP commands endpoint to handle incoming HTTP requests for the terminal server.
         /// </summary>
         /// <param name="endpoints">The <see cref="IEndpointRouteBuilder"/> to configure routing for terminal commands.</param>
+        /// <param name="pattern">The route pattern.</param>
         /// <returns>The <see cref="IEndpointConventionBuilder"/> for the mapped endpoint.</returns>
         /// <remarks>
-        /// This method registers a POST endpoint at <c>/oneimlx/terminal/httprouter</c> that integrates with the
-        /// <see cref="TerminalHttpMapService"/> to handle command requests.
+        /// This method registers a POST endpoint using <see cref="Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapPost(IEndpointRouteBuilder, string, Microsoft.AspNetCore.Http.RequestDelegate)"/> and invokes <see cref="TerminalHttpMapService"/> to handle command requests.
         /// </remarks>
-        public static IEndpointConventionBuilder MapTerminalHttp(this IEndpointRouteBuilder endpoints)
+        public static IEndpointConventionBuilder MapTerminalHttp(this IEndpointRouteBuilder endpoints, string pattern)
         {
-            // Batch
-            return endpoints.MapPost("/oneimlx/terminal/httprouter", static async context =>
+            return endpoints.MapPost(pattern, static async context =>
             {
                 // Resolve TerminalHttpMapService from DI and process the command
                 var terminalHttpMapService = context.RequestServices.GetRequiredService<TerminalHttpMapService>();

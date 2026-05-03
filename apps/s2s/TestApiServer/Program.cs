@@ -73,8 +73,8 @@ namespace OneImlx.Terminal.Apps.TestApiServer
                 });
             });
 
-            // Map Terminal HTTP Endpoint - POST /oneimlx/terminal/httprouter
-            app.MapTerminalHttp();
+            // Map Terminal HTTP Endpoint
+            app.MapTerminalHttp("/oneimlx/terminal/httprouter");
 
             // Initialize Terminal HTTP Router
             var endpoint = new IPEndPoint(IPAddress.Loopback, 0);

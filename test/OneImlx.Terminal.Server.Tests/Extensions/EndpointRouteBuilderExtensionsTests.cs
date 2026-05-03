@@ -1,9 +1,6 @@
-/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
@@ -45,7 +42,7 @@ namespace OneImlx.Terminal.Server
                 {
                     // Use routing and map the terminal HTTP endpoint
                     app.UseRouting();
-                    app.UseEndpoints(endpoints => endpoints.MapTerminalHttp());
+                    app.UseEndpoints(endpoints => endpoints.MapTerminalHttp("/oneimlx/terminal/httprouter"));
                 });
 
             var server = new TestServer(builder);
@@ -60,12 +57,12 @@ namespace OneImlx.Terminal.Server
                                  .Callback(() => executeCalled = true);
 
             // Act: Post to /oneimlx/terminal/httprouter
-            var response = await client.PostAsJsonAsync("/oneimlx/terminal/httprouter", terminalInput);
+            var response = await client.PostAsJsonAsync("/oneimlx/terminal/httprouter", terminalInput, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert: Ensure TerminalHttpMapService's RouteCommandAsync method is invoked correctly
             response.EnsureSuccessStatusCode();
             executeCalled.Should().BeTrue();
-            TerminalInputOutput? outputFromResponse = await response.Content.ReadFromJsonAsync<TerminalInputOutput>();
+            TerminalInputOutput? outputFromResponse = await response.Content.ReadFromJsonAsync<TerminalInputOutput>(cancellationToken: TestContext.Current.CancellationToken);
             outputFromResponse.Should().NotBeNull();
             outputFromResponse.Should().NotBeSameAs(terminalInput);
 
