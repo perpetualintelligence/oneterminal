@@ -131,7 +131,7 @@ namespace OneImlx.Terminal.Server.Pulsar
             return ValueTask.FromResult(state);
         }
 
-        public Uri ServiceUrl => new Uri("pulsar://localhost:6650");
+        public Uri ServiceUrl => new("pulsar://localhost:6650");
 
         public string SubscriptionName => "test-subscription";
 
