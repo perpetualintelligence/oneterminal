@@ -75,9 +75,8 @@ namespace OneImlx.Terminal.Server
         }
 
         // Private fields to hold injected dependencies and state information.
-        private readonly ILogger<TerminalHttpMapService> logger;
-
         private readonly ITerminalProcessor terminalProcessor;
+        private readonly ILogger<TerminalHttpMapService> logger;
         private readonly ITerminalRouter<TerminalHttpRouterContext> terminalRouter;
     }
 }

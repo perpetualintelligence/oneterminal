@@ -143,22 +143,6 @@ namespace OneImlx.Terminal.Extensions
         /// Adds all the <see cref="IDeclarativeRunner"/> implementations to the service collection.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <param name="assemblyType">The type whose assembly to inspect and read all the declarative targets.</param>
-        /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
-        /// <remarks>
-        /// The <see cref="AddDeclarativeAssembly(ITerminalBuilder, Type)"/> reads the target assembly and inspects all
-        /// the declarative targets using reflection. Reflection may have a performance bottleneck. For more optimized
-        /// and direct declarative target inspection, use <see cref="AddDeclarativeRunner{TDeclarativeRunner}(ITerminalBuilder)"/>.
-        /// </remarks>
-        public static ITerminalBuilder AddDeclarativeAssembly(this ITerminalBuilder builder, Type assemblyType)
-        {
-            return AddDeclarativeAssembly(builder, assemblyType.Assembly);
-        }
-
-        /// <summary>
-        /// Adds all the <see cref="IDeclarativeRunner"/> implementations to the service collection.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
         /// <param name="assembly">The assembly to inspect.</param>
         /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
         /// <remarks>
@@ -186,13 +170,13 @@ namespace OneImlx.Terminal.Extensions
         /// <typeparam name="TType">The type whose assembly to inspect and read all the declarative targets.</typeparam>
         /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
         /// <remarks>
-        /// The <see cref="AddDeclarativeAssembly(ITerminalBuilder, Type)"/> reads the target assembly and inspects all
+        /// The <see cref="AddDeclarativeAssembly{TType}(ITerminalBuilder)"/> reads the target assembly and inspects all
         /// the declarative targets using reflection. Reflection may have a performance bottleneck. For more optimized
         /// and direct declarative target inspection, use <see cref="AddDeclarativeRunner{TDeclarativeRunner}(ITerminalBuilder)"/>.
         /// </remarks>
         public static ITerminalBuilder AddDeclarativeAssembly<TType>(this ITerminalBuilder builder)
         {
-            return AddDeclarativeAssembly(builder, typeof(TType));
+            return AddDeclarativeAssembly(builder, typeof(TType).Assembly);
         }
 
         /// <summary>

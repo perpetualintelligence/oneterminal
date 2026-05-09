@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -366,7 +363,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             Type mockType = typeBuilder.CreateType();
 
             // No target will be added as it does not implements IDeclarativeTarget
-            terminalBuilder.AddDeclarativeAssembly(mockType);
+            terminalBuilder.AddDeclarativeAssembly(mockType.Assembly);
             ServiceProvider serviceProvider = terminalBuilder.Services.BuildServiceProvider();
             var cmdDescs = serviceProvider.GetServices<CommandDescriptor>();
             cmdDescs.Should().BeEmpty();
@@ -386,7 +383,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             Type mockType = typeBuilder.CreateType();
 
             // This means that we tried adding the target as it implements IDeclarativeTarget
-            Action act = () => terminalBuilder.AddDeclarativeAssembly(mockType);
+            Action act = () => terminalBuilder.AddDeclarativeAssembly(mockType.Assembly);
             act.Should().Throw<TerminalException>().WithMessage("The declarative target does not define command descriptor.");
         }
 

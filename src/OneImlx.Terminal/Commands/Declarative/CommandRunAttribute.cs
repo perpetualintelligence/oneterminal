@@ -1,4 +1,4 @@
-﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
@@ -7,10 +7,10 @@ using System;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     /// <summary>
-    /// Declares a <see cref="CommandDescriptor"/> for a command.
+    /// Declares a  runner method in a <see cref="CommandType.GroupCommand"/> command.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class CommandDescriptorAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public sealed class CommandRunAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance.
@@ -20,7 +20,7 @@ namespace OneImlx.Terminal.Commands.Declarative
         /// <param name="description">The command description.</param>
         /// <param name="commandType">The command type.</param>
         /// <param name="commandFlags">The command flags.</param>
-        public CommandDescriptorAttribute(string id, string name, string description, CommandType commandType, CommandFlags commandFlags)
+        public CommandRunAttribute(string id, string name, string description, CommandType commandType, CommandFlags commandFlags)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -42,7 +42,6 @@ namespace OneImlx.Terminal.Commands.Declarative
             Description = description;
             CommandType = commandType;
             CommandFlags = commandFlags;
-
         }
 
         /// <summary>
@@ -63,13 +62,11 @@ namespace OneImlx.Terminal.Commands.Declarative
         /// <summary>
         /// The command id.
         /// </summary>
-        /// <remarks>The command id is unique across all commands.</remarks>
         public string Id { get; }
 
         /// <summary>
         /// The command name.
         /// </summary>
-        /// <remarks>The command name is unique within a grouped command.</remarks>
         public string Name { get; }
     }
 }
