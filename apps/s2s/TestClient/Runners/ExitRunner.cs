@@ -10,7 +10,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// <summary>
     /// Runs native OS commands.
     /// </summary>
-    [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandType.NativeCommand, CommandFlags.None)]
+    [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandType.Native, CommandFlags.None)]
     public class ExitRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>

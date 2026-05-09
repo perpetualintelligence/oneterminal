@@ -16,7 +16,7 @@ using OneImlx.Terminal.Shared;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("http", "HTTP test", "Send HTTP commands to the terminal server.", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("http", "HTTP test", "Send HTTP commands to the terminal server.", CommandType.Leaf, CommandFlags.None)]
     public class SendHttpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendHttpRunner(IConfiguration configuration, ITerminalConsole terminalConsole, IHttpClientFactory httpClientFactory)

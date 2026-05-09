@@ -9,7 +9,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// <summary>
     /// Clears the console.
     /// </summary>
-    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandType.NativeCommand, CommandFlags.None)]
+    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandType.Native, CommandFlags.None)]
     public class ClearRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>

@@ -179,7 +179,7 @@ namespace OneImlx.Terminal.Apps.Test
         private static void RegisterCommands(ITerminalBuilder terminalBuilder)
         {
             // Root Command
-            terminalBuilder.DefineCommand<TestRunner>("test", "Test command", "Test Description", Commands.CommandType.RootCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<TestRunner>("test", "Test command", "Test Description", Commands.CommandType.Root, Commands.CommandFlags.None)
                            .DefineArgument(1, "arg1", nameof(String), "The first argument", Commands.ArgumentFlags.None)
                                .Add()
                                .DefineArgument(2, "arg2", nameof(Int32), "The second argument", Commands.ArgumentFlags.None)
@@ -189,39 +189,39 @@ namespace OneImlx.Terminal.Apps.Test
                            .Add();
 
             // Grp1 Command
-            terminalBuilder.DefineCommand<Grp1Runner>("grp1", "Test Group1", "Test Group1 Description", Commands.CommandType.GroupCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<Grp1Runner>("grp1", "Test Group1", "Test Group1 Description", Commands.CommandType.CompositeGroup, Commands.CommandFlags.None)
                            .Owners(new Commands.OwnerIdCollection("test"))
                            .Add();
 
             // Cmd1 Command
-            terminalBuilder.DefineCommand<Cmd1Runner>("cmd1", "Test Command1", "Test Command2 Description", Commands.CommandType.SubCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<Cmd1Runner>("cmd1", "Test Command1", "Test Command2 Description", Commands.CommandType.Leaf, Commands.CommandFlags.None)
                            .Owners(new Commands.OwnerIdCollection("grp1"))
                            .Add();
 
             // Grp2 Command
-            terminalBuilder.DefineCommand<Grp2Runner>("grp2", "Test Group2", "Test Group1 Description", Commands.CommandType.GroupCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<Grp2Runner>("grp2", "Test Group2", "Test Group1 Description", Commands.CommandType.CompositeGroup, Commands.CommandFlags.None)
                            .Owners(new Commands.OwnerIdCollection("grp1"))
                            .Add();
 
             // Cmd2 Command
-            terminalBuilder.DefineCommand<Cmd2Runner>("cmd2", "Test Command2", "Test Command2 Description", Commands.CommandType.SubCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<Cmd2Runner>("cmd2", "Test Command2", "Test Command2 Description", Commands.CommandType.Leaf, Commands.CommandFlags.None)
                            .Owners(new Commands.OwnerIdCollection("grp2"))
                            .Add();
 
             // Help Command
-            terminalBuilder.DefineCommand<HelpRunner>("help", "Help Command", "Displays all supported commands.", Commands.CommandType.NativeCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<HelpRunner>("help", "Help Command", "Displays all supported commands.", Commands.CommandType.Native, Commands.CommandFlags.None)
                            .Add();
 
             // Exit Command
-            terminalBuilder.DefineCommand<ExitRunner>("exit", "Exit Command", "Exits the terminal.", Commands.CommandType.NativeCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<ExitRunner>("exit", "Exit Command", "Exits the terminal.", Commands.CommandType.Native, Commands.CommandFlags.None)
                            .Add();
 
             // Clear Command
-            terminalBuilder.DefineCommand<ClearRunner>("clear", "Clear Command", "Clears the terminal.", Commands.CommandType.NativeCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<ClearRunner>("clear", "Clear Command", "Clears the terminal.", Commands.CommandType.Native, Commands.CommandFlags.None)
                            .Add();
 
             // Run Command
-            terminalBuilder.DefineCommand<RunRunner>("run", "Run Command", "Runs a native OS command.", Commands.CommandType.NativeCommand, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<RunRunner>("run", "Run Command", "Runs a native OS command.", Commands.CommandType.Native, Commands.CommandFlags.None)
                            .DefineArgument(1, "cmd", nameof(String), "The command to run", Commands.ArgumentFlags.None)
                                .Add()
                            .Add();

@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 namespace OneImlx.Terminal.Commands
 {
@@ -13,24 +10,28 @@ namespace OneImlx.Terminal.Commands
     public enum CommandType
     {
         /// <summary>
-        /// The command represents the root command.
+        /// The command represents the root of the command hierarchy.
         /// </summary>
-        RootCommand = 1,
+        Root = 1,
 
         /// <summary>
-        /// The command represents a group of sub-commands within a root.
+        /// The command represents a composite group that delegates to individual leaf sub-commands.
         /// </summary>
-        GroupCommand = 2,
+        CompositeGroup = 2,
 
         /// <summary>
-        /// The command represents a sub-command within a group.
+        /// The command represents an integrated group that self-contains all sub-command logic.
         /// </summary>
-        SubCommand = 3,
+        IntegratedGroup = 3,
 
         /// <summary>
-        /// The command represents a native command to the terminal. For example <c>cls</c> that clears the terminal, or
-        /// <c>run</c> command that executes a native OS command.
+        /// The command represents a leaf sub-command that can belong to a group or root.
         /// </summary>
-        NativeCommand = 4,
+        Leaf = 4,
+
+        /// <summary>
+        /// The command represents a native terminal command that does not follow the hierarchy such as <c>cls</c> for clearing the terminal or <c>run</c> for executing OS commands.
+        /// </summary>
+        Native = 5,
     }
 }

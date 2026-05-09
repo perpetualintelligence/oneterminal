@@ -469,7 +469,7 @@ namespace OneImlx.Terminal.Extensions
             {
                 commandBuilder.Owners(ownersAttr.Owners);
             }
-            else if (cmdAttr.CommandType == CommandType.GroupCommand || cmdAttr.CommandType == CommandType.SubCommand)
+            else if (cmdAttr.CommandType == CommandType.CompositeGroup || cmdAttr.CommandType == CommandType.Leaf)
             {
                 throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command owner.");
             }

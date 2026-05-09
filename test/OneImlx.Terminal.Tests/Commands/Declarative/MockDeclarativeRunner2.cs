@@ -12,7 +12,7 @@ using System.ComponentModel.DataAnnotations;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("oid1, oid2")]
-    [CommandDescriptor("id2", "name2", "description", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("id2", "name2", "description", CommandType.Leaf, CommandFlags.None)]
     [CommandChecker(typeof(MockCommandChecker))]
     [OptionDescriptor("opt1", nameof(String), "test arg desc1", OptionFlags.None)]
     [OptionDescriptor("opt2", nameof(String), "test arg desc2", OptionFlags.None)]

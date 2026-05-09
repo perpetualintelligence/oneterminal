@@ -72,8 +72,8 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void AddCommandDescriptorMultipleTimeAdds()
         {
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Add();
 
             var sp = terminalBuilder.Services.BuildServiceProvider();
             var cmds = sp.GetServices<CommandDescriptor>();
@@ -88,7 +88,7 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void AddCommandDescriptorShouldCorrectlyInitialize()
         {
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Add();
 
             ServiceDescriptor? cmdDescriptor = terminalBuilder.Services.FirstOrDefault(static e => e.ServiceType.Equals(typeof(CommandDescriptor)));
             cmdDescriptor.Should().NotBeNull();
@@ -99,7 +99,7 @@ namespace OneImlx.Terminal.Extensions
             impInstance.Name.Should().Be("name1");
             impInstance.Runner.Should().Be(typeof(MockCommandRunner));
             impInstance.Checker.Should().Be(typeof(MockCommandChecker));
-            impInstance.Type.Should().Be(CommandType.SubCommand);
+            impInstance.Type.Should().Be(CommandType.Leaf);
 
             var cmdRunner = terminalBuilder.Services.FirstOrDefault(static e => e.ServiceType.Equals(typeof(MockCommandRunner)));
             cmdRunner.Should().BeNull();
@@ -111,36 +111,36 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void AddCommandDescriptorWithGroupAndNoRootShouldNotError()
         {
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.GroupCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.CompositeGroup, CommandFlags.None).Checker<MockCommandChecker>().Add();
 
             IServiceProvider serviceProvider = terminalBuilder.Services.BuildServiceProvider();
             CommandDescriptor cmd = serviceProvider.GetRequiredService<CommandDescriptor>();
 
             cmd.Id.Should().Be("id1");
-            CommandType.GroupCommand.Should().Be(CommandType.GroupCommand);
+            CommandType.CompositeGroup.Should().Be(CommandType.CompositeGroup);
         }
 
         [Fact]
         public void AddCommandDescriptorWithSpecialAnnotationsFlagsShouldNotError()
         {
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.GroupCommand, CommandFlags.Authorize | CommandFlags.Obsolete).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.CompositeGroup, CommandFlags.Authorize | CommandFlags.Obsolete).Checker<MockCommandChecker>().Add();
 
             IServiceProvider serviceProvider = terminalBuilder.Services.BuildServiceProvider();
             CommandDescriptor cmd = serviceProvider.GetRequiredService<CommandDescriptor>();
 
-            cmd.Type.Should().Be(CommandType.GroupCommand);
+            cmd.Type.Should().Be(CommandType.CompositeGroup);
             cmd.Flags.Should().Be(CommandFlags.Authorize | CommandFlags.Obsolete);
         }
 
         [Fact]
         public void AddCommandDescriptorWithSpecialAnnotationsShouldNotError()
         {
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.RootCommand, CommandFlags.Authorize).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Root, CommandFlags.Authorize).Checker<MockCommandChecker>().Add();
 
             IServiceProvider serviceProvider = terminalBuilder.Services.BuildServiceProvider();
             CommandDescriptor cmd = serviceProvider.GetRequiredService<CommandDescriptor>();
 
-            cmd.Type.Should().Be(CommandType.RootCommand);
+            cmd.Type.Should().Be(CommandType.Root);
             cmd.Flags.Should().Be(CommandFlags.Authorize);
         }
 
@@ -163,7 +163,7 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void AddCommandShouldCorrectlyInitialize()
         {
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "description1", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "description1", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>();
 
             // AddCommand does not add ICommandBuilder to service collection.
             var servicesCmdBuilder = terminalBuilder.Services.FirstOrDefault(static e => e.ServiceType.Equals(typeof(ICommandBuilder)));
@@ -185,14 +185,14 @@ namespace OneImlx.Terminal.Extensions
             instance.Description.Should().Be("description1");
             instance.Checker.Should().Be(typeof(MockCommandChecker));
             instance.Runner.Should().Be(typeof(MockCommandRunner));
-            instance.Type.Should().Be(CommandType.SubCommand);
+            instance.Type.Should().Be(CommandType.Leaf);
             instance.Flags.Should().Be(CommandFlags.None);
         }
 
         [Fact]
         public void AddCommandSpecialAnnotationsShouldCorrectlyInitialize()
         {
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "description1", CommandType.RootCommand, CommandFlags.Authorize).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "description1", CommandType.Root, CommandFlags.Authorize).Checker<MockCommandChecker>();
 
             // AddCommand does not add ICommandBuilder to service collection.
             var servicesCmdBuilder = terminalBuilder.Services.FirstOrDefault(static e => e.ServiceType.Equals(typeof(ICommandBuilder)));
@@ -214,7 +214,7 @@ namespace OneImlx.Terminal.Extensions
             instance.Description.Should().Be("description1");
             instance.Checker.Should().Be(typeof(MockCommandChecker));
             instance.Runner.Should().Be(typeof(MockCommandRunner));
-            instance.Type.Should().Be(CommandType.RootCommand);
+            instance.Type.Should().Be(CommandType.Root);
             instance.Flags.Should().Be(CommandFlags.Authorize);
         }
 
@@ -396,8 +396,8 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void DefineCommand_MultipleTimes_DoesNotAdds_Checker_To_Service_Collection()
         {
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Add();
 
             var sp = terminalBuilder.Services.BuildServiceProvider();
             var cmds = sp.GetServices<MockCommandChecker>();
@@ -407,8 +407,8 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void DefineCommand_MultipleTimes_DoesNotAdds_Runner_To_Service_Collection()
         {
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
-            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.SubCommand, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Add();
+            terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Add();
 
             var sp = terminalBuilder.Services.BuildServiceProvider();
             var cmds = sp.GetServices<MockCommandRunner>();
