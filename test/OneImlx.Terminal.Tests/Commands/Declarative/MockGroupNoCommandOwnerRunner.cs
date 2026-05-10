@@ -11,7 +11,7 @@ using OneImlx.Terminal.Mocks;
 
 namespace OneImlx.Terminal.Commands.Declarative
 {
-    [CommandDescriptor("id1_grp", "name", "description", CommandType.CompositeGroup, CommandFlags.None)]
+    [CommandDescriptor("id1_grp", "name", "description", CommandType.IsolatedGroup, CommandFlags.None)]
     [CommandChecker(typeof(MockCommandChecker))]
     [CommandTags("tag1", "tag2", "tag3")]
     [CommandCustomProperty("key1", "value1")]

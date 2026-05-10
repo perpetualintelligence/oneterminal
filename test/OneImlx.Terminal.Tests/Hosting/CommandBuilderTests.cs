@@ -39,7 +39,7 @@ namespace OneImlx.Terminal.Hosting
             Action act = () => commandBuilder.Add();
             act.Should().Throw<TerminalException>()
                         .WithErrorCode("invalid_command")
-                        .WithErrorDescription("The command cannot have an owner. command_type=NativeCommand command=id1");
+                        .WithErrorDescription("The command cannot have an owner. command_type=Native command=id1");
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace OneImlx.Terminal.Hosting
             Action act = () => commandBuilder.Add();
             act.Should().Throw<TerminalException>()
                         .WithErrorCode("invalid_command")
-                        .WithErrorDescription("The command cannot have an owner. command_type=RootCommand command=id1");
+                        .WithErrorDescription("The command cannot have an owner. command_type=Root command=id1");
         }
 
         [Fact]

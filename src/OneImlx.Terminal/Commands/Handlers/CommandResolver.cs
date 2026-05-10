@@ -1,23 +1,20 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Shared;
+using System;
 
 namespace OneImlx.Terminal.Commands.Handlers
 {
     /// <summary>
     /// The default <see cref="ICommandResolver"/> using
     /// <see cref="ActivatorUtilities.CreateInstance(IServiceProvider, Type, object[])"/>, managing the resolution of
-    /// command checkers and runners.
+    /// command checkers, runners, and runner methods.
     /// </summary>
     public sealed class CommandResolver : ICommandResolver
     {
@@ -78,6 +75,29 @@ namespace OneImlx.Terminal.Commands.Handlers
 
             logger.LogDebug("Resolved runner. type={0}", runnerDelegate.GetType().Name);
             return runnerDelegate;
+        }
+
+        /// <summary>
+        /// Resolves the command runner method for a given command descriptor.
+        /// </summary>
+        /// <param name="commandDescriptor">The command descriptor.</param>
+        /// <returns>The resolved command runner method.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public ICommandRunnerMethod ResolveCommandRunnerMethod(CommandDescriptor commandDescriptor)
+        {
+            if (commandDescriptor.Type != CommandType.Leaf)
+            {
+                throw new TerminalException(TerminalErrors.ServerError, "The command runner method is only supported for leaf commands. command={0} type={1}", commandDescriptor.Id, commandDescriptor.Type);
+            }
+
+            var commandRunnerMethods = serviceDescriptors.GetRequiredService<CommandRunnerMethods>();
+            bool found = commandRunnerMethods.TryGetValue(commandDescriptor.Id, out CommandRunnerMethod? runnerMethod);
+            if (!found)
+            {
+                throw new TerminalException(TerminalErrors.ServerError, "The command runner method is not configured. command={0}", commandDescriptor.Id);
+            }
+
+            return runnerMethod;
         }
 
         private readonly ILogger<CommandResolver> logger;

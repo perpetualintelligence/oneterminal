@@ -189,7 +189,7 @@ namespace OneImlx.Terminal.Apps.Test
                            .Add();
 
             // Grp1 Command
-            terminalBuilder.DefineCommand<Grp1Runner>("grp1", "Test Group1", "Test Group1 Description", Commands.CommandType.CompositeGroup, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<Grp1Runner>("grp1", "Test Group1", "Test Group1 Description", Commands.CommandType.IsolatedGroup, Commands.CommandFlags.None)
                            .Owners(new Commands.OwnerIdCollection("test"))
                            .Add();
 
@@ -199,7 +199,7 @@ namespace OneImlx.Terminal.Apps.Test
                            .Add();
 
             // Grp2 Command
-            terminalBuilder.DefineCommand<Grp2Runner>("grp2", "Test Group2", "Test Group1 Description", Commands.CommandType.CompositeGroup, Commands.CommandFlags.None)
+            terminalBuilder.DefineCommand<Grp2Runner>("grp2", "Test Group2", "Test Group1 Description", Commands.CommandType.IsolatedGroup, Commands.CommandFlags.None)
                            .Owners(new Commands.OwnerIdCollection("grp1"))
                            .Add();
 

@@ -15,22 +15,22 @@ namespace OneImlx.Terminal.Commands
         Root = 1,
 
         /// <summary>
-        /// The command represents a composite group that delegates to individual leaf sub-commands.
+        /// The command represents an isolated group that is independent of its nested groups or individual leaf commands.
         /// </summary>
-        CompositeGroup = 2,
+        IsolatedGroup = 2,
 
         /// <summary>
-        /// The command represents an integrated group that self-contains all sub-command logic.
+        /// The command represents a composite group that self-contains its nested groups or individual leaf commands.
         /// </summary>
-        IntegratedGroup = 3,
+        CompositeGroup = 3,
 
         /// <summary>
-        /// The command represents a leaf sub-command that can belong to a group or root.
+        /// The command represents a leaf command that can belong to a group or root.
         /// </summary>
         Leaf = 4,
 
         /// <summary>
-        /// The command represents a native terminal command that does not follow the hierarchy such as <c>cls</c> for clearing the terminal or <c>run</c> for executing OS commands.
+        /// The command represents a native terminal command that does not follow the command hierarchy such as <c>cls</c> for clearing the terminal or <c>run</c> for executing OS commands.
         /// </summary>
         Native = 5,
     }

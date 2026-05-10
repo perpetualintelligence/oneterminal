@@ -7,7 +7,7 @@ using System;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     /// <summary>
-    /// Declares a  runner method in a <see cref="CommandType.CompositeGroup"/> command.
+    /// Declares a  runner method in a <see cref="CommandType.IsolatedGroup"/> command.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public sealed class CommandRunAttribute : Attribute

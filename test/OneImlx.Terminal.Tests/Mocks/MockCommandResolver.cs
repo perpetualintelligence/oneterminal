@@ -1,9 +1,6 @@
-﻿/*
-    Copyright 2024 (c) Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
@@ -21,13 +18,19 @@ namespace OneImlx.Terminal.Mocks
 
         public bool ResolveRunnerCalled { get; private set; }
 
+        public bool ResolveRunnerMethodCalled { get; private set; }
+
         public ICommandChecker? ReturnedChecker { get; private set; }
 
         public IDelegateCommandRunner? ReturnedRunner { get; private set; }
 
+        public ICommandRunnerMethod? ReturnedRunnerMethod { get; private set; }
+
         public ICommandChecker? ReturnThisChecker { get; set; }
 
         public IDelegateCommandRunner? ReturnThisRunner { get; set; }
+
+        public ICommandRunnerMethod? ReturnThisRunnerMethod { get; set; } = null;
 
         public ICommandChecker ResolveCommandChecker(CommandDescriptor commandDescriptor)
         {
@@ -58,6 +61,22 @@ namespace OneImlx.Terminal.Mocks
             }
 
             return ReturnedRunner;
+        }
+
+        public ICommandRunnerMethod ResolveCommandRunnerMethod(CommandDescriptor commandDescriptor)
+        {
+            ResolveRunnerMethodCalled = true;
+
+            if (ReturnThisRunnerMethod != null)
+            {
+                ReturnedRunnerMethod = ReturnThisRunnerMethod;
+            }
+            else
+            {
+                ReturnedRunnerMethod = new MockCommandRunnerMethodInner();
+            }
+
+            return ReturnedRunnerMethod;
         }
     }
 }
