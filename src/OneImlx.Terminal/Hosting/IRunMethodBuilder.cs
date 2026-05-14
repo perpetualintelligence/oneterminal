@@ -3,14 +3,13 @@
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
 using Microsoft.Extensions.DependencyInjection;
-using OneImlx.Terminal.Commands;
 
 namespace OneImlx.Terminal.Hosting
 {
     /// <summary>
-    /// An abstraction of command builder.
+    /// An abstraction of runner method builder.
     /// </summary>
-    public interface ICommandBuilder
+    public interface IRunMethodBuilder
     {
         /// <summary>
         /// The service collection.
@@ -18,9 +17,9 @@ namespace OneImlx.Terminal.Hosting
         IServiceCollection Services { get; }
 
         /// <summary>
-        /// Build a new <see cref="CommandDescriptor"/> and add it to the service collection.
+        /// Builds a new <see cref="RunMethodBuilder"/> and add it to the service collection.
         /// </summary>
-        /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
-        ITerminalBuilder Add();
+        /// <returns>The configured <see cref="ICommandBuilder"/>.</returns>
+        ICommandBuilder Add();
     }
 }

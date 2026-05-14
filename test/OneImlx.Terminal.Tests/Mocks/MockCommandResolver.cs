@@ -7,6 +7,7 @@ using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
 using OneImlx.Terminal.Commands.Runners;
+using System.Reflection;
 
 namespace OneImlx.Terminal.Mocks
 {
@@ -24,13 +25,13 @@ namespace OneImlx.Terminal.Mocks
 
         public IDelegateCommandRunner? ReturnedRunner { get; private set; }
 
-        public ICommandRunnerMethod? ReturnedRunnerMethod { get; private set; }
+        public RunMethod? ReturnedRunMethod { get; private set; }
 
         public ICommandChecker? ReturnThisChecker { get; set; }
 
         public IDelegateCommandRunner? ReturnThisRunner { get; set; }
 
-        public ICommandRunnerMethod? ReturnThisRunnerMethod { get; set; } = null;
+        public RunMethod? ReturnThisRunMethod { get; set; } = null;
 
         public ICommandChecker ResolveCommandChecker(CommandDescriptor commandDescriptor)
         {
@@ -63,20 +64,21 @@ namespace OneImlx.Terminal.Mocks
             return ReturnedRunner;
         }
 
-        public ICommandRunnerMethod ResolveCommandRunnerMethod(CommandDescriptor commandDescriptor)
+        public RunMethod ResolveCommandRunMethod(CommandDescriptor commandDescriptor)
         {
             ResolveRunnerMethodCalled = true;
 
-            if (ReturnThisRunnerMethod != null)
+            if (ReturnThisRunMethod != null)
             {
-                ReturnedRunnerMethod = ReturnThisRunnerMethod;
+                ReturnedRunMethod = ReturnThisRunMethod;
             }
             else
             {
-                ReturnedRunnerMethod = new MockCommandRunnerMethodInner();
+                MethodInfo methodInfo = typeof(MockCommandRunnerInner).GetMethod(nameof(MockCommandRunnerInner.RunCommandAsync))!;
+                ReturnedRunMethod = new RunMethod(commandDescriptor.Id, methodInfo);
             }
 
-            return ReturnedRunnerMethod;
+            return ReturnedRunMethod;
         }
     }
 }

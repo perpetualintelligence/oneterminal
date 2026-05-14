@@ -1,16 +1,13 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OneImlx.Terminal.Hosting
 {
@@ -88,7 +85,6 @@ namespace OneImlx.Terminal.Hosting
 
             // Add the command descriptor to the terminal builder.
             terminalBuilder.Services.AddSingleton(commandDescriptor);
-
             return terminalBuilder;
         }
 

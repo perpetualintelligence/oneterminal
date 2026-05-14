@@ -392,6 +392,19 @@ namespace OneImlx.Terminal.Extensions
             // Establish command builder Default option not set ?
             ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType, cmdAttr.CommandFlags);
 
+            // Command runner methods
+            if (cmdAttr.CommandType == CommandType.CompositeGroup)
+            {
+                // Runner Methods
+                IEnumerable<MethodInfo> runnerMethodsCollections = declarativeRunner.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                                                                                    .Where(m => m.GetCustomAttribute<CommandDescriptorAttribute>(false) != null);
+                foreach (MethodInfo runnerMethod in runnerMethodsCollections)
+                {
+                    var runnerbuilder = commandBuilder.DefineRunMethod(cmdAttr.Id, runnerMethod);
+                    runnerbuilder.Add();
+                }
+            }
+
             // Arguments Descriptors
             IEnumerable<ArgumentDescriptorAttribute> argAttrs = declarativeRunner.GetCustomAttributes<ArgumentDescriptorAttribute>(false);
             IEnumerable<ArgumentValidationAttribute> argVdls = declarativeRunner.GetCustomAttributes<ArgumentValidationAttribute>(false);

@@ -1,9 +1,6 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +27,11 @@ namespace OneImlx.Terminal.Commands.Handlers
             var services = new ServiceCollection();
             services.AddTransient<ICommandChecker, MockCommandCheckerInner>();
             services.AddTransient<IDelegateCommandRunner, MockCommandRunnerInner>();
+
+            RunMethods runMethods = [];
+            runMethods.Add("test", new RunMethod("test", "test_method1"));
+            runMethods.Add("test2", new RunMethod("test2", "test_method2"));
+            services.AddSingleton<RunMethods>(runMethods);
 
             _serviceProvider = services.BuildServiceProvider();
             _logger = new NullLogger<CommandResolver>();
@@ -122,5 +124,29 @@ namespace OneImlx.Terminal.Commands.Handlers
                .WithErrorDescription("The command runner delegate is not valid. command=invalidTypeRunner runner=MockCommandCheckerInner");
         }
 
+        [Fact]
+        public void NonLeafCommand_ResolveCommandRunMethod_Throws()
+        {
+            CommandDescriptor commandDescriptor = new("test", "test_name", "test_desc", CommandType.IsolatedGroup, CommandFlags.None);
+            Action act = () => _commandRuntime.ResolveCommandRunMethod(commandDescriptor);
+            act.Should().Throw<TerminalException>().WithErrorCode("server_error").WithErrorDescription("The command runner method is only supported for leaf commands. command=test type=IsolatedGroup");
+        }
+
+        [Fact]
+        public void NotFoundRunMethod_ResolveCommandRunMethod_Throws()
+        {
+            CommandDescriptor commandDescriptor = new("not_found", "test_name", "test_desc", CommandType.Leaf, CommandFlags.None);
+            Action act = () => _commandRuntime.ResolveCommandRunMethod(commandDescriptor);
+            act.Should().Throw<TerminalException>().WithErrorCode("server_error").WithErrorDescription("The command runner method is not configured. command=not_found");
+        }
+
+        [Fact]
+        public void ValidCommandId_ResolveCommandRunMethod_Finds()
+        {
+            CommandDescriptor commandDescriptor = new("test2", "test_name2", "test_desc2", CommandType.Leaf, CommandFlags.None);
+            var runMethod = _commandRuntime.ResolveCommandRunMethod(commandDescriptor);
+            runMethod.Id.Should().Be("test2");
+            runMethod.MethodName.Should().Be("test_method2");
+        }
     }
 }

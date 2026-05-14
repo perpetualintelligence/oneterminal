@@ -4,12 +4,12 @@
 
 using System.Collections.Generic;
 
-namespace OneImlx.Terminal.Commands.Runners
+namespace OneImlx.Terminal.Commands
 {
     /// <summary>
-    /// The <see cref="CommandRunnerMethod"/> collection.
+    /// The <see cref="RunMethod"/> collection.
     /// </summary>
-    public sealed class CommandRunnerMethods : Dictionary<string, CommandRunnerMethod>
+    public sealed class RunMethods : Dictionary<string, RunMethod>
     {
     }
 }

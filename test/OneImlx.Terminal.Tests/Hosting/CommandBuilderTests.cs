@@ -1,23 +1,20 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Linq;
-using System.Text;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FluentAssertions;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
-using OneImlx.Test.FluentAssertions;
-using Xunit;
 using OneImlx.Terminal.Shared;
+using OneImlx.Test.FluentAssertions;
+using System;
+using System.Linq;
+using System.Text;
+using Xunit;
 
 namespace OneImlx.Terminal.Hosting
 {
