@@ -25,13 +25,10 @@ namespace OneImlx.Terminal.Hosting
         /// <returns>The configured <see cref="ICommandBuilder"/>.</returns>
         public ICommandBuilder Add()
         {
+            // Get from local and add to
             ServiceProvider lsp = Services.BuildServiceProvider();
-            var lspRunnerMethods = lsp.GetServices<RunMethod>();
-            RunMethods runnerMethods = [];
-            foreach (RunMethod runnerMethod in lspRunnerMethods)
-            {
-                runnerMethods.Add(runnerMethod.Id, runnerMethod);
-            }
+            var runMethod = lsp.GetRequiredService<RunMethod>();
+            builder.Services.AddSingleton(runMethod);
             return builder;
         }
     }

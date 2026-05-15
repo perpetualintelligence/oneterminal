@@ -85,6 +85,14 @@ namespace OneImlx.Terminal.Hosting
 
             // Add the command descriptor to the terminal builder.
             terminalBuilder.Services.AddSingleton(commandDescriptor);
+
+            // Add the run methods to the terminal builder.
+            IEnumerable<RunMethod> runMethods = lsp.GetServices<RunMethod>();
+            foreach (RunMethod runMethod in runMethods)
+            {
+                terminalBuilder.Services.AddSingleton(runMethod);
+            }
+
             return terminalBuilder;
         }
 

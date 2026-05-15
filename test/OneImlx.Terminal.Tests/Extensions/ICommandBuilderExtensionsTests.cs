@@ -225,7 +225,7 @@ namespace OneImlx.Terminal.Extensions
         {
             ServiceDescriptor serviceDescriptor = commandBuilder.Services.First(static e => e.ServiceType.Equals(typeof(CommandDescriptor)));
             CommandDescriptor commandDescriptor = (CommandDescriptor)serviceDescriptor.ImplementationInstance!;
-            commandDescriptor.Checker.Should().Be(typeof(MockCommandChecker));
+            commandDescriptor.Checker.Should().Be<MockCommandChecker>();
         }
 
         [Fact]

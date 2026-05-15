@@ -346,7 +346,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             ServiceProvider serviceProvider = terminalBuilder.Services.BuildServiceProvider();
             var cmdDescs = serviceProvider.GetServices<CommandDescriptor>();
             cmdDescs.Should().HaveCount(1);
-            cmdDescs.First().Checker.Should().Be(typeof(CommandChecker));
+            cmdDescs.First().Checker.Should().Be<CommandChecker>();
         }
 
         [Fact]

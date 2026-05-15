@@ -9,7 +9,7 @@ namespace OneImlx.Terminal.Commands.Declarative
     /// <summary>
     /// Declares a <see cref="CommandDescriptor"/> for a command.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CommandDescriptorAttribute : Attribute
     {
         /// <summary>
@@ -42,7 +42,6 @@ namespace OneImlx.Terminal.Commands.Declarative
             Description = description;
             CommandType = commandType;
             CommandFlags = commandFlags;
-
         }
 
         /// <summary>
