@@ -86,5 +86,15 @@ namespace OneImlx.Terminal.Shared
         /// The unknown identifier used for unknown values.
         /// </summary>
         public const string Unknown = "$unknown$";
+
+        /// <summary>
+        /// The <c>declarative</c> descriptor definition style. In this style, the command descriptors are defined using attributes
+        /// </summary>
+        public const string DeclaritiveDefinition = "declarative";
+
+        /// <summary>
+        /// The <c>explicit</c> descriptor definition style. In this style, the command descriptors are defined explicitly in code.
+        /// </summary>
+        public const string ExplicitDefinition = "explicit";
     }
 }
