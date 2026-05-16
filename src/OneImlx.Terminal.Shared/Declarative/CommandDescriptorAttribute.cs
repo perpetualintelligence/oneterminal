@@ -2,11 +2,9 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using OneImlx.Terminal.Shared;
-using OneImlx.Terminal.Shared.Declarative;
 using System;
 
-namespace OneImlx.Terminal.Commands.Declarative
+namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
     /// Declares a <see cref="CommandDescriptor"/> for a command.

@@ -4,40 +4,40 @@
 
 using System;
 
-namespace OneImlx.Terminal.Commands.Declarative
+namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
-    /// Declares an <see cref="ArgumentDescriptor"/> validation attribute.
+    /// Declares an <see cref="OptionDescriptor"/> validation attribute.
     /// </summary>
-    /// <seealso cref="ArgumentDescriptor.ValueCheckers"/>
+    /// <seealso cref="OptionDescriptor.ValueCheckers"/>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public sealed class ArgumentValidationAttribute : Attribute
+    public sealed class OptionValidationAttribute : Attribute
     {
         /// <summary>
         /// Initialize a new instance.
         /// </summary>
-        /// <param name="argumentId">The argument identifier.</param>
-        /// <param name="validationAttribute">The argument validation attribute.</param>
+        /// <param name="optionId">The option identifier.</param>
+        /// <param name="validationAttribute">The option validation attribute.</param>
         /// <param name="validationParams">The validation attribute parameters.</param>
-        public ArgumentValidationAttribute(string argumentId, Type validationAttribute, params object[] validationParams)
+        public OptionValidationAttribute(string optionId, Type validationAttribute, params object[] validationParams)
         {
-            ArgumentId = argumentId;
+            OptionId = optionId;
             ValidationAttribute = validationAttribute;
             ValidationParams = validationParams;
         }
 
         /// <summary>
-        /// The argument identifier.
+        /// The option identifier.
         /// </summary>
-        public string ArgumentId { get; }
+        public string OptionId { get; }
 
         /// <summary>
-        /// The <see cref="ValidationAttribute"/> parameters.
+        /// The validation attribute parameters.
         /// </summary>
         public object[]? ValidationParams { get; }
 
         /// <summary>
-        /// The attribute validation attribute.
+        /// The option validation attribute.
         /// </summary>
         public Type ValidationAttribute { get; }
     }

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace OneImlx.Terminal.Commands.Declarative
+namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
     /// Declares a command owners. A command owner is a group or a root.
@@ -20,6 +20,6 @@ namespace OneImlx.Terminal.Commands.Declarative
         /// The command owner identifiers.
         /// </summary>
         /// <seealso cref="CommandDescriptor.Id"/>
-        public OwnerIdCollection Owners { get; } = new OwnerIdCollection(owners);
+        public OwnerIdCollection Owners { get; } = [.. owners];
     }
 }

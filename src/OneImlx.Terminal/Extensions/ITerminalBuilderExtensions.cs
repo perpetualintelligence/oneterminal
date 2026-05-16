@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
-using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners;

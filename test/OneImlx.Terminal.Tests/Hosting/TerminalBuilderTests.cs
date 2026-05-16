@@ -2,12 +2,12 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Text;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FluentAssertions;
-using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using System;
+using System.Text;
 using Xunit;
 
 namespace OneImlx.Terminal.Hosting

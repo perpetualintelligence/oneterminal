@@ -1,7 +1,4 @@
-﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
-//  For license, terms, and data policies, go to:
-//  https://terms.perpetualintelligence.com/articles/intro.html
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -11,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using OneImlx.Shared.Infrastructure;
 using OneImlx.Terminal.Client.Extensions;
 using OneImlx.Terminal.Commands;
-using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;

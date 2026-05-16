@@ -114,7 +114,7 @@ namespace OneImlx.Terminal.Server.Pulsar
 
         public ValueTask<IEnumerable<MessageId>> GetLastMessageIds(CancellationToken cancellationToken = default)
         {
-            return ValueTask.FromResult<IEnumerable<MessageId>>(new List<MessageId>());
+            return ValueTask.FromResult<IEnumerable<MessageId>>([]);
         }
 
         public bool IsFinalState() => false;
