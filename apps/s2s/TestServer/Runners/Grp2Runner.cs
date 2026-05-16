@@ -4,6 +4,8 @@ using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.TestServer.Runners
@@ -12,7 +14,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
     /// The group <c>grp1</c> runner for the TestServer.
     /// </summary>
     [CommandOwners("grp1")]
-    [CommandDescriptor("grp2", "Group 2", "Group2 description.", CommandType.GroupCommand, CommandFlags.None)]
+    [CommandDescriptor("grp2", "Group 2", "Group2 description.", CommandType.IsolatedGroup, CommandFlags.None)]
     [CommandChecker(typeof(CommandChecker))]
     public class Grp2Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

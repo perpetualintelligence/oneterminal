@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using OneImlx.Terminal.Shared;
@@ -37,11 +34,11 @@ namespace OneImlx.Terminal.Client.Extensions.Tests
                         string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                         receivedMessage.Should().Be("{\"batch_id\":\"batch1\",\"requests\":[{\"id\":\"id1\",\"is_error\":false,\"raw\":\"cmd1\",\"result\":null},{\"id\":\"id2\",\"is_error\":false,\"raw\":\"cmd2\",\"result\":null}],\"sender_endpoint\":null,\"sender_id\":null}\u001e");
                     }
-                });
+                }, TestContext.Current.CancellationToken);
 
                 using (var tcpClient = new TcpClient())
                 {
-                    await tcpClient.ConnectAsync(localHost, port);
+                    await tcpClient.ConnectAsync(localHost, port, TestContext.Current.CancellationToken);
 
                     TerminalInputOutput batch = TerminalInputOutput.Batch("batch1", ["id1", "id2"], ["cmd1", "cmd2"]);
                     await tcpClient.SendToTerminalAsync(batch, streamDelimiter, CancellationToken.None);
@@ -68,11 +65,11 @@ namespace OneImlx.Terminal.Client.Extensions.Tests
                         string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                         receivedMessage.Should().Be("{\"batch_id\":\"bid\",\"requests\":[{\"id\":\"single-id\",\"is_error\":false,\"raw\":\"single-command\",\"result\":null}],\"sender_endpoint\":null,\"sender_id\":null}\u001e");
                     }
-                });
+                }, TestContext.Current.CancellationToken);
 
                 using (var tcpClient = new TcpClient())
                 {
-                    await tcpClient.ConnectAsync(localHost, port);
+                    await tcpClient.ConnectAsync(localHost, port, TestContext.Current.CancellationToken);
                     TerminalInputOutput batch = TerminalInputOutput.Batch("bid", ["single-id"], ["single-command"]);
                     await tcpClient.SendToTerminalAsync(batch, streamDelimiter, CancellationToken.None);
 
@@ -98,11 +95,11 @@ namespace OneImlx.Terminal.Client.Extensions.Tests
                         string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                         receivedMessage.Should().Be("{\"batch_id\":null,\"requests\":[{\"id\":\"single-id-1\",\"is_error\":false,\"raw\":\"single-command-1\",\"result\":null}],\"sender_endpoint\":null,\"sender_id\":null}\u001e");
                     }
-                });
+                }, TestContext.Current.CancellationToken);
 
                 using (var tcpClient = new TcpClient())
                 {
-                    await tcpClient.ConnectAsync(localHost, port);
+                    await tcpClient.ConnectAsync(localHost, port, TestContext.Current.CancellationToken);
                     TerminalInputOutput single = TerminalInputOutput.Single("single-id-1", "single-command-1");
                     await tcpClient.SendToTerminalAsync(single, streamDelimiter, CancellationToken.None);
 

@@ -1,18 +1,10 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FluentAssertions;
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
@@ -22,7 +14,13 @@ using OneImlx.Terminal.Hosting.Mocks;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
+using System;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OneImlx.Terminal.Hosting
@@ -61,14 +59,14 @@ namespace OneImlx.Terminal.Hosting
             mockCliEventsHostedService = new MockTerminalEventsHostedService(host.Services, terminalIOptions, mockTerminalConsole, mockExceptionPublisher, logger);
         }
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -86,11 +84,11 @@ namespace OneImlx.Terminal.Hosting
         [Fact]
         public void StartAsync_Default_ShouldPrint_MandatoryLicenseInfo_For_Custom_RND()
         {
-            License community = new(ProductCatalog.TerminalPlanCustom, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
+            Licensing.License community = new(ProductCatalog.TerminalPlanCustom, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
 
             // use reflection to call
             MethodInfo? printLic = defaultCliHostedService.GetType().BaseType!.GetMethod("PrintWarningIfDemoAsync", BindingFlags.Instance | BindingFlags.NonPublic);
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(printLic);
+            printLic.Should().NotBeNull();
             printLic.Invoke(defaultCliHostedService, [community]);
 
             logger.Messages.Should().BeEmpty();
@@ -99,11 +97,11 @@ namespace OneImlx.Terminal.Hosting
         [Fact]
         public void StartAsync_Default_ShouldPrint_MandatoryLicenseInfoFor_Demo_Education()
         {
-            License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.Educational, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
+            Licensing.License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.Educational, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
 
             // use reflection to call
             MethodInfo? printLic = defaultCliHostedService.GetType().BaseType!.GetMethod("PrintWarningIfDemoAsync", BindingFlags.Instance | BindingFlags.NonPublic);
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(printLic);
+            printLic.Should().NotBeNull();
             printLic.Invoke(defaultCliHostedService, [community]);
 
             logger.Messages.Should().BeEmpty();
@@ -115,11 +113,11 @@ namespace OneImlx.Terminal.Hosting
         [Fact]
         public void StartAsync_Default_ShouldPrint_MandatoryLicenseInfoFor_Demo_RND()
         {
-            License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
+            Licensing.License community = new(ProductCatalog.TerminalPlanDemo, LicenseUsage.RnD, "testkey", MockLicenses.TestClaims, MockLicenses.TestQuota);
 
             // use reflection to call
             MethodInfo? printLic = defaultCliHostedService.GetType().BaseType!.GetMethod("PrintWarningIfDemoAsync", BindingFlags.Instance | BindingFlags.NonPublic);
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(printLic);
+            printLic.Should().NotBeNull();
             printLic.Invoke(defaultCliHostedService, [community]);
 
             logger.Messages.Should().BeEmpty();
@@ -158,18 +156,18 @@ namespace OneImlx.Terminal.Hosting
             hostBuilder = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddTerminal<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode))
-                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.SubCommand, CommandFlags.None)
+                services.AddTerminalConsole<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode), options => { })
+                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.Leaf, CommandFlags.None)
                         .DefineOption("id1", nameof(Int32), "test opt1", OptionFlags.None, "alias_id1").Add()
                     .Checker<MockCommandChecker>()
                     .Add()
-                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", CommandType.SubCommand, CommandFlags.None)
+                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", CommandType.Leaf, CommandFlags.None)
                         .DefineOption("id1", nameof(Int32), "test opt1", OptionFlags.None, "alias_id1").Add()
                         .DefineOption("id2", nameof(Int32), "test opt2", OptionFlags.None, "alias_id2").Add()
                         .DefineOption("id3", nameof(Boolean), "test opt3", OptionFlags.None).Add()
                     .Checker<MockCommandChecker>()
                     .Add()
-                    .DefineCommand<MockCommandRunner>("cmd3", "cmd3", "test1", CommandType.SubCommand, CommandFlags.None)
+                    .DefineCommand<MockCommandRunner>("cmd3", "cmd3", "test1", CommandType.Leaf, CommandFlags.None)
                         .DefineOption("id1", nameof(Int32), "test opt1", OptionFlags.None, "alias_id1").Add()
                     .Checker<MockCommandChecker>()
                     .Add();
@@ -180,7 +178,7 @@ namespace OneImlx.Terminal.Hosting
                 services.AddSingleton<IConfigurationOptionsChecker>(mockOptionsChecker);
                 services.AddSingleton<ITerminalTextHandler, TerminalTextHandler>();
             });
-            host = await hostBuilder.StartAsync();
+            host = await hostBuilder.StartAsync(cancellationToken: TestContext.Current.CancellationToken);
 
             defaultCliHostedService = new MockTerminalHostedService(host.Services, terminalIOptions, mockTerminalConsole, mockExceptionPublisher, logger);
             await defaultCliHostedService.StartAsync(CancellationToken.None);
@@ -205,11 +203,11 @@ namespace OneImlx.Terminal.Hosting
             hostBuilder = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddTerminal<TerminalInMemoryCommandStore>(textHandler)
-                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.SubCommand, CommandFlags.None)
+                services.AddTerminalConsole<TerminalInMemoryCommandStore>(textHandler, options => { })
+                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.Leaf, CommandFlags.None)
                         .Checker<MockCommandChecker>()
                         .Add()
-                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", CommandType.SubCommand, CommandFlags.None)
+                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", CommandType.Leaf, CommandFlags.None)
                         .DefineOption("id1", nameof(Int32), "test opt1", OptionFlags.None, "alias_id1").Add()
                         .DefineOption("id2", nameof(Int32), "test opt2", OptionFlags.None, "alias_id2").Add()
                         .DefineOption("id3", nameof(Boolean), "test opt3", OptionFlags.None).Add()
@@ -222,7 +220,7 @@ namespace OneImlx.Terminal.Hosting
                 services.AddSingleton<IConfigurationOptionsChecker>(mockOptionsChecker);
                 services.AddSingleton<ITerminalTextHandler>(textHandler);
             });
-            host = await hostBuilder.StartAsync();
+            host = await hostBuilder.StartAsync(cancellationToken: TestContext.Current.CancellationToken);
 
             defaultCliHostedService = new MockTerminalHostedService(host.Services, terminalIOptions, mockTerminalConsole, mockExceptionPublisher, logger);
             await defaultCliHostedService.StartAsync(CancellationToken.None);

@@ -3,6 +3,8 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
@@ -10,7 +12,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// <summary>
     /// Runs native OS commands.
     /// </summary>
-    [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandType.NativeCommand, CommandFlags.None)]
+    [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandType.Native, CommandFlags.None)]
     public class ExitRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>

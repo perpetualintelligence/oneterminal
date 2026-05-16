@@ -1,0 +1,182 @@
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using OneImlx.Shared.Infrastructure;
+using OneImlx.Terminal.Client.Extensions;
+using OneImlx.Terminal.Commands;
+using OneImlx.Terminal.Commands.Declarative;
+using OneImlx.Terminal.Commands.Runners;
+using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
+
+namespace OneImlx.Terminal.Apps.TestClient.Runners
+{
+    [CommandOwners("send")]
+    [CommandDescriptor("apihttp", "HTTP test", "Send HTTP commands to both Terminal router and ASP.NET API server.", CommandType.Leaf, CommandFlags.None)]
+    public class SendApiHttpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    {
+        public SendApiHttpRunner(IConfiguration configuration, ITerminalConsole terminalConsole, IHttpClientFactory httpClientFactory)
+        {
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.terminalConsole = terminalConsole ?? throw new ArgumentNullException(nameof(terminalConsole));
+            this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        }
+
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        {
+            string ip = configuration["testclient:testserver:ip"] ?? throw new InvalidOperationException("Server IP address is missing.");
+            string port = configuration.GetValue<string>("testclient:testserver:port") ?? throw new InvalidOperationException("Server port is missing.");
+            string serverAddress = $"http://{ip}:{port}";
+            int maxClients = configuration.GetValue<int>("testclient:max_clients");
+
+            try
+            {
+                stopwatch.Restart();
+                _commandCount = 0;
+                _requestCount = 0;
+
+                await terminalConsole.WriteLineColorAsync(ConsoleColor.Yellow, "HTTP concurrent and asynchronous demo");
+
+                var clientTasks = new Task[maxClients];
+                for (int idx = 0; idx < clientTasks.Length; idx++)
+                {
+                    clientTasks[idx] = StartHttpClientAsync(serverAddress, idx, context.TerminalContext.TerminalCancellationToken);
+                }
+
+                await Task.WhenAll(clientTasks);
+                return new CommandRunnerResult();
+            }
+            finally
+            {
+                stopwatch.Stop();
+                await terminalConsole.WriteLineColorAsync(ConsoleColor.Green, $"{_commandCount} Terminal HTTP, {_requestCount} ASP.NET HTTP, {maxClients} Clients, {stopwatch.Elapsed.TotalMilliseconds} Milliseconds");
+            }
+        }  
+
+        private async Task SendTerminalHttpCommandsAsync(HttpClient client, int clientIndex, CancellationToken cToken)
+        {
+            string[] cmdIds = ["cmd1", "cmd2", "cmd3", "cmd4", "cmd5", "cmd6", "cmd7"];
+            string[] commands = ["ts", "ts -v", "ts grp1", "ts grp1 cmd1", "ts grp1 grp2", "ts grp1 grp2 cmd2", "ts grp1 grp2 cmd2 invalid"];
+
+            try
+            {
+                foreach (var (cmdId, command) in cmdIds.Zip(commands))
+                {
+                    TerminalInputOutput single = TerminalInputOutput.Single(cmdId, command);
+                    TerminalInputOutput? output = await client.SendToTerminalAsync(single, cToken);
+
+                    if (output == null)
+                    {
+                        await terminalConsole.WriteLineAsync($"[Client {clientIndex}] Request=\"{cmdId}\" Raw=\"{command}\" => No Response");
+                        continue;
+                    }
+
+                    string result = output.Requests[0].Result?.ToString() ?? "No Result";
+                    if (output.Requests[0].IsError)
+                    {
+                        Error error = output.GetDeserializedResult<Error>(0);
+                        result = error.FormatDescription();
+
+                        await terminalConsole.WriteLineColorAsync(ConsoleColor.Red, $"[Client {clientIndex}] Request=\"{cmdId}\" Raw=\"{command}\" => Result={result}");
+                    }
+                    else
+                    {
+                        await terminalConsole.WriteLineAsync($"[Client {clientIndex}] Request=\"{cmdId}\" Raw=\"{command}\" => Result={result}");
+                    }
+
+                    _commandCount += 1;
+                }
+
+                string batchId = $"batch{clientIndex}";
+                TerminalInputOutput batch = TerminalInputOutput.Batch(batchId, cmdIds, commands);
+                TerminalInputOutput? batchOutput = await client.SendToTerminalAsync(batch, cToken);
+                for (int idx = 0; idx < batch.Requests.Length; ++idx)
+                {
+                    var request = batch.Requests[idx];
+                    if (batchOutput == null)
+                    {
+                        await terminalConsole.WriteLineAsync($"[Client {clientIndex}] BatchId=\"{batchId}\" Request=\"{request.Id}\" Raw=\"{request.Raw}\" => Result={"No Response"}");
+                        continue;
+                    }
+
+                    string result = batchOutput.Requests[idx].Result?.ToString() ?? "No Result";
+                    if (batchOutput.Requests[idx].IsError)
+                    {
+                        Error error = batchOutput.GetDeserializedResult<Error>(idx);
+                        result = error.FormatDescription();
+                        await terminalConsole.WriteLineColorAsync(ConsoleColor.Red, $"[Client {clientIndex}] BatchId=\"{batchId}\" Request=\"{request.Id}\" Raw=\"{request.Raw}\" => Result={result ?? "No Response"}");
+                    }
+                    else
+                    {
+                        await terminalConsole.WriteLineAsync($"[Client {clientIndex}] BatchId=\"{batchId}\" Request=\"{request.Id}\" Raw=\"{request.Raw}\" => Result={result ?? "No Response"}");
+                    }
+
+                    _commandCount += 1;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                await terminalConsole.WriteLineColorAsync(ConsoleColor.Red, $"[Client {clientIndex}] HTTP Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                await terminalConsole.WriteLineColorAsync(ConsoleColor.Red, $"[Client {clientIndex}] Error: {ex.Message}");
+            }
+        }
+
+        private async Task StartHttpClientAsync(string serverAddress, int clientIndex, CancellationToken cToken)
+        {
+            using var client = httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(serverAddress);
+
+            try
+            {
+                await terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, $"HTTP client {clientIndex} initialized for {serverAddress}...");
+
+                // Sent HTTP commands to the terminal router and process responses
+                await SendTerminalHttpCommandsAsync(client, clientIndex, cToken);
+
+                // Sent HTTP commands to asp.net API server
+                await SentApiServerHttpAsync(client, clientIndex, cToken);
+            }
+            catch (Exception ex)
+            {
+                await terminalConsole.WriteLineColorAsync(ConsoleColor.Red, $"[Client {clientIndex}] {ex.Message}");
+            }
+            finally
+            {
+                await terminalConsole.WriteLineColorAsync(ConsoleColor.Cyan, $"HTTP client {clientIndex} disposed.");
+            }
+        }
+
+        private async Task SentApiServerHttpAsync(HttpClient client, int clientIndex, CancellationToken cToken)
+        {
+            using (var responseDotNet = await client.GetAsync("/api/pingdotnet", cToken))
+            {
+                await terminalConsole.WriteLineAsync($"[Client {clientIndex}] Raw=\"/api/pingdotnet\" => {responseDotNet.StatusCode}");
+                _requestCount += 1;
+            }
+
+            using (var responseTerminal = await client.GetAsync("/api/pingterminal", cToken))
+            {
+                await terminalConsole.WriteLineAsync($"[Client {clientIndex}] Raw=\"/api/pingterminal\" => {responseTerminal.StatusCode}");
+                _requestCount += 1;
+            }
+        }
+
+        private readonly IConfiguration configuration;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly Stopwatch stopwatch = new();
+        private readonly ITerminalConsole terminalConsole;
+        private int _commandCount;
+        private int _requestCount;
+    }
+}

@@ -1,9 +1,6 @@
-﻿/*
-    Copyright (c) 2021 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 
@@ -14,7 +11,7 @@ namespace OneImlx.Terminal.Commands.Declarative
     /// </summary>
     /// <remarks>Each custom property must have a unique key within a command.</remarks>
     /// <seealso cref="CommandDescriptor.CustomProperties"/>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public sealed class CommandCustomPropertyAttribute : Attribute
     {
         /// <summary>

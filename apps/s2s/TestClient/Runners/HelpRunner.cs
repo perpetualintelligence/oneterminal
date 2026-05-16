@@ -3,6 +3,8 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using OneImlx.Terminal.Stores;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
@@ -10,7 +12,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// <summary>
     /// Runs native OS commands.
     /// </summary>
-    [CommandDescriptor("help", "Help Command", "Displays all supported commands.", CommandType.NativeCommand, CommandFlags.None)]
+    [CommandDescriptor("help", "Help Command", "Displays all supported commands.", CommandType.Native, CommandFlags.None)]
     public class HelpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>

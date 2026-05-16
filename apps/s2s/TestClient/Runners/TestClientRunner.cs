@@ -4,10 +4,12 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
-    [CommandDescriptor("tc", "Test root", "Sample test client for testing the server.", CommandType.RootCommand, CommandFlags.None)]
+    [CommandDescriptor("tc", "Test root", "Sample test client for testing the server.", CommandType.Root, CommandFlags.None)]
     public class TestClientRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public TestClientRunner(ITerminalConsole terminalConsole, ILogger<TestClientRunner> logger)

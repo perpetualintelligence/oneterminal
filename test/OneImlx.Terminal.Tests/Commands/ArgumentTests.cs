@@ -7,6 +7,7 @@
 
 using System;
 using FluentAssertions;
+using OneImlx.Terminal.Shared;
 using Xunit;
 
 namespace OneImlx.Terminal.Commands

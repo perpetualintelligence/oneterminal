@@ -1,14 +1,11 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 namespace OneImlx.Terminal.Configuration.Options
 {
     /// <summary>
-    /// The command, argument, and option checker configuration options.
+    /// The  checker configuration options.
     /// </summary>
     /// <remarks>The checker options are not filters. The command execution is blocked if any check fails.</remarks>
     public sealed class CheckerOptions

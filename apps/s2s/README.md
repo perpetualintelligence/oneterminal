@@ -1,64 +1,84 @@
 # Introduction
 
-This sample code is designed for developers implementing service-to-service communication using the `OneImlx.Terminal` framework. It covers the setup and operation of a Test Server and Test Client, demonstrating the framework's capabilities in handling networked command execution via TCP, UDP, and gRPC protocols.
+This sample demonstrates service-to-service communication using the `OneImlx.Terminal` framework via TCP, UDP, HTTP, and gRPC protocols.
 
 ## Overview
 
-**Test Server**: Acts as the receiver and processor of commands. It can be configured in different modes (TCP, UDP, or Console) to accommodate various communication strategies.
+**Test Server**: Standalone command processor supporting Console, TCP, UDP, and gRPC modes.
 
-**Test Client**: Sends commands to the Test Server using the console router, allowing developers to issue manual commands and observe service-to-service communication. This manual setup is ideal for development and testing phases. In real applications, both client and server can be implemented as automated services that detect service availability over the network and send commands accordingly.
+**Test API Server**: Hybrid ASP.NET Web API that hosts both REST endpoints and Terminal HTTP router concurrently in a single application.
+
+**Test Client**: Console-based client for manual command testing across all supported protocols.
+
+> **NOTE**: The client is designed for manual testing during development. In production scenarios, both client and server can operate as automated services.
 
 ## Configuration and Setup
 
-### Test Server Setup
+### Test Server
 
-- **Modes of Operation**:
-  - **Console Mode**: For direct interaction via command console.
-  - **TCP Mode**: For reliable, connection-oriented network communication.
-  - **UDP Mode**: For faster, connectionless network communication.
-  - **gRPC Mode**: For advanced, structured communication with support for streaming.
+- **Modes**: Console, TCP, UDP, gRPC
+- **Configuration**: `appsettings.json` (IP, port, mode)
+- **Logging**: Serilog to console
 
-- **Configuration**: Server settings are managed through an `appsettings.json` file, which includes parameters like IP, port, and operational mode.
+### Test API Server
 
-- **Logging**: Utilizes `Serilog` for logging, with outputs configured to the console for easy monitoring.
+Hybrid architecture hosting ASP.NET Web API and Terminal HTTP router:
 
-### Test Client Setup
+- **Endpoints**:
+  - `/api/*` - Standard REST API endpoints (`/api/pingdotnet`, `/api/pingterminal`)
+  - `/oneimlx/terminal/httprouter` - Terminal command processing
 
-- Configured to align with the Test Server's network settings and operational mode.
-- Sends a series of predefined commands to the server.
+- **Setup**:
+  - Uses `MapTerminalHttp()` to register Terminal endpoint
+  - Uses `RunTerminalRouterBackgroundAsync()` to start Terminal router
+  - Terminal services injectable into ASP.NET controllers via DI
+  - Default port: 5006
 
-> **NOTE**: The client uses a console router for issuing manual commands during testing. This helps developers understand and verify service-to-service communication in real-time. For automated operations, the client and server can both be automated to handle dynamic network scenarios without manual intervention.
+- **Use Cases**: Add Terminal commands to existing ASP.NET apps, provide dual REST/Terminal interfaces, query Terminal status from API endpoints
+
+### Test Client
+
+- **Protocols**: TCP (`send tcp`), UDP (`send udp`), HTTP (`send http`), API HTTP (`send apihttp`), gRPC (`send grpc`)
+- **Configuration**: `appsettings.json` - set server IP and port (default: `localhost:5006`)
 
 ## Testing and Validation
 
-### Starting the Applications
+Configure Visual Studio startup projects to launch server and client concurrently.
 
-Configure the startup projects in the solution to launch both the Test Server and Test Client applications.
+**Option 1 - Standalone**: Test Server + Test Client
+- Supports: TCP, UDP, HTTP, gRPC modes
+- Configure mode in Test Server's `appsettings.json`
 
-1. **Test Server**:
-   - Ensure the server configuration aligns with the desired testing mode and network settings.
-   - Start the server application to initiate the listening process for incoming commands.
-
-2. **Test Client**:
-   - Configure to ensure compatibility with the server's settings.
-   - Start the client to begin sending commands to the server manually over TCP, UDP, or gRPC.
+**Option 2 - Hybrid**: Test API Server + Test Client  
+- Runs ASP.NET API and Terminal router concurrently
+- Use `send apihttp` to test both Terminal commands and REST API calls
+- Listens on port 5006 for both API requests and Terminal commands
 
 ## Test Execution
 
-- **Monitor Outputs**: Watch both the server and client consoles for output to confirm that commands are received and processed correctly.
-- **Check Connectivity**: For TCP, UDP, and gRPC modes, verify network connectivity and ensure that ports and IP addresses are correctly configured.
+Monitor console outputs to verify command processing. 
+
+**Hybrid Mode (`send apihttp`)** demonstrates:
+- Terminal commands to `/oneimlx/terminal/httprouter`
+- REST API calls to `/api/pingdotnet` and `/api/pingterminal`
+- Concurrent processing with metrics (commands sent, API requests, execution time)
 
 ## Troubleshooting
 
-- Look for error messages in the console outputs of both server and client.
-- Use network monitoring tools to trace and inspect packet flows if necessary.
+- Check console outputs for error messages
+- Verify network connectivity and port configurations
+- Use network monitoring tools for packet inspection
 
 ## Best Practices
 
-- **Error Handling**: Implement robust error handling in both server and client to manage and log exceptions effectively.
-- **Security**: Ensure secure transmission, especially when using TCP, UDP, or gRPC modes, by considering encryption or secure channels.
-- **Performance Monitoring**: Regularly monitor the system's performance and optimize as needed to handle expected loads.
+- **Error Handling**: Implement robust exception handling and logging
+- **Security**: Use HTTPS in production, consider encryption for TCP/UDP
+- **Performance**: Monitor resource usage under expected loads
+- **Hybrid Integration**:
+  - Register Terminal services in ASP.NET DI container
+  - Use `MapTerminalHttp()` and `RunTerminalRouterBackgroundAsync()` 
+  - Access Terminal services (router, processor, console) via DI in controllers
 
 ## Conclusion
 
-The `OneImlx.Terminal` framework for service-to-service communication provides a robust and flexible platform for developing networked applications. This guide assists developers in setting up, testing, and validating their implementations, ensuring efficient and reliable command handling between services.
+The `OneImlx.Terminal` framework provides flexibility for both standalone servers and ASP.NET-integrated deployments. The Test API Server demonstrates how to add Terminal command capabilities to existing ASP.NET applications without replacing existing REST APIs, enabling hybrid architectures with dual communication interfaces.

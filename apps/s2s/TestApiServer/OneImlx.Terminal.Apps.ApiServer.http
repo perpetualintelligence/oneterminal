@@ -1,0 +1,6 @@
+@OneImlx.Terminal.Apps.ApiServer_HostAddress = http://localhost:5006
+
+GET {{OneImlx.Terminal.Apps.ApiServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

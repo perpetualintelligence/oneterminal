@@ -1,16 +1,13 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OneImlx.Terminal.Hosting
 {
@@ -73,7 +70,7 @@ namespace OneImlx.Terminal.Hosting
             // Owners
             // - Root command or native commands cannot have an owner
             OwnerIdCollection? owners = lsp.GetService<OwnerIdCollection>();
-            if ((commandDescriptor.Type == CommandType.RootCommand || commandDescriptor.Type == CommandType.NativeCommand))
+            if ((commandDescriptor.Type == CommandType.Root || commandDescriptor.Type == CommandType.Native))
             {
                 if (owners != null && owners.Count > 0)
                 {
@@ -88,6 +85,13 @@ namespace OneImlx.Terminal.Hosting
 
             // Add the command descriptor to the terminal builder.
             terminalBuilder.Services.AddSingleton(commandDescriptor);
+
+            // Add the run methods to the terminal builder.
+            IEnumerable<RunMethod> runMethods = lsp.GetServices<RunMethod>();
+            foreach (RunMethod runMethod in runMethods)
+            {
+                terminalBuilder.Services.AddSingleton(runMethod);
+            }
 
             return terminalBuilder;
         }

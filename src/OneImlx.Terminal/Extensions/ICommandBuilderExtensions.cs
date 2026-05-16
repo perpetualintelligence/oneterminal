@@ -1,16 +1,15 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using Microsoft.Extensions.DependencyInjection;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Hosting;
+using OneImlx.Terminal.Shared;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace OneImlx.Terminal.Extensions
 {
@@ -65,6 +64,34 @@ namespace OneImlx.Terminal.Extensions
             OptionBuilder argumentBuilder = new(builder);
             argumentBuilder.Services.AddSingleton(option);
             return argumentBuilder;
+        }
+
+        /// <summary>
+        /// Starts a new <see cref="IRunMethodBuilder"/> definition.
+        /// </summary>
+        /// <param name="builder">The <see cref="ICommandBuilder"/>.</param>
+        /// <param name="id">The command identifier.</param>
+        /// <param name="methodName">The runner method name.</param>
+        /// <returns>The configured <see cref="IRunMethodBuilder"/>.</returns>
+        public static IRunMethodBuilder DefineRunMethod(this ICommandBuilder builder, string id, string methodName)
+        {
+            RunMethodBuilder runnerMethodBuilder = new(builder);
+            runnerMethodBuilder.Services.AddSingleton(new RunMethod(id, methodName));
+            return runnerMethodBuilder;
+        }
+
+        /// <summary>
+        /// Starts a new <see cref="IRunMethodBuilder"/> definition.
+        /// </summary>
+        /// <param name="builder">The <see cref="ICommandBuilder"/>.</param>
+        /// <param name="id">The command identifier.</param>
+        /// <param name="methodInfo">The runner method info.</param>
+        /// <returns>The configured <see cref="IRunMethodBuilder"/>.</returns>
+        public static IRunMethodBuilder DefineRunMethod(this ICommandBuilder builder, string id, MethodInfo methodInfo)
+        {
+            RunMethodBuilder runnerMethodBuilder = new(builder);
+            runnerMethodBuilder.Services.AddSingleton(new RunMethod(id, methodInfo));
+            return runnerMethodBuilder;
         }
 
         /// <summary>

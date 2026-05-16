@@ -46,15 +46,15 @@ namespace OneImlx.Terminal.Commands.Parsers
 
             commandDescriptors = new(textHandler,
             [
-                new("root1", "root1_name", "root1_desc", CommandType.RootCommand, CommandFlags.None),
-                new("root2", "root2_name", "root2_desc", CommandType.RootCommand, CommandFlags.None),
-                new("root3", "root3_name", "root3_desc", CommandType.RootCommand, CommandFlags.None, new OwnerIdCollection("root2")),
-                new("grp1", "grp1_name", "grp1_desc", CommandType.GroupCommand, CommandFlags.None, new OwnerIdCollection("root1"), argumentDescriptors: arguments),
-                new("grp2", "grp2_name", "grp2_desc", CommandType.GroupCommand, CommandFlags.None, new OwnerIdCollection("root2")),
-                new("cmd1", "cmd1_name", "cmd1_desc", CommandType.SubCommand, CommandFlags.None, new OwnerIdCollection("grp1")),
-                new("cmd2", "cmd2_name", "cmd2_desc", CommandType.SubCommand, CommandFlags.None, new OwnerIdCollection("grp2"), argumentDescriptors: arguments,  optionDescriptors: options),
-                new("cmd_nr1", "cmd_nr1_name", "cmd_nr1_desc", CommandType.SubCommand, CommandFlags.None),
-                new("cmd_nr2", "cmd_nr2_name", "cmd_nr2_desc", CommandType.SubCommand, CommandFlags.None)
+                new("root1", "root1_name", "root1_desc", CommandType.Root, CommandFlags.None),
+                new("root2", "root2_name", "root2_desc", CommandType.Root, CommandFlags.None),
+                new("root3", "root3_name", "root3_desc", CommandType.Root, CommandFlags.None, new OwnerIdCollection("root2")),
+                new("grp1", "grp1_name", "grp1_desc", CommandType.IsolatedGroup, CommandFlags.None, new OwnerIdCollection("root1"), argumentDescriptors: arguments),
+                new("grp2", "grp2_name", "grp2_desc", CommandType.IsolatedGroup, CommandFlags.None, new OwnerIdCollection("root2")),
+                new("cmd1", "cmd1_name", "cmd1_desc", CommandType.Leaf, CommandFlags.None, new OwnerIdCollection("grp1")),
+                new("cmd2", "cmd2_name", "cmd2_desc", CommandType.Leaf, CommandFlags.None, new OwnerIdCollection("grp2"), argumentDescriptors: arguments,  optionDescriptors: options),
+                new("cmd_nr1", "cmd_nr1_name", "cmd_nr1_desc", CommandType.Leaf, CommandFlags.None),
+                new("cmd_nr2", "cmd_nr2_name", "cmd_nr2_desc", CommandType.Leaf, CommandFlags.None)
 
             ]);
             commandStore = new TerminalInMemoryCommandStore(textHandler, commandDescriptors.Values);
@@ -169,7 +169,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             await parser.ParseCommandAsync(context);
             context.ParsedCommand.Should().NotBeNull();
             context.ParsedCommand!.Command.Id.Should().Be("root2");
-            context.ParsedCommand.Command.Descriptor.Type.Should().Be(CommandType.RootCommand);
+            context.ParsedCommand.Command.Descriptor.Type.Should().Be(CommandType.Root);
 
             context.ParsedCommand.Hierarchy.Should().BeNull();
             context.ParsedCommand.Command.Arguments.Should().BeNull();
@@ -194,7 +194,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             await parser.ParseCommandAsync(context);
             context.ParsedCommand.Should().NotBeNull();
             context.ParsedCommand!.Command.Id.Should().Be("cmd_nr1");
-            context.ParsedCommand.Command.Descriptor.Type.Should().Be(CommandType.SubCommand);
+            context.ParsedCommand.Command.Descriptor.Type.Should().Be(CommandType.Leaf);
 
             context.ParsedCommand.Hierarchy.Should().BeNull();
             context.ParsedCommand.Command.Arguments.Should().BeNull();

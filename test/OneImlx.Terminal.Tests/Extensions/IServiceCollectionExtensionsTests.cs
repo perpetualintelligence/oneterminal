@@ -1,25 +1,19 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Parsers;
-using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Stores;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
@@ -28,40 +22,6 @@ namespace OneImlx.Terminal.Extensions
     public class IServiceCollectionExtensionsTests
     {
         [Fact]
-        public void AddTerminalConfigurationShouldInitializeCorrectly()
-        {
-            var myConfiguration = new Dictionary<string, string>
-            {
-                {"Key1", "Value1"},
-                {"Nested:Key1", "NestedValue1"},
-                {"Nested:Key2", "NestedValue2"}
-            };
-
-            var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(myConfiguration!)
-                .Build();
-
-            using var host = Host.CreateDefaultBuilder([]).ConfigureServices(arg =>
-            {
-                arg.AddTerminal<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode), configuration);
-            }).Build();
-
-            // Check Options are added
-            TerminalOptions? terminalOptions = host.Services.GetService<TerminalOptions>();
-            terminalOptions.Should().NotBeNull();
-
-            // Options is singleton
-            TerminalOptions? cliOptions2 = host.Services.GetService<TerminalOptions>();
-            TerminalOptions? cliOptions3 = host.Services.GetService<TerminalOptions>();
-            cliOptions2.Should().BeSameAs(terminalOptions);
-            cliOptions3.Should().BeSameAs(terminalOptions);
-
-            setupActionCalled.Should().BeFalse();
-
-            AssertCoreServices(host);
-        }
-
-        [Fact]
         public void AddTerminalConsole_ShouldInitializeCorrectly()
         {
             var services = new ServiceCollection();
@@ -69,22 +29,23 @@ namespace OneImlx.Terminal.Extensions
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
 
-            services.AddTerminalConsole<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+            services.AddTerminalConsole<TerminalInMemoryCommandStore>(
                 textHandler,
                 static options => { }
-                                                                                                                                                          );
+            );
 
             var provider = services.BuildServiceProvider();
 
             // Text handler is special
             provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
 
-            // Type services
+            // Type services - hardcoded in AddTerminalConsole
             provider.GetService<ITerminalConsole>().Should().BeOfType<TerminalSystemConsole>();
             provider.GetService<ITerminalHelpProvider>().Should().BeOfType<TerminalConsoleHelpProvider>();
             provider.GetService<ITerminalCommandStore>().Should().BeOfType<TerminalInMemoryCommandStore>();
             provider.GetService<ITerminalTextHandler>().Should().BeOfType<TerminalTextHandler>();
             provider.GetService<ITerminalExceptionHandler>().Should().BeOfType<TerminalConsoleExceptionHandler>();
+            provider.GetService<ITerminalBytesParser>().Should().BeOfType<TerminalBytesParser>();
 
             // Command Router
             provider.GetService<ICommandRouter>().Should().BeOfType<CommandRouter>();
@@ -111,86 +72,137 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
 
-            // Terminal router
+            // Terminal router - should be TerminalConsoleRouter
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeOfType<TerminalConsoleRouter>();
         }
 
         [Fact]
-        public void AddTerminalDefault_ShouldInitializeCorrectly()
+        public void AddTerminalCli_ShouldInitializeCorrectly()
         {
             var services = new ServiceCollection();
             services.AddLogging();
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
 
-            services.AddTerminalDefault<TerminalInMemoryCommandStore, TerminalLoggerHelpProvider, TerminalLoggerExceptionHandler>
-            (
+            services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
                 textHandler,
                 static options => { }
             );
 
             var provider = services.BuildServiceProvider();
-            provider.GetService<ITerminalConsole>().Should().BeNull();
-            provider.GetService<ITerminalHelpProvider>().Should().BeOfType<TerminalLoggerHelpProvider>();
+
+            // Text handler
+            provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
+
+            // Type services
+            provider.GetService<ITerminalConsole>().Should().BeOfType<TerminalSystemConsole>();
+            provider.GetService<ITerminalHelpProvider>().Should().BeOfType<TerminalConsoleHelpProvider>();
             provider.GetService<ITerminalCommandStore>().Should().BeOfType<TerminalInMemoryCommandStore>();
-            provider.GetService<ITerminalTextHandler>().Should().BeOfType<TerminalTextHandler>();
-            provider.GetService<ITerminalExceptionHandler>().Should().BeOfType<TerminalLoggerExceptionHandler>();
+            provider.GetService<ITerminalExceptionHandler>().Should().BeOfType<TerminalConsoleExceptionHandler>();
+            provider.GetService<ITerminalBytesParser>().Should().BeOfType<TerminalBytesParser>();
 
-            provider.GetService<ITerminalCommandStore>().Should().NotBeNull();
-            provider.GetService<ITerminalTextHandler>().Should().NotBeNull();
-            provider.GetService<ITerminalHelpProvider>().Should().NotBeNull();
-            provider.GetService<ITerminalExceptionHandler>().Should().NotBeNull();
+            // Core services
+            provider.GetService<ICommandRouter>().Should().BeOfType<CommandRouter>();
+            provider.GetService<ICommandHandler>().Should().BeOfType<CommandHandler>();
+            provider.GetService<ICommandResolver>().Should().BeOfType<CommandResolver>();
+            provider.GetService<ICommandParser>().Should().BeOfType<CommandParser>();
+            provider.GetService<ITerminalRequestParser>().Should().BeOfType<TerminalRequestQueueParser>();
+            provider.GetService<IOptionChecker>().Should().BeOfType<OptionChecker>();
+            provider.GetService<IArgumentChecker>().Should().BeOfType<ArgumentChecker>();
 
-            provider.GetService<ICommandRouter>().Should().NotBeNull();
-            provider.GetService<ICommandHandler>().Should().NotBeNull();
-            provider.GetService<ICommandResolver>().Should().NotBeNull();
-            provider.GetService<ILicenseChecker>().Should().NotBeNull();
+            // Licensing Services
+            provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
+            provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
+            provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
+
+            // Terminal router
+            provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeOfType<TerminalConsoleRouter>();
         }
 
         [Fact]
-        public void AddTerminalNoConfigShouldInitializeCorrectly()
+        public void AddTerminalClient_ShouldInitializeCorrectly()
         {
-            using var host = Host.CreateDefaultBuilder([]).ConfigureServices(static arg =>
-            {
-                arg.AddTerminal<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode));
-            }).Build();
+            var services = new ServiceCollection();
+            services.AddLogging();
 
-            // Check Options are added
-            TerminalOptions? terminalOptions = host.Services.GetService<TerminalOptions>();
-            terminalOptions.Should().NotBeNull();
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
 
-            // Options is singleton
-            TerminalOptions? cliOptions2 = host.Services.GetService<TerminalOptions>();
-            TerminalOptions? cliOptions3 = host.Services.GetService<TerminalOptions>();
-            cliOptions2.Should().BeSameAs(terminalOptions);
-            cliOptions3.Should().BeSameAs(terminalOptions);
+            services.AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                textHandler,
+                static options => { }
+            );
 
-            setupActionCalled.Should().BeFalse();
+            var provider = services.BuildServiceProvider();
 
-            AssertCoreServices(host);
+            // Text handler
+            provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
+
+            // Type services
+            provider.GetService<ITerminalConsole>().Should().BeOfType<TerminalSystemConsole>();
+            provider.GetService<ITerminalHelpProvider>().Should().BeOfType<TerminalConsoleHelpProvider>();
+            provider.GetService<ITerminalCommandStore>().Should().BeOfType<TerminalInMemoryCommandStore>();
+            provider.GetService<ITerminalExceptionHandler>().Should().BeOfType<TerminalConsoleExceptionHandler>();
+            provider.GetService<ITerminalBytesParser>().Should().BeOfType<TerminalBytesParser>();
+
+            // Core services
+            provider.GetService<ICommandRouter>().Should().BeOfType<CommandRouter>();
+            provider.GetService<ICommandHandler>().Should().BeOfType<CommandHandler>();
+            provider.GetService<ICommandResolver>().Should().BeOfType<CommandResolver>();
+            provider.GetService<ICommandParser>().Should().BeOfType<CommandParser>();
+            provider.GetService<ITerminalRequestParser>().Should().BeOfType<TerminalRequestQueueParser>();
+            provider.GetService<IOptionChecker>().Should().BeOfType<OptionChecker>();
+            provider.GetService<IArgumentChecker>().Should().BeOfType<ArgumentChecker>();
+
+            // Licensing Services
+            provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
+            provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
+            provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
+
+            // Terminal router should NOT be registered (added separately)
+            provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeNull();
         }
 
         [Fact]
-        public void AddTerminalOptionsShouldInitializeCorrectly()
+        public void AddTerminalServer_ShouldInitializeCorrectly()
         {
-            using var host = Host.CreateDefaultBuilder([]).ConfigureServices(arg =>
-            {
-                arg.AddTerminal<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode), SetupAction);
-            }).Build();
+            var services = new ServiceCollection();
+            services.AddLogging();
 
-            // Check Options are added
-            TerminalOptions? terminalOptions = host.Services.GetService<TerminalOptions>();
-            terminalOptions.Should().NotBeNull();
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
 
-            // Options is singleton
-            TerminalOptions? cliOptions2 = host.Services.GetService<TerminalOptions>();
-            TerminalOptions? cliOptions3 = host.Services.GetService<TerminalOptions>();
-            cliOptions2.Should().BeSameAs(terminalOptions);
-            cliOptions3.Should().BeSameAs(terminalOptions);
+            services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                textHandler,
+                static options => { }
+            );
 
-            setupActionCalled.Should().BeTrue();
+            var provider = services.BuildServiceProvider();
 
-            AssertCoreServices(host);
+            // Text handler
+            provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
+
+            // Type services
+            provider.GetService<ITerminalConsole>().Should().BeOfType<TerminalSystemConsole>();
+            provider.GetService<ITerminalHelpProvider>().Should().BeOfType<TerminalConsoleHelpProvider>();
+            provider.GetService<ITerminalCommandStore>().Should().BeOfType<TerminalInMemoryCommandStore>();
+            provider.GetService<ITerminalExceptionHandler>().Should().BeOfType<TerminalConsoleExceptionHandler>();
+            provider.GetService<ITerminalBytesParser>().Should().BeOfType<TerminalBytesParser>();
+
+            // Core services
+            provider.GetService<ICommandRouter>().Should().BeOfType<CommandRouter>();
+            provider.GetService<ICommandHandler>().Should().BeOfType<CommandHandler>();
+            provider.GetService<ICommandResolver>().Should().BeOfType<CommandResolver>();
+            provider.GetService<ICommandParser>().Should().BeOfType<CommandParser>();
+            provider.GetService<ITerminalRequestParser>().Should().BeOfType<TerminalRequestQueueParser>();
+            provider.GetService<IOptionChecker>().Should().BeOfType<OptionChecker>();
+            provider.GetService<IArgumentChecker>().Should().BeOfType<ArgumentChecker>();
+
+            // Licensing Services
+            provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
+            provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
+            provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
+
+            // Terminal router should NOT be registered (added separately)
+            provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeNull();
         }
 
         [Fact]
@@ -212,63 +224,188 @@ namespace OneImlx.Terminal.Extensions
                            .And.BeOfType<TerminalBuilder>()
                            .And.Match<TerminalBuilder>(tb => ReferenceEquals(serviceDescriptors, tb.Services));
 
-            setupActionCalled.Should().BeFalse();
-
             // Ensure text handler added
             ITerminalTextHandler? fromServices = host.Services.GetService<ITerminalTextHandler>();
             fromServices.Should().NotBeNull();
             fromServices.Should().BeSameAs(textHandler);
 
-            AssertNoCoreServices(host);
+            // Verify no core services were added (only text handler)
+            host.Services.GetService<ICommandRouter>().Should().BeNull();
+            host.Services.GetService<ICommandHandler>().Should().BeNull();
+            host.Services.GetService<ICommandResolver>().Should().BeNull();
+            host.Services.GetService<ILicenseChecker>().Should().BeNull();
+            host.Services.GetService<ILicenseExtractor>().Should().BeNull();
+            host.Services.GetService<ILicenseDebugger>().Should().BeNull();
         }
 
-        private void AssertCoreServices(IHost host)
+        [Fact]
+        public void AddTerminalConsole_WithNullServices_ShouldThrow()
         {
-            ICommandRouter? commandRouter = host.Services.GetService<ICommandRouter>();
-            commandRouter.Should().BeNull();
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
 
-            ICommandHandler? commandHandler = host.Services.GetService<ICommandHandler>();
-            commandHandler.Should().BeNull();
+            var act = () => ((IServiceCollection)null!).AddTerminalConsole<TerminalInMemoryCommandStore>(
+                textHandler,
+                static options => { }
+            );
 
-            ICommandResolver? commandRuntime = host.Services.GetService<ICommandResolver>();
-            commandRuntime.Should().BeNull();
-
-            ILicenseChecker? licenseChecker = host.Services.GetService<ILicenseChecker>();
-            licenseChecker.Should().NotBeNull();
-
-            ILicenseExtractor? licenseExtractor = host.Services.GetService<ILicenseExtractor>();
-            licenseExtractor.Should().NotBeNull();
-
-            ILicenseDebugger? LicenseDebugger = host.Services.GetService<ILicenseDebugger>();
-            LicenseDebugger.Should().NotBeNull();
+            act.Should().Throw<ArgumentNullException>().WithParameterName("services");
         }
 
-        private void AssertNoCoreServices(IHost host)
+        [Fact]
+        public void AddTerminalConsole_WithNullTextHandler_ShouldThrow()
         {
-            ICommandRouter? commandRouter = host.Services.GetService<ICommandRouter>();
-            commandRouter.Should().BeNull();
+            var services = new ServiceCollection();
 
-            ICommandHandler? commandHandler = host.Services.GetService<ICommandHandler>();
-            commandHandler.Should().BeNull();
+            var act = () => services.AddTerminalConsole<TerminalInMemoryCommandStore>(
+                null!,
+                static options => { }
+            );
 
-            ICommandResolver? commandRuntime = host.Services.GetService<ICommandResolver>();
-            commandRuntime.Should().BeNull();
-
-            ILicenseChecker? licenseChecker = host.Services.GetService<ILicenseChecker>();
-            licenseChecker.Should().BeNull();
-
-            ILicenseExtractor? licenseExtractor = host.Services.GetService<ILicenseExtractor>();
-            licenseExtractor.Should().BeNull();
-
-            ILicenseDebugger? LicenseDebugger = host.Services.GetService<ILicenseDebugger>();
-            LicenseDebugger.Should().BeNull();
+            act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
         }
 
-        private void SetupAction(TerminalOptions obj)
+        [Fact]
+        public void AddTerminalConsole_WithNullSetupAction_ShouldThrow()
         {
-            setupActionCalled = true;
+            var services = new ServiceCollection();
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => services.AddTerminalConsole<TerminalInMemoryCommandStore>(
+                textHandler,
+                null!
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
         }
 
-        private bool setupActionCalled;
+        [Fact]
+        public void AddTerminalCli_WithNullServices_ShouldThrow()
+        {
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => ((IServiceCollection)null!).AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
+                textHandler,
+                static options => { }
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("services");
+        }
+
+        [Fact]
+        public void AddTerminalCli_WithNullTextHandler_ShouldThrow()
+        {
+            var services = new ServiceCollection();
+
+            var act = () => services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
+                null!,
+                static options => { }
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
+        }
+
+        [Fact]
+        public void AddTerminalCli_WithNullSetupAction_ShouldThrow()
+        {
+            var services = new ServiceCollection();
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
+                textHandler,
+                null!
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
+        }
+
+        [Fact]
+        public void AddTerminalClient_WithNullServices_ShouldThrow()
+        {
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => ((IServiceCollection)null!).AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                textHandler,
+                static options => { }
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("services");
+        }
+
+        [Fact]
+        public void AddTerminalClient_WithNullTextHandler_ShouldThrow()
+        {
+            var services = new ServiceCollection();
+
+            var act = () => services.AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                null!,
+                static options => { }
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
+        }
+
+        [Fact]
+        public void AddTerminalClient_WithNullSetupAction_ShouldThrow()
+        {
+            var services = new ServiceCollection();
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => services.AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                textHandler,
+                null!
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
+        }
+
+        [Fact]
+        public void AddTerminalServer_WithNullServices_ShouldThrow()
+        {
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => ((IServiceCollection)null!).AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                textHandler,
+                static options => { }
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("services");
+        }
+
+        [Fact]
+        public void AddTerminalServer_WithNullTextHandler_ShouldThrow()
+        {
+            var services = new ServiceCollection();
+
+            var act = () => services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                null!,
+                static options => { }
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
+        }
+
+        [Fact]
+        public void AddTerminalServer_WithNullSetupAction_ShouldThrow()
+        {
+            var services = new ServiceCollection();
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+                textHandler,
+                null!
+            );
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
+        }
+
+        [Fact]
+        public void CreateTerminalBuilder_WithNullServices_ShouldThrow()
+        {
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+
+            var act = () => ((IServiceCollection)null!).CreateTerminalBuilder(textHandler);
+
+            act.Should().Throw<ArgumentNullException>().WithParameterName("services");
+        }
     }
 }

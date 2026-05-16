@@ -1,14 +1,11 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Dynamics;
 using System.Threading.Tasks;
 
-namespace OneImlx.Terminals.Integration.Mocks
+namespace OneImlx.Terminal.Dynamics.Mocks
 {
     internal class MockPublishedCommandSourceChecker : ITerminalCommandSourceChecker<PublishedCommandSourceContext>
     {

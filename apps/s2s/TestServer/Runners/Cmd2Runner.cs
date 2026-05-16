@@ -4,6 +4,8 @@ using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.TestServer.Runners
@@ -12,7 +14,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
     /// The sub-command <c>cmd2</c> runner for the TestServer.
     /// </summary>
     [CommandOwners("grp2")]
-    [CommandDescriptor("cmd2", "Command 2", "Command2 description.", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("cmd2", "Command 2", "Command2 description.", CommandType.Leaf, CommandFlags.None)]
     [CommandChecker(typeof(CommandChecker))]
     public class Cmd2Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

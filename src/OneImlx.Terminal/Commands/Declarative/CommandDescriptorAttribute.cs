@@ -1,10 +1,9 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 
 namespace OneImlx.Terminal.Commands.Declarative
@@ -12,8 +11,8 @@ namespace OneImlx.Terminal.Commands.Declarative
     /// <summary>
     /// Declares a <see cref="CommandDescriptor"/> for a command.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class CommandDescriptorAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class CommandDescriptorAttribute : Attribute, ICommandDescriptorAttribute
     {
         /// <summary>
         /// Initializes a new instance.

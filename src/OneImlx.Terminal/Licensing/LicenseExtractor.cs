@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.IO;
@@ -60,7 +57,7 @@ namespace OneImlx.Terminal.Licensing
             }
             else
             {
-                _licenseExtractorResult = await ExtractJsonAsync();
+                _licenseExtractorResult = await ExtractJsonAsync().ConfigureAwait(false);
             }
 
             return _licenseExtractorResult;
@@ -108,7 +105,7 @@ namespace OneImlx.Terminal.Licensing
 
             // Validate the license key
             JsonWebTokenHandler jwtHandler = new();
-            TokenValidationResult result = await jwtHandler.ValidateTokenAsync(checkModel.LicenseKey, validationParameters);
+            TokenValidationResult result = await jwtHandler.ValidateTokenAsync(checkModel.LicenseKey, validationParameters).ConfigureAwait(false);
             if (!result.IsValid)
             {
                 throw new TerminalException(TerminalErrors.UnauthorizedAccess, "License key validation failed. info={0}", result.Exception.Message);
@@ -173,7 +170,7 @@ namespace OneImlx.Terminal.Licensing
             };
 
             // Check the license key
-            LicenseClaims claims = await CheckLicenseAsync(checkModel);
+            LicenseClaims claims = await CheckLicenseAsync(checkModel).ConfigureAwait(false);
 
             // Make sure the acr contains the
             string[] acrValues = claims.AcrValues.SplitBySpace();
@@ -240,7 +237,7 @@ namespace OneImlx.Terminal.Licensing
 
             // Avoid file locking for multiple threads.
             LicenseFile? licenseFile;
-            await _semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync().ConfigureAwait(false);
             try
             {
                 // Decode the license contents if set.
@@ -253,7 +250,7 @@ namespace OneImlx.Terminal.Licensing
                     // Make sure the lic stream is disposed to avoid locking.
                     using (Stream licStream = File.OpenRead(_terminalOptions.Licensing.LicenseFile))
                     {
-                        licenseFile = await JsonSerializer.DeserializeAsync<LicenseFile>(licStream);
+                        licenseFile = await JsonSerializer.DeserializeAsync<LicenseFile>(licStream).ConfigureAwait(false);
                     }
                 }
             }
@@ -276,7 +273,7 @@ namespace OneImlx.Terminal.Licensing
             LicenseExtractorResult? licenseExtractorResult;
             if (licenseFile.Mode == TerminalIdentifiers.OfflineLicenseMode)
             {
-                licenseExtractorResult = await EnsureLicenseAsync(licenseFile);
+                licenseExtractorResult = await EnsureLicenseAsync(licenseFile).ConfigureAwait(false);
             }
             else
             {

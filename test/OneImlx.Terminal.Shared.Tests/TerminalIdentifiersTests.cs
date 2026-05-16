@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using OneImlx.Test.FluentAssertions;
@@ -16,7 +13,7 @@ namespace OneImlx.Terminal.Shared
         [Fact]
         public void TerminalIdentifiers_Defines_Identifiers()
         {
-            typeof(TerminalIdentifiers).Should().HaveConstantCount(14);
+            typeof(TerminalIdentifiers).Should().HaveConstantCount(17);
 
             TerminalIdentifiers.OfflineLicenseMode.Should().Be("offline");
             TerminalIdentifiers.StandardDeployment.Should().Be("standard");
@@ -32,6 +29,9 @@ namespace OneImlx.Terminal.Shared
             TerminalIdentifiers.SpaceSeparator.Should().Be(' ');
             TerminalIdentifiers.Issuer.Should().Be("https://api.perpetualintelligence.com");
             TerminalIdentifiers.ValidationThumbprint.Should().Be("4F8B2E863986461B5FA7F32FD1E8C9E34D914666");
+            TerminalIdentifiers.Unknown.Should().Be("$unknown$");
+            TerminalIdentifiers.DeclaritiveDefinition.Should().Be("declarative");
+            TerminalIdentifiers.ExplicitDefinition.Should().Be("explicit");
         }
     }
 }

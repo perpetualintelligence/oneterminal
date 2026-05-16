@@ -3,6 +3,8 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.Threading.Tasks;
 
@@ -11,7 +13,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
     /// <summary>
     /// The root <c>test</c> runner for the TestServer.
     /// </summary>
-    [CommandDescriptor("ts", "Test Server", "Test server description.", CommandType.RootCommand, CommandFlags.None)]
+    [CommandDescriptor("ts", "Test Server", "Test server description.", CommandType.Root, CommandFlags.None)]
     [OptionDescriptor("version", nameof(String), "Test server version description", OptionFlags.None, "v")]
     public class TestServerRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

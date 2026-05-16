@@ -9,6 +9,7 @@ using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -21,19 +22,21 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("udp", "UDP test", "Send UDP commands to the terminal server.", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("udp", "UDP test", "Send UDP commands to the terminal server.", CommandType.Leaf, CommandFlags.None)]
     public class SendUdpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendUdpRunner(
             IOptions<TerminalOptions> terminalOptions,
             ITerminalTextHandler terminalTextHandler,
             ITerminalConsole terminalConsole,
+            ITerminalBytesParser terminalBytesParser,
             IConfiguration configuration,
             ITerminalExceptionHandler terminalExceptionHandler)
         {
             this.terminalOptions = terminalOptions;
             this.terminalTextHandler = terminalTextHandler;
             this.terminalConsole = terminalConsole;
+            this.terminalBytesParser = terminalBytesParser;
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.terminalExceptionHandler = terminalExceptionHandler;
         }
@@ -83,7 +86,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                     }
 
                     var udpResult = await udpClient.ReceiveAsync();
-                    var outputs = udpResult.Buffer.Split(terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
+                    var outputs = terminalBytesParser.Split(udpResult.Buffer, terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
                     foreach (var opt in outputs)
                     {
                         TerminalInputOutput? output = JsonSerializer.Deserialize<TerminalInputOutput>(opt);
@@ -187,6 +190,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         private readonly IConfiguration configuration;
         private readonly Stopwatch stopwatch = new();
         private readonly ITerminalConsole terminalConsole;
+        private readonly ITerminalBytesParser terminalBytesParser;
         private readonly ITerminalExceptionHandler terminalExceptionHandler;
         private readonly IOptions<TerminalOptions> terminalOptions;
         private readonly ITerminalTextHandler terminalTextHandler;

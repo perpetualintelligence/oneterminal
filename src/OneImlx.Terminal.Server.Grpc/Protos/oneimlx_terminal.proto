@@ -1,0 +1,25 @@
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
+
+syntax = "proto3";
+
+option csharp_namespace = "OneImlx.Terminal.Server.Grpc";
+
+// The OneImlx terminal router command service to request the command.
+service TerminalGrpcRouterProto {
+    // Routes a command asynchronously.
+    rpc RouteCommand (TerminalGrpcRouterProtoInput) returns (TerminalGrpcRouterProtoOutput);
+}
+
+// The terminal router command request.
+message TerminalGrpcRouterProtoInput {
+    // The terminal input.
+    string InputJson = 1;
+}
+
+// The terminal router command request.
+message TerminalGrpcRouterProtoOutput {
+    // The terminal output.
+    string OutputJson = 1;
+}

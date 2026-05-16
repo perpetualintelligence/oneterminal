@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using OneImlx.Test.FluentAssertions;
@@ -16,20 +13,13 @@ namespace OneImlx.Terminal.Server
         [Fact]
         public void TypesLocationTest()
         {
-            typeof(TerminalGrpcMapService).Assembly.Should().HaveTypesInValidLocations(
-                [
-                    typeof(OneimlxTerminalReflection),
-                    typeof(TerminalGrpcRouterProtoInput),
-                    typeof(TerminalGrpcRouterProtoOutput),
-                    typeof(TerminalGrpcRouterProto),
-                    typeof(TerminalGrpcRouterProto.TerminalGrpcRouterProtoBase),
-                ]);
+            typeof(TerminalHttpMapService).Assembly.Should().HaveTypesInValidLocations();
         }
 
         [Fact]
         public void TypesNamespaceTest()
         {
-            typeof(TerminalGrpcMapService).Assembly.Should().HaveTypesInRootNamespace("OneImlx.Terminal.Server");
+            typeof(TerminalHttpMapService).Assembly.Should().HaveTypesInRootNamespace("OneImlx.Terminal.Server");
         }
     }
 }

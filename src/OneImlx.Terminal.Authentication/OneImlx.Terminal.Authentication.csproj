@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\build\props\PackageLicense.props" />
+    <Import Project="..\..\build\props\Package.props" />
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
         <Description>
-            A cross-platform authentication framework for securing `OneImlx.Terminal` apps and servers.
+            Cross-platform authentication library for securing `OneImlx.Terminal` applications and servers.
         </Description>
         <PackageTags>terminal cli options flags commands oneimlx unicode msal identity oauth openid-connect oidc</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Graph" Version="5.81.0" />
-        <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.72.1" />
+        <PackageReference Include="Microsoft.Graph" Version="6.0.3" />
+        <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.84.0" />
     </ItemGroup>
 
     <!--

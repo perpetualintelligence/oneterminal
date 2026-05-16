@@ -1,21 +1,18 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Runners
 {
     /// <summary>
-    /// The command runner is where developers implement how commands are executed. It operates asynchronously to handle
-    /// commands that might take a while to process. The framework routes each parsed command to its specific runner,
-    /// helping to organize and manage the command execution logic within your application.
+    /// Represents a command runner that defines how a parsed command is executed asynchronously.
+    /// The framework resolves and invokes the appropriate runner for each command, enabling
+    /// modular and isolated command execution within a terminal application.
     /// </summary>
     public abstract class CommandRunner<TResult> : IDelegateCommandRunner, ICommandRunner<TResult> where TResult : CommandRunnerResult
     {

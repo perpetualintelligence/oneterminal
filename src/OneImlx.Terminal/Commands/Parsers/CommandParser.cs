@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Collections.Generic;
@@ -50,8 +47,8 @@ namespace OneImlx.Terminal.Commands.Parsers
         public async Task ParseCommandAsync(CommandContext context)
         {
             logger.LogDebug("Parse request. request={0} raw={1}", context.Request.Id, context.Request.Raw);
-            TerminalParsedRequest parsedOutput = await terminalRequestParser.ParseRequestAsync(context.Request);
-            context.ParsedCommand = await MapParsedRequestAsync(context.Request, parsedOutput);
+            TerminalParsedRequest parsedOutput = await terminalRequestParser.ParseRequestAsync(context.Request).ConfigureAwait(false);
+            context.ParsedCommand = await MapParsedRequestAsync(context.Request, parsedOutput).ConfigureAwait(false);
         }
 
         private async Task<(List<CommandDescriptor> parsedCommands, List<Argument> parsedArguments)> MapCommandAndArguments(TerminalParsedRequest parsedOutput)
@@ -64,7 +61,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             int argId = 0;
             foreach (string token in parsedOutput.Tokens)
             {
-                if (await commandStore.TryFindByIdAsync(token, out CommandDescriptor? currentCommand))
+                if (await commandStore.TryFindByIdAsync(token, out CommandDescriptor? currentCommand).ConfigureAwait(false))
                 {
                     if (currentCommand == null)
                     {
@@ -183,7 +180,7 @@ namespace OneImlx.Terminal.Commands.Parsers
         private async Task<ParsedCommand> MapParsedRequestAsync(TerminalRequest request, TerminalParsedRequest parsedOutput)
         {
             // Map to command and arguments
-            var (commandDescriptors, parsedArguments) = await MapCommandAndArguments(parsedOutput);
+            var (commandDescriptors, parsedArguments) = await MapCommandAndArguments(parsedOutput).ConfigureAwait(false);
 
             // Process Options
             CommandDescriptor commandDescriptor = commandDescriptors.Last();

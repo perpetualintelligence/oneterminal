@@ -186,19 +186,19 @@ namespace OneImlx.Terminal.Licensing
                 .WithErrorDescription($"The license plan is not authorized for air gapped deployment. plan={licPlan}");
         }
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             if (File.Exists(testOfflineLicPath))
             {
                 File.Delete(testOfflineLicPath);
             }
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]

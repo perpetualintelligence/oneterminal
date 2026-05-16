@@ -1,0 +1,34 @@
+﻿using OneImlx.Terminal.Commands;
+using OneImlx.Terminal.Commands.Checkers;
+using OneImlx.Terminal.Commands.Declarative;
+using OneImlx.Terminal.Commands.Runners;
+using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
+
+namespace OneImlx.Terminal.Apps.TestApiServer.Runners
+{
+    /// <summary>
+    /// The sub-command <c>cmd1</c> runner for the <see cref="TestApiServer"/>.
+    /// </summary>
+    [CommandOwners("grp1")]
+    [CommandDescriptor("cmd1", "Command 1", "Command1 description.", CommandType.Leaf, CommandFlags.None)]
+    [CommandChecker(typeof(CommandChecker))]
+    public class Cmd1Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    {
+        public Cmd1Runner(ITerminalConsole terminalConsole, ILogger<Cmd1Runner> logger)
+        {
+            this.terminalConsole = terminalConsole;
+            this.logger = logger;
+        }
+
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        {
+            await terminalConsole.WriteLineAsync("Command1 of Group1 called.");
+            return new CommandRunnerResult("Response from cmd1");
+        }
+
+        private readonly ILogger<Cmd1Runner> logger;
+        private readonly ITerminalConsole terminalConsole;
+    }
+}

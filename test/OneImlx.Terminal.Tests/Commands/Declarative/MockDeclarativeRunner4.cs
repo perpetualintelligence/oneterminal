@@ -6,12 +6,14 @@
 */
 
 using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("oid1, oid2")]
-    [CommandDescriptor("id4", "name4", "description", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("id4", "name4", "description", CommandType.Leaf, CommandFlags.None)]
     [CommandChecker(typeof(MockCommandChecker))]
     [CommandTags("tag1", "tag2", "tag3")]
     [OptionDescriptor("opt1", nameof(String), "test arg desc1", OptionFlags.None)]

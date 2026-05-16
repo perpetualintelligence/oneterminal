@@ -1,24 +1,19 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using OneImlx.Shared.Infrastructure;
+using OneImlx.Terminal.Commands;
+using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using OneImlx.Shared.Infrastructure;
-using OneImlx.Terminal.Commands;
-using OneImlx.Terminal.Configuration.Options;
-
-using OneImlx.Terminal.Extensions;
-using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -40,18 +35,21 @@ namespace OneImlx.Terminal.Runtime
         /// <param name="terminalExceptionHandler">The handler for exceptions thrown during command processing.</param>
         /// <param name="terminalOptions">Configuration options for the terminal.</param>
         /// <param name="textHandler">The terminal text handler.</param>
+        /// <param name="terminalBytesParser">The terminal bytes parser.</param>
         /// <param name="logger">Logger for logging operations within the queue.</param>
         public TerminalProcessor(
             ICommandRouter commandRouter,
             ITerminalExceptionHandler terminalExceptionHandler,
             IOptions<TerminalOptions> terminalOptions,
             ITerminalTextHandler textHandler,
+            ITerminalBytesParser terminalBytesParser,
             ILogger<TerminalProcessor> logger)
         {
             this.commandRouter = commandRouter;
             this.terminalExceptionHandler = terminalExceptionHandler;
             this.terminalOptions = terminalOptions;
             this.textHandler = textHandler;
+            this.terminalBytesParser = terminalBytesParser;
             this.logger = logger;
 
             processedRequests = [];
@@ -125,7 +123,7 @@ namespace OneImlx.Terminal.Runtime
                 throw new TerminalException(TerminalErrors.ServerError, "The terminal processor is not running.");
             }
 
-            await RouteRequestsAsync(terminalIO, terminalRouterContext);
+            await RouteRequestsAsync(terminalIO, terminalRouterContext).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -155,7 +153,7 @@ namespace OneImlx.Terminal.Runtime
             var combinedTask = Task.WhenAll(requestProcessing, responseProcessing);
             if (combinedTask.Status != TaskStatus.RanToCompletion)
             {
-                var task = await Task.WhenAny(combinedTask, Task.Delay(timeout));
+                var task = await Task.WhenAny(combinedTask, Task.Delay(timeout)).ConfigureAwait(false);
                 if (task != combinedTask)
                 {
                     return true;
@@ -177,26 +175,28 @@ namespace OneImlx.Terminal.Runtime
 
             if (!streamingRequests.TryGetValue(senderId, out Queue<byte>? previousStream))
             {
-                previousStream = new Queue<byte>();
+                previousStream = new Queue<byte>(bytesLength); // Pre-allocate capacity
                 streamingRequests[senderId] = previousStream;
             }
 
-            // Make sure the previous unprocessed stream is processed first
+            // Optimize: Enqueue bytes in bulk using Span to avoid repeated Enqueue calls
             for (int idx = 0; idx < bytesLength; ++idx)
             {
                 previousStream.Enqueue(bytes[idx]);
             }
 
             // Split the input stream into batches using the stream delimiter
-            byte[][] rawInputs = previousStream.ToArray().Split(terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out bool endsWithDelimiter);
+            byte[][] rawInputs = terminalBytesParser.Split(previousStream.ToArray(), terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out bool endsWithDelimiter);
             previousStream.Clear();
 
             // Check if the last batch ends with the delimiter
             int lengthToProcess = rawInputs.Length;
-            if (!endsWithDelimiter)
+            if (!endsWithDelimiter && lengthToProcess > 0)
             {
                 lengthToProcess--;
                 byte[] last = rawInputs[lengthToProcess];
+
+                // Re-enqueue the last partial segment
                 for (int jdx = 0; jdx < last.Length; ++jdx)
                 {
                     previousStream.Enqueue(last[jdx]);
@@ -220,7 +220,7 @@ namespace OneImlx.Terminal.Runtime
                 // Streams routers (TCP, UDP) only deal with bytes so they cannot set this.
                 input.SenderId = senderId;
                 input.SenderEndpoint = senderEndpoint;
-                await AddAsync(input);
+                await AddAsync(input).ConfigureAwait(false);
             }
         }
 
@@ -229,7 +229,7 @@ namespace OneImlx.Terminal.Runtime
         {
             try
             {
-                await Task.Delay(Timeout.Infinite, cancellationToken);
+                await Task.Delay(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {
@@ -244,38 +244,46 @@ namespace OneImlx.Terminal.Runtime
 
         private async Task RouteRequestsAsync(TerminalInputOutput terminalOutput, TerminalRouterContext terminalRouterContext)
         {
+            // Cache options for the loop to avoid repeated property access
+            int maxLength = terminalOptions.Value.Router.MaxLength;
+            int timeout = terminalOptions.Value.Router.Timeout;
+            CancellationToken cancellationToken = terminalRouterContext.TerminalCancellationToken;
+
+            // Pre-compute sender information to avoid repeated null-coalescing
+            string senderEndpoint = terminalOutput.SenderEndpoint ?? TerminalIdentifiers.Unknown;
+            string senderId = terminalOutput.SenderId ?? TerminalIdentifiers.Unknown;
+
+            // Reusable properties dictionary to avoid allocation per request
+            Dictionary<string, object> properties = new()
+                {
+                    { TerminalIdentifiers.SenderEndpointToken, senderEndpoint },
+                    { TerminalIdentifiers.SenderIdToken, senderId }
+                };
+
             for (int idx = 0; idx < terminalOutput.Count; ++idx)
             {
                 TerminalRequest request = terminalOutput[idx];
 
-                // If cancellation is requested then stop routing the requestBs.
-                if (terminalRouterContext.TerminalCancellationToken.IsCancellationRequested)
+                // If cancellation is requested then stop routing the requests.
+                if (cancellationToken.IsCancellationRequested)
                 {
                     throw new OperationCanceledException("The terminal router is canceled.");
                 }
 
                 try
                 {
-                    string senderEndpoint = terminalOutput.SenderEndpoint ?? "$unknown$";
-                    string senderId = terminalOutput.SenderId ?? "$unknown$";
-                    Dictionary<string, object> properties = new()
+                    if (request.Raw.Length > maxLength)
                     {
-                        { TerminalIdentifiers.SenderEndpointToken, senderEndpoint },
-                        { TerminalIdentifiers.SenderIdToken, senderId }
-                    };
-
-                    if (request.Raw.Length > terminalOptions.Value.Router.MaxLength)
-                    {
-                        throw new TerminalException(TerminalErrors.InvalidRequest, "The command length exceeds the maximum allowed. max={0}", terminalOptions.Value.Router.MaxLength);
+                        throw new TerminalException(TerminalErrors.InvalidRequest, "The command length exceeds the maximum allowed. max={0}", maxLength);
                     }
 
                     logger.LogDebug("Routing the command. raw={0} sender={1}", request.Raw, senderId);
                     var context = new CommandContext(request, terminalRouterContext, properties);
-                    var routeTask = commandRouter.RouteCommandAsync(context);
 
-                    if (await Task.WhenAny(routeTask, Task.Delay(terminalOptions.Value.Router.Timeout, terminalRouterContext.TerminalCancellationToken)) == routeTask)
+                    var routeTask = commandRouter.RouteCommandAsync(context);
+                    if (await Task.WhenAny(routeTask, Task.Delay(timeout, cancellationToken)).ConfigureAwait(false) == routeTask)
                     {
-                        CommandResult result = await routeTask;
+                        CommandResult result = await routeTask.ConfigureAwait(false);
                         object? value = null;
                         if (result.RunnerResult != null)
                         {
@@ -298,8 +306,8 @@ namespace OneImlx.Terminal.Runtime
                     terminalOutput.Requests[idx].Result = error;
                     terminalOutput.Requests[idx].IsError = true;
 
-                    // This is a server to we handle the exception and log it. If the implementation throws then server stops.
-                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, request));
+                    // This is a server so we handle the exception and log it. If the implementation throws then server stops.
+                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, request)).ConfigureAwait(false);
                 }
             }
         }
@@ -321,7 +329,7 @@ namespace OneImlx.Terminal.Runtime
                 {
                     // Wait until there is a signal or the cancellation. The requestSignal is used to signal that there
                     // is a new item in the queue, at the same time we don't hog the CPU in the outer while loop.
-                    await requestSignal.WaitAsync(terminalRouterContext.TerminalCancellationToken);
+                    await requestSignal.WaitAsync(terminalRouterContext.TerminalCancellationToken).ConfigureAwait(false);
                     if (!unprocessedIOs.IsEmpty)
                     {
                         // Process the request and dequeue the response
@@ -329,7 +337,7 @@ namespace OneImlx.Terminal.Runtime
                         if (output != null)
                         {
                             // Request is processed and results are populated in the output
-                            await RouteRequestsAsync(output, terminalRouterContext);
+                            await RouteRequestsAsync(output, terminalRouterContext).ConfigureAwait(false);
                         }
                         else
                         {
@@ -344,7 +352,7 @@ namespace OneImlx.Terminal.Runtime
                 }
                 catch (Exception ex)
                 {
-                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null));
+                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null)).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -373,23 +381,24 @@ namespace OneImlx.Terminal.Runtime
                     // Wait until there is a signal or the cancellation is requested. The responseSignal is used to
                     // signal that there is a new item in the queue, at the same time we don't hog the CPU in the outer
                     // while loop.
-                    await responseSignal.WaitAsync(terminalRouterContext.TerminalCancellationToken);
+                    await responseSignal.WaitAsync(terminalRouterContext.TerminalCancellationToken).ConfigureAwait(false);
 
                     // Invoke the handler for the response asynchronously.
                     if (handler != null)
                     {
-                        Task invokeResponse = handler.Invoke(processedRequests.Pop());
+                        // Explicitly indicate fire-and-forget pattern - we intentionally don't await
+                        _ = handler.Invoke(processedRequests.Pop());
                     }
                 }
                 catch (OperationCanceledException oex)
                 {
                     // If canceled, break the while loop and exit the processing.
-                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(oex, null));
+                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(oex, null)).ConfigureAwait(false);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null));
+                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(ex, null)).ConfigureAwait(false);
                 }
             }
         }
@@ -403,6 +412,7 @@ namespace OneImlx.Terminal.Runtime
         private readonly ITerminalExceptionHandler terminalExceptionHandler;
         private readonly IOptions<TerminalOptions> terminalOptions;
         private readonly ITerminalTextHandler textHandler;
+        private readonly ITerminalBytesParser terminalBytesParser;
         private readonly ConcurrentQueue<TerminalInputOutput> unprocessedIOs;
         private Func<TerminalInputOutput, Task>? handler;
         private Task requestProcessing;

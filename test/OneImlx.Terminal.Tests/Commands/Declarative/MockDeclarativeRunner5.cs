@@ -14,11 +14,13 @@
 */
 
 using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("oid1, oid2")]
-    [CommandDescriptor("id5", "name5", "description", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("id5", "name5", "description", CommandType.Leaf, CommandFlags.None)]
     [CommandChecker(typeof(MockCommandChecker))]
     public class MockDeclarativeRunner5 : IDeclarativeRunner
     {

@@ -147,7 +147,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             Option value = new(identity, "4242424242424242");
 
             var result = await checker.CheckOptionAsync(value);
-            result.MappedType.Should().Be(typeof(string));
+            result.MappedType.Should().Be<string>();
         }
 
         private readonly IOptionChecker checker = null!;

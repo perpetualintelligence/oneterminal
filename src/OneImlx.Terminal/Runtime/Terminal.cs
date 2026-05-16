@@ -1,14 +1,12 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 // This is used to unit test the behavior of the terminal framework's internal types.
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("OneImlx.Terminal.Tests")]
+[assembly: InternalsVisibleTo("OneImlx.Terminal.Server.Tests")]
 
 namespace OneImlx.Terminal.Runtime
 {

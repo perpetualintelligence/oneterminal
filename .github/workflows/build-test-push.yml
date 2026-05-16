@@ -1,4 +1,4 @@
-#    Copyright (c) Perpetual Intelligence L.L.C. All Rights Reserved.
+#    Copyright (c) 2026 Perpetual Intelligence L.L.C. All Rights Reserved.
 #
 #    For license, terms, and data policies, go to:
 #    https://terms.perpetualintelligence.com
@@ -20,10 +20,10 @@ on:
         description: 'The package deployment suffix'
         required: true
         options:
-        - preview
+        - er
         - rc
         - release
-        default: preview
+        default: er
       registry:
         type: choice
         description: 'The package registry'
@@ -76,17 +76,17 @@ jobs:
       continue-on-error: false
     
     # Setup preview package versions based on trigger
-    # Format: <package>.2.3.6-preview.2201032602
+    # Format: <package>.2.3.6-rc.2201032602
     - name: Default metadata (rc)
       if: ${{ github.event.inputs.suffix == '' }}
       run: echo "PI_CI_PACKAGE_VERSION=${{ env.PI_MAJOR_VERSION }}.${{ env.PI_MINOR_VERSION }}.${{ env.PI_PATCH_VERSION }}-rc.${{ env.PI_BUILD_NUMBER }}" >> $GITHUB_ENV
       continue-on-error: false
     
-    # Setup preview package versions
-    # Format: <package>.2.3.6-preview.2201032602
+    # Setup engineering package versions
+    # Format: <package>.2.3.6-er.2201032602
     - name: Preview metadata
-      if: ${{ github.event.inputs.suffix == 'preview' }}
-      run: echo "PI_CI_PACKAGE_VERSION=${{ env.PI_MAJOR_VERSION }}.${{ env.PI_MINOR_VERSION }}.${{ env.PI_PATCH_VERSION }}-preview.${{ env.PI_BUILD_NUMBER }}" >> $GITHUB_ENV
+      if: ${{ github.event.inputs.suffix == 'er' }}
+      run: echo "PI_CI_PACKAGE_VERSION=${{ env.PI_MAJOR_VERSION }}.${{ env.PI_MINOR_VERSION }}.${{ env.PI_PATCH_VERSION }}-er.${{ env.PI_BUILD_NUMBER }}" >> $GITHUB_ENV
       continue-on-error: false
       
     # Setup rc package versions
@@ -159,11 +159,55 @@ jobs:
         nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
         registry: ${{ env.PI_PUBLISH_REGISTRY }}
 
+    # Publish OneImlx.Terminal.Server.Grpc
+    - name: OneImlx.Terminal.Server.Grpc
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Server.Grpc
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
+    # Publish OneImlx.Terminal.Server.Pulsar
+    - name: OneImlx.Terminal.Server.Pulsar
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Server.Pulsar
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
     # Publish OneImlx.Terminal.Client
     - name: OneImlx.Terminal.Client
       uses: ./.github/actions/push-package
       with:
         project: OneImlx.Terminal.Client
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
+    # Publish OneImlx.Terminal.Client.Grpc
+    - name: OneImlx.Terminal.Client.Grpc
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Client.Grpc
+        config: Release
+        version: ${{ env.PI_CI_PACKAGE_VERSION }}
+        ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}
+        nugetapikey: ${{ env.PI_NUGET_PAT_ENV }}
+        registry: ${{ env.PI_PUBLISH_REGISTRY }}
+
+    # Publish OneImlx.Terminal.Server.Pulsar
+    - name: OneImlx.Terminal.Client.Pulsar
+      uses: ./.github/actions/push-package
+      with:
+        project: OneImlx.Terminal.Client.Pulsar
         config: Release
         version: ${{ env.PI_CI_PACKAGE_VERSION }}
         ghapikey: ${{ env.PI_GITHUB_PAT_ENV }}

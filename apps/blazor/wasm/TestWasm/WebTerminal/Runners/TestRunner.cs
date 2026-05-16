@@ -1,4 +1,5 @@
-﻿using OneImlx.Terminal.Commands.Checkers;
+﻿using OneImlx.Terminal.Commands;
+using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
@@ -8,7 +9,7 @@ namespace OneImlx.Terminal.Apps.TestWasm.WebTerminal.Runners
     /// <summary>
     /// The root <c>test</c> runner for the TestApp.
     /// </summary>
-    [CommandDescriptor("test", "Test App", "Test application description.", Commands.CommandType.Root, Commands.CommandFlags.None)]
+    [CommandDescriptor("test", "Test App", "Test application description.", Commands.CommandType.RootCommand, Commands.CommandFlags.None)]
     [OptionDescriptor("version", nameof(String), "Test version description", Commands.OptionFlags.None, "v")]
     [CommandChecker(typeof(CommandChecker))]
     public class TestRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
@@ -22,12 +23,12 @@ namespace OneImlx.Terminal.Apps.TestWasm.WebTerminal.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandRunnerContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.WriteLineAsync("Test root command called.");
 
             // Get the version option value
-            if (context.Command.TryGetOptionValue("version", out string? version))
+            if (context.EnsureCommand().TryGetOptionValue("version", out string? version))
             {
                 await terminalConsole.WriteLineAsync("Version option passed.");
             }

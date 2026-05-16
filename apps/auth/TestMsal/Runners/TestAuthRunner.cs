@@ -4,6 +4,8 @@ using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.Threading.Tasks;
 
@@ -12,7 +14,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
     /// <summary>
     /// The root <c>test</c> runner for the TestApp.
     /// </summary>
-    [CommandDescriptor("test", "Test App", "Test application description.", CommandType.RootCommand, CommandFlags.None)]
+    [CommandDescriptor("test", "Test App", "Test application description.", CommandType.Root, CommandFlags.None)]
     [OptionDescriptor("version", nameof(String), "Test version description", OptionFlags.None, "v")]
     [CommandChecker(typeof(CommandChecker))]
     public class TestRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner

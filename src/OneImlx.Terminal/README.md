@@ -16,4 +16,4 @@ For non-educational, commercial, or production use, a commercial license is requ
 For more information explore our [framework documentation](https://docs.perpetualintelligence.com/articles/terminal/intro.html).
 
 ## Feedback
-Your feedback helps shape `OneImlx.Terminal`. For suggestions, issues, or queries, please visit our [GitHub Issues](https://github.com/PerpetualIntelligence/terminal/issues).
+Your feedback helps shape `OneImlx.Terminal`. For suggestions, issues, or queries, please visit our [GitHub Issues](https://github.com/perpetualintelligence/oneterminal/issues).

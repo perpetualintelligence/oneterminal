@@ -1,0 +1,39 @@
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
+
+using OneImlx.Terminal.Runtime;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+
+namespace OneImlx.Terminal.Server
+{
+    /// <summary>
+    /// The <see cref="TerminalTcpRouter"/> connection context.
+    /// </summary>
+    public sealed class TerminalTcpRouterContext : TerminalRouterContext
+    {
+        /// <summary>
+        /// Initialize a new instance.
+        /// </summary>
+        /// <param name="iPEndPoint">The network IP endpoint server will connect.</param>
+        /// <param name="startMode">The terminal start mode.</param>
+        /// <param name="customProperties">The custom properties.</param>
+        /// <param name="arguments">The command line arguments.</param>
+        public TerminalTcpRouterContext(
+            IPEndPoint iPEndPoint,
+            TerminalStartMode startMode,
+            Dictionary<string, object>? customProperties = null,
+            string[]? arguments = null)
+            : base(startMode, customProperties, arguments)
+        {
+            IPEndPoint = iPEndPoint;
+        }
+
+        /// <summary>
+        /// The IP endpoint for the <see cref="TcpListener"/>. The clients need to send the messages to this end point.
+        /// </summary>
+        public IPEndPoint IPEndPoint { get; private set; }
+    }
+}

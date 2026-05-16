@@ -1,15 +1,7 @@
-/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -20,13 +12,18 @@ using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Dynamics;
 using OneImlx.Terminal.Events;
 using OneImlx.Terminal.Hosting;
-using OneImlx.Terminal.Dynamics;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
-using OneImlx.Terminal.Stores;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
+using OneImlx.Terminal.Stores;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace OneImlx.Terminal.Extensions
 {
@@ -35,6 +32,18 @@ namespace OneImlx.Terminal.Extensions
     /// </summary>
     public static class ITerminalBuilderExtensions
     {
+        /// <summary>
+        /// Adds the <see cref="ITerminalBytesParser"/> to the service collection.
+        /// </summary>
+        /// <typeparam name="TBytesParser"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ITerminalBuilder AddBytesParser<TBytesParser>(this ITerminalBuilder builder) where TBytesParser : class, ITerminalBytesParser
+        {
+            builder.Services.AddSingleton<ITerminalBytesParser, TBytesParser>();
+            return builder;
+        }
+
         /// <summary>
         /// Adds the <see cref="IDataTypeMapper{TValue}"/> and <see cref="IArgumentChecker"/> to the service collection.
         /// </summary>
@@ -134,22 +143,6 @@ namespace OneImlx.Terminal.Extensions
         /// Adds all the <see cref="IDeclarativeRunner"/> implementations to the service collection.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <param name="assemblyType">The type whose assembly to inspect and read all the declarative targets.</param>
-        /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
-        /// <remarks>
-        /// The <see cref="AddDeclarativeAssembly(ITerminalBuilder, Type)"/> reads the target assembly and inspects all
-        /// the declarative targets using reflection. Reflection may have a performance bottleneck. For more optimized
-        /// and direct declarative target inspection, use <see cref="AddDeclarativeRunner{TDeclarativeRunner}(ITerminalBuilder)"/>.
-        /// </remarks>
-        public static ITerminalBuilder AddDeclarativeAssembly(this ITerminalBuilder builder, Type assemblyType)
-        {
-            return AddDeclarativeAssembly(builder, assemblyType.Assembly);
-        }
-
-        /// <summary>
-        /// Adds all the <see cref="IDeclarativeRunner"/> implementations to the service collection.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
         /// <param name="assembly">The assembly to inspect.</param>
         /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
         /// <remarks>
@@ -177,13 +170,13 @@ namespace OneImlx.Terminal.Extensions
         /// <typeparam name="TType">The type whose assembly to inspect and read all the declarative targets.</typeparam>
         /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
         /// <remarks>
-        /// The <see cref="AddDeclarativeAssembly(ITerminalBuilder, Type)"/> reads the target assembly and inspects all
+        /// The <see cref="AddDeclarativeAssembly{TType}(ITerminalBuilder)"/> reads the target assembly and inspects all
         /// the declarative targets using reflection. Reflection may have a performance bottleneck. For more optimized
         /// and direct declarative target inspection, use <see cref="AddDeclarativeRunner{TDeclarativeRunner}(ITerminalBuilder)"/>.
         /// </remarks>
         public static ITerminalBuilder AddDeclarativeAssembly<TType>(this ITerminalBuilder builder)
         {
-            return AddDeclarativeAssembly(builder, typeof(TType));
+            return AddDeclarativeAssembly(builder, typeof(TType).Assembly);
         }
 
         /// <summary>
@@ -388,29 +381,100 @@ namespace OneImlx.Terminal.Extensions
             // Command descriptor The declarative runner is the command runner.
             CommandDescriptorAttribute cmdAttr = declarativeRunner.GetCustomAttribute<CommandDescriptorAttribute>(false) ?? throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command descriptor.");
 
-            // Command checker, defaults to CommandChecker if not defined.
-            Type checkerType = typeof(CommandChecker);
-            CommandCheckerAttribute? cmdChecker = declarativeRunner.GetCustomAttribute<CommandCheckerAttribute>(false);
-            if (cmdChecker != null)
-            {
-                checkerType = cmdChecker.Checker;
-            }
+            // Get command checker for class level, defaults to CommandChecker if not defined
+            Type checkerType = ProcessCommandChecker(declarativeRunner, typeof(CommandChecker));
 
-            // Establish command builder Default option not set ?
+            // Establish command builder
             ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType, cmdAttr.CommandFlags);
 
-            // Arguments Descriptors
-            IEnumerable<ArgumentDescriptorAttribute> argAttrs = declarativeRunner.GetCustomAttributes<ArgumentDescriptorAttribute>(false);
-            IEnumerable<ArgumentValidationAttribute> argVdls = declarativeRunner.GetCustomAttributes<ArgumentValidationAttribute>(false);
+            // Command runner methods
+            if (cmdAttr.CommandType == CommandType.CompositeGroup)
+            {
+                // Runner Methods
+                IEnumerable<MethodInfo> runnerMethodsCollections = declarativeRunner.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.GetCustomAttribute<CommandDescriptorAttribute>(false) != null);
+                foreach (MethodInfo runnerMethod in runnerMethodsCollections)
+                {
+                    // Get command descriptor attribute from method
+                    CommandDescriptorAttribute methodCmdAttr = runnerMethod.GetCustomAttribute<CommandDescriptorAttribute>(false) ?? throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command descriptor.");
+
+                    // Get command checker for method, defaults to CommandChecker if not defined
+                    Type methodCheckerType = ProcessCommandChecker(runnerMethod, typeof(CommandChecker));
+
+                    // Create command descriptor for the method
+                    ICommandBuilder methodCommandBuilder = builder.DefineCommand(methodCmdAttr.Id, methodCmdAttr.Name, methodCmdAttr.Description, methodCheckerType, declarativeRunner, methodCmdAttr.CommandType, methodCmdAttr.CommandFlags);
+
+                    // Process method-level attributes, parent CompositeGroup as owner
+                    ProcessCommandAttributes(runnerMethod, methodCommandBuilder, declarativeRunner, null, cmdAttr.Id);
+
+                    // Add the method command descriptor
+                    methodCommandBuilder.Add();
+
+                    // Also add the run method to the composite group
+                    var runnerbuilder = commandBuilder.DefineRunMethod(cmdAttr.Id, runnerMethod);
+                    runnerbuilder.Add();
+                }
+            }
+
+            // Process class-level attributes
+            ProcessCommandAttributes(declarativeRunner, commandBuilder, null, cmdAttr.CommandType);
+
+            // Build and add the command descriptor to service collection
+            return commandBuilder.Add();
+        }
+
+        private static void ProcessCommandAttributes(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
+        {
+            ProcessArgumentDescriptors(attributeProvider, commandBuilder);
+            ProcessOptionDescriptors(attributeProvider, commandBuilder);
+            ProcessCustomProperties(attributeProvider, commandBuilder);
+            ProcessTags(attributeProvider, commandBuilder);
+            ProcessOwners(attributeProvider, commandBuilder, fallbackAttributeProvider, commandType, parentGroupId);
+        }
+
+        private static Type ProcessCommandChecker(MemberInfo attributeProvider, Type defaultChecker)
+        {
+            CommandCheckerAttribute? cmdChecker = attributeProvider.GetCustomAttribute<CommandCheckerAttribute>(false);
+            if (cmdChecker != null)
+            {
+                return cmdChecker.Checker;
+            }
+            return defaultChecker;
+        }
+
+        private static void ProcessOwners(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
+        {
+            CommandOwnersAttribute? ownersAttr = attributeProvider.GetCustomAttribute<CommandOwnersAttribute>(false);
+            if (ownersAttr != null)
+            {
+                commandBuilder.Owners(ownersAttr.Owners);
+            }
+            else if (parentGroupId != null)
+            {
+                commandBuilder.Owners(new OwnerIdCollection(parentGroupId));
+            }
+            else if (fallbackAttributeProvider != null)
+            {
+                CommandOwnersAttribute? fallbackOwnersAttr = fallbackAttributeProvider.GetCustomAttribute<CommandOwnersAttribute>(false);
+                if (fallbackOwnersAttr != null)
+                {
+                    commandBuilder.Owners(fallbackOwnersAttr.Owners);
+                }
+            }
+            else if (commandType.HasValue && (commandType.Value == CommandType.IsolatedGroup || commandType.Value == CommandType.CompositeGroup || commandType.Value == CommandType.Leaf))
+            {
+                throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command owner.");
+            }
+        }
+
+        private static void ProcessArgumentDescriptors(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        {
+            IEnumerable<ArgumentDescriptorAttribute> argAttrs = attributeProvider.GetCustomAttributes<ArgumentDescriptorAttribute>(false);
+            IEnumerable<ArgumentValidationAttribute> argVdls = attributeProvider.GetCustomAttributes<ArgumentValidationAttribute>(false);
             foreach (ArgumentDescriptorAttribute argAttr in argAttrs)
             {
                 IArgumentBuilder argBuilder = commandBuilder.DefineArgument(argAttr.Order, argAttr.Id, argAttr.DataType, argAttr.Description, argAttr.Flags);
-
-                // Argument validation attribute
-                List<ValidationAttribute>? validationAttributes = null;
                 if (argVdls.Any())
                 {
-                    validationAttributes = [];
                     argVdls.All(e =>
                     {
                         if (e.ArgumentId.Equals(argAttr.Id))
@@ -420,22 +484,19 @@ namespace OneImlx.Terminal.Extensions
                         return true;
                     });
                 }
-
                 argBuilder.Add();
             }
+        }
 
-            // Options Descriptors
-            IEnumerable<OptionDescriptorAttribute> optAttrs = declarativeRunner.GetCustomAttributes<OptionDescriptorAttribute>(false);
-            IEnumerable<OptionValidationAttribute> optVdls = declarativeRunner.GetCustomAttributes<OptionValidationAttribute>(false);
+        private static void ProcessOptionDescriptors(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        {
+            IEnumerable<OptionDescriptorAttribute> optAttrs = attributeProvider.GetCustomAttributes<OptionDescriptorAttribute>(false);
+            IEnumerable<OptionValidationAttribute> optVdls = attributeProvider.GetCustomAttributes<OptionValidationAttribute>(false);
             foreach (OptionDescriptorAttribute optAttr in optAttrs)
             {
                 IOptionBuilder optBuilder = commandBuilder.DefineOption(optAttr.Id, optAttr.DataType, optAttr.Description, optAttr.Flags, optAttr.Alias);
-
-                // Option validation attribute
-                List<ValidationAttribute>? validationAttributes = null;
                 if (optVdls.Any())
                 {
-                    validationAttributes = [];
                     optVdls.All(e =>
                     {
                         if (e.OptionId.Equals(optAttr.Id))
@@ -445,44 +506,26 @@ namespace OneImlx.Terminal.Extensions
                         return true;
                     });
                 }
-
-                // Add an option descriptor.
                 optBuilder.Add();
             }
+        }
 
-            // Command custom properties
-            IEnumerable<CommandCustomPropertyAttribute> cmdPropAttrs = declarativeRunner.GetCustomAttributes<CommandCustomPropertyAttribute>(false);
-            Dictionary<string, object>? cmdCustomProps = null;
+        private static void ProcessCustomProperties(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        {
+            IEnumerable<CommandCustomPropertyAttribute> cmdPropAttrs = attributeProvider.GetCustomAttributes<CommandCustomPropertyAttribute>(false);
             if (cmdPropAttrs.Any())
             {
-                cmdCustomProps = [];
-                cmdPropAttrs.All(e =>
-                {
-                    commandBuilder.CustomProperty(e.Key, e.Value);
-                    return true;
-                });
+                cmdPropAttrs.All(e => { commandBuilder.CustomProperty(e.Key, e.Value); return true; });
             }
+        }
 
-            // Tags
-            CommandTagsAttribute? tagsAttr = declarativeRunner.GetCustomAttribute<CommandTagsAttribute>(false);
+        private static void ProcessTags(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        {
+            CommandTagsAttribute? tagsAttr = attributeProvider.GetCustomAttribute<CommandTagsAttribute>(false);
             if (tagsAttr != null)
             {
                 commandBuilder.Tags(tagsAttr.Tags);
             }
-
-            // Command owners
-            CommandOwnersAttribute? ownersAttr = declarativeRunner.GetCustomAttribute<CommandOwnersAttribute>(false);
-            if (ownersAttr != null)
-            {
-                commandBuilder.Owners(ownersAttr.Owners);
-            }
-            else if (cmdAttr.CommandType == CommandType.GroupCommand || cmdAttr.CommandType == CommandType.SubCommand)
-            {
-                throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command owner.");
-            }
-
-            // Build and add the command descriptor to service collection
-            return commandBuilder.Add();
         }
 
         private static ICommandBuilder DefineCommand(this ITerminalBuilder builder, string id, string name, string description, Type checker, Type runner, CommandType commandType, CommandFlags commandFlags)

@@ -1,9 +1,6 @@
-﻿/*
-    Copyright 2024 (c) Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Runners;
@@ -30,5 +27,12 @@ namespace OneImlx.Terminal.Commands.Handlers
         /// <param name="commandDescriptor">The descriptor of the command for which to resolve the runner.</param>
         /// <returns>The resolved command runner instance.</returns>
         IDelegateCommandRunner ResolveCommandRunner(CommandDescriptor commandDescriptor);
+
+        /// <summary>
+        /// Resolves the command run method associated with the specified command descriptor.
+        /// </summary>
+        /// <param name="commandDescriptor">The descriptor of the command for which to resolve the run method.</param>
+        /// <returns>The resolved command run method instance.</returns>
+        RunMethod ResolveCommandRunMethod(CommandDescriptor commandDescriptor);
     }
 }

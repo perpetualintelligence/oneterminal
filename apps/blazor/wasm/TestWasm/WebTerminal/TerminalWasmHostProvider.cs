@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2024 (c) Perpetual Intelligence L.L.C. All Rights Reserved.
+    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
 
     For license, terms, and data policies, go to:
     https://terms.perpetualintelligence.com/articles/intro.html
@@ -11,6 +11,7 @@ using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Apps.TestWasm.WebTerminal.Runners;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
 using Serilog;
 
@@ -82,8 +83,7 @@ namespace OneImlx.Terminal.Apps.TestWasm.WebTerminal
             {
                 terminalTokenSource = new CancellationTokenSource();
                 commandTokenSource = new CancellationTokenSource();
-                TerminalStartContext terminalStartContext = new(TerminalStartMode.Console, terminalTokenSource.Token, commandTokenSource.Token);
-                TerminalConsoleRouterContext consoleRouterContext = new(terminalStartContext);
+                TerminalConsoleRouterContext consoleRouterContext = new(TerminalStartMode.Console, routeOnce: false, null, null);
 
                 // Get the license asynchronously so we can initialize the terminal host
                 licenseContents = await GetLicenseContentAsync();
@@ -109,7 +109,6 @@ namespace OneImlx.Terminal.Apps.TestWasm.WebTerminal
                 throw; // Re-throwing the exception to be handled further up the call stack if necessary.
             }
         }
-
 
         /// <summary>
         /// Configures application settings from JSON files and other configuration sources.
@@ -142,13 +141,13 @@ namespace OneImlx.Terminal.Apps.TestWasm.WebTerminal
         {
             services.AddHostedService<TestWasmHostedService>();
 
-            var terminalBuilder = services.AddTerminalConsole<TerminalInMemoryCommandStore, TerminalUnicodeTextHandler, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalWasmConsole>(new TerminalUnicodeTextHandler(), options =>
+            var terminalBuilder = services.AddTerminalConsole<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalWasmConsole>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, System.Text.Encoding.ASCII), options =>
             {
                 options.Id = TerminalIdentifiers.TestApplicationId;
                 options.Licensing.LicenseFile = "oneimlx-license.json";
                 options.Licensing.LicenseContents = TerminalServices.EncodeLicenseContents(licenseContents.NotNull());
-                options.Licensing.LicensePlan = TerminalLicensePlans.Demo;
-                options.Licensing.Deployment = TerminalIdentifiers.OnPremiseDeployment;
+                options.Licensing.LicensePlan = ProductCatalog.TerminalPlanDemo;
+                options.Licensing.Deployment = TerminalIdentifiers.StandardDeployment;
                 options.Router.Caret = "> ";
             });
 

@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Threading.Tasks;
@@ -78,7 +75,7 @@ namespace OneImlx.Terminal.Runtime
                     try
                     {
                         // Wait for a bit to avoid CPU hogging and give time for cancellation token to be set.
-                        await Task.Delay(options.Router.RouteDelay);
+                        await Task.Delay(options.Router.RouteDelay).ConfigureAwait(false);
 
                         // Honor the cancellation request.
                         if (context.TerminalCancellationToken.IsCancellationRequested)
@@ -123,9 +120,9 @@ namespace OneImlx.Terminal.Runtime
                             // Print the caret and read the user input.
                             if (options.Router.Caret != null)
                             {
-                                await terminalConsole.WriteAsync(options.Router.Caret);
+                                await terminalConsole.WriteAsync(options.Router.Caret).ConfigureAwait(false);
                             }
-                            raw = await terminalConsole.ReadLineAsync();
+                            raw = await terminalConsole.ReadLineAsync().ConfigureAwait(false);
                         }
 
                         // Determine if the raw string is to be ignored.
@@ -140,26 +137,26 @@ namespace OneImlx.Terminal.Runtime
                         request = new(Guid.NewGuid().ToString(), raw!);
                         CommandContext routerContext = new(request, context, properties: null);
                         var routeTask = commandRouter.RouteCommandAsync(routerContext);
-                        if (await Task.WhenAny(routeTask, Task.Delay(options.Router.Timeout)) != routeTask)
+                        if (await Task.WhenAny(routeTask, Task.Delay(options.Router.Timeout)).ConfigureAwait(false) != routeTask)
                         {
                             throw new TimeoutException($"The terminal console router timed out in {options.Router.Timeout} milliseconds.");
                         }
 
                         // Process the result. If this is a driver program then we terminate the loop.
-                        CommandResult result = await routeTask;
+                        CommandResult result = await routeTask.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException oex)
                     {
                         // Routing is canceled.
                         TerminalExceptionHandlerContext exContext = new(oex, request);
-                        await exceptionHandler.HandleExceptionAsync(exContext);
+                        await exceptionHandler.HandleExceptionAsync(exContext).ConfigureAwait(false);
                         break;
                     }
                     catch (Exception ex)
                     {
                         // Task.Wait bundles up any exception into Exception.InnerException
                         TerminalExceptionHandlerContext exContext = new(ex.InnerException ?? ex, request);
-                        await exceptionHandler.HandleExceptionAsync(exContext);
+                        await exceptionHandler.HandleExceptionAsync(exContext).ConfigureAwait(false);
                     }
                     finally
                     {

@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="..\..\build\props\Test.props" />
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\OneImlx.Terminal.Authentication\OneImlx.Terminal.Authentication.csproj" />
+        <ProjectReference Include="..\OneImlx.Terminal.Testing\OneImlx.Terminal.Testing.csproj" />
     </ItemGroup>
 
 </Project>

@@ -3,6 +3,8 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.TestAuth.Runners
@@ -11,7 +13,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
     /// Command runner for the <c>test auth</c> group in the test app.
     /// </summary>
     [CommandOwners("test")]
-    [CommandDescriptor("auth", "Auth group", "Test auth group description.", CommandType.GroupCommand, CommandFlags.None)]
+    [CommandDescriptor("auth", "Auth group", "Test auth group description.", CommandType.IsolatedGroup, CommandFlags.None)]
     public class AuthRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole _terminalConsole;

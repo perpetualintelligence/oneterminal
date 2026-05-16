@@ -6,8 +6,6 @@
 
 `OneImlx.Terminal.Authentication` extends the `OneImlx.Terminal` framework, offering functionalities to develop enterprise-grade, secure CLI and terminal applications. This package emphasizes a secure, zero-trust architecture and compliance with OAuth and OpenID Connect (OIDC) standards.
 
-> **Note:**  This is a ***preview*** release. Features and implementations are subject to change.
-
 ## MSAL Support
 Currently, we are integrating [Microsoft Authentication Library (MSAL)](https://learn.microsoft.com/en-us/entra/identity-platform/msal-overview) as the authentication provider.
 
@@ -21,4 +19,4 @@ For non-educational, commercial, or production use, a commercial license is requ
 For more information explore our [framework documentation](https://docs.perpetualintelligence.com/articles/terminal/intro.html).
 
 ## Feedback
-Your feedback helps shape `OneImlx.Terminal`. For suggestions, issues, or queries, please visit our [GitHub Issues](https://github.com/PerpetualIntelligence/terminal/issues).
+Your feedback helps shape `OneImlx.Terminal`. For suggestions, issues, or queries, please visit our [GitHub Issues](https://github.com/perpetualintelligence/oneterminal/issues).

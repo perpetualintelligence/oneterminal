@@ -82,9 +82,9 @@ namespace OneImlx.Terminal.Commands.Handlers
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode("test_checker_error").WithErrorDescription("test_checker_error_desc");
         }
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -350,14 +350,14 @@ namespace OneImlx.Terminal.Commands.Handlers
             terminalHelpProvider.HelpCalled.Should().BeFalse();
         }
 
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
             terminalOptions = Microsoft.Extensions.Options.Options.Create(MockTerminalOptions.NewLegacyOptions());
             license = MockLicenses.TestLicense;
             licenseChecker = new MockLicenseCheckerInner();
-            command = MockCommands.NewCommandDefinition("id1", "name1", "desc1", CommandType.SubCommand, CommandFlags.None);
+            command = MockCommands.NewCommandDefinition("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None);
             routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
             routerContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, null);
             commandRuntime = new MockCommandResolver();
@@ -371,7 +371,7 @@ namespace OneImlx.Terminal.Commands.Handlers
                 new(terminalOptions.Value.Help.OptionId, nameof(Boolean), "Help options", OptionFlags.None)
             ]);
             Options helpIdOptions = new(unicodeHandler, [new(helpIdOptionDescriptors.First().Value, true)]);
-            helpIdCommand = MockCommands.NewCommandDefinition("helpId1", "helpIdName", "helpIdDesc", CommandType.SubCommand, CommandFlags.None, helpIdOptionDescriptors, options: helpIdOptions);
+            helpIdCommand = MockCommands.NewCommandDefinition("helpId1", "helpIdName", "helpIdDesc", CommandType.Leaf, CommandFlags.None, helpIdOptionDescriptors, options: helpIdOptions);
 
             // This mocks the help alias request
             OptionDescriptors helpAliasOptionDescriptors = new(unicodeHandler,
@@ -379,11 +379,11 @@ namespace OneImlx.Terminal.Commands.Handlers
                 new(terminalOptions.Value.Help.OptionAlias, nameof(Boolean), "Help alias options", OptionFlags.None)
             ]);
             Options helpAliasOptions = new(unicodeHandler, [new(helpAliasOptionDescriptors.First().Value, true)]);
-            helpAliasCommand = MockCommands.NewCommandDefinition("helpAlias", "helpAliasName", "helpAliasDesc", CommandType.SubCommand, CommandFlags.None, helpAliasOptionDescriptors, options: helpAliasOptions);
+            helpAliasCommand = MockCommands.NewCommandDefinition("helpAlias", "helpAliasName", "helpAliasDesc", CommandType.Leaf, CommandFlags.None, helpAliasOptionDescriptors, options: helpAliasOptions);
 
             handler = new CommandHandler(commandRuntime, terminalOptions, terminalHelpProvider, new LoggerFactory().CreateLogger<CommandHandler>(), terminalEventHandler);
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -512,7 +512,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         private CommandHandler handler = null!;
         private Tuple<CommandDescriptor, Command> helpAliasCommand = null!;
         private Tuple<CommandDescriptor, Command> helpIdCommand = null!;
-        private License license = null!;
+        private Licensing.License license = null!;
         private MockLicenseCheckerInner licenseChecker = null!;
         private CommandContext routerContext = null!;
         private TerminalRouterContext routingContext = null!;

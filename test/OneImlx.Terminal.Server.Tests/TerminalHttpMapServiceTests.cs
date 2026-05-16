@@ -49,7 +49,7 @@ namespace OneImlx.Terminal.Server
                 using (var requestStream = new MemoryStream())
                 {
                     TerminalInputOutput terminalInput = TerminalInputOutput.Single("id1", "test-command");
-                    await JsonSerializer.SerializeAsync(requestStream, terminalInput);
+                    await JsonSerializer.SerializeAsync(requestStream, terminalInput, cancellationToken: TestContext.Current.CancellationToken);
                     requestStream.Position = 0;
                     context.Request.Body = requestStream;
                     context.Request.ContentType = "application/json";
@@ -64,7 +64,7 @@ namespace OneImlx.Terminal.Server
                     context.Response.ContentType.Should().Be("application/json; charset=utf-8");
                     context.Response.Body.Seek(0, SeekOrigin.Begin);
                     using var reader = new StreamReader(context.Response.Body);
-                    string jsonResponse = await reader.ReadToEndAsync();
+                    string jsonResponse = await reader.ReadToEndAsync(TestContext.Current.CancellationToken);
                     jsonResponse.Should().Be("{\"batch_id\":null,\"requests\":[{\"id\":\"id1\",\"is_error\":false,\"raw\":\"test-command\",\"result\":null}],\"sender_endpoint\":null,\"sender_id\":null}");
                 }
             }
@@ -81,7 +81,7 @@ namespace OneImlx.Terminal.Server
             // Create a MemoryStream to simulate the HTTP request body with the serialized command
             using (var stream = new MemoryStream())
             {
-                await JsonSerializer.SerializeAsync(stream, input);
+                await JsonSerializer.SerializeAsync(stream, input, cancellationToken: TestContext.Current.CancellationToken);
                 stream.Position = 0;
                 context.Request.Body = stream;
 
@@ -110,7 +110,7 @@ namespace OneImlx.Terminal.Server
             // Create a MemoryStream to simulate the HTTP request body with the serialized command
             using (var stream = new MemoryStream())
             {
-                await JsonSerializer.SerializeAsync(stream, input);
+                await JsonSerializer.SerializeAsync(stream, input, cancellationToken: TestContext.Current.CancellationToken);
                 stream.Position = 0;
                 context.Request.Body = stream;
 

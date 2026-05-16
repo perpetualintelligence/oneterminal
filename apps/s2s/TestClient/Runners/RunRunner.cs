@@ -5,13 +5,15 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     /// <summary>
     /// Runs native OS commands.
     /// </summary>
-    [CommandDescriptor("run", "Run Command", "Runs a native OS command.", CommandType.NativeCommand, CommandFlags.None)]
+    [CommandDescriptor("run", "Run Command", "Runs a native OS command.", CommandType.Native, CommandFlags.None)]
     [ArgumentDescriptor(0, "os", nameof(String), "The full native command to execute, e.g., 'ls -all'", ArgumentFlags.Required)]
     public class RunRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

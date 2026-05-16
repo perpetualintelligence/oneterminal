@@ -14,6 +14,7 @@ using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Server;
+using OneImlx.Terminal.Server.Grpc;
 using OneImlx.Terminal.Server.Extensions;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
@@ -56,7 +57,7 @@ namespace OneImlx.Terminal.Apps.TestServer
             services.AddHostedService<TestServerHostedService>();
 
             // Terminal builder helps in setting up terminal-related services and configurations for different protocols.
-            ITerminalBuilder terminalBuilder = services.AddTerminalConsole<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
+            ITerminalBuilder terminalBuilder = services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode),
                 options =>
                 {
@@ -145,14 +146,14 @@ namespace OneImlx.Terminal.Apps.TestServer
         private static async Task RunConsoleRouterAsync()
         {
             TerminalConsoleRouterContext routerContext = new(TerminalStartMode.Console);
-            await host!.RunTerminalRouterAsync<TerminalConsoleRouter, TerminalConsoleRouterContext>(routerContext);
+            await host!.RunTerminalRouterBlockingAsync<TerminalConsoleRouter, TerminalConsoleRouterContext>(routerContext);
         }
 
         // Handles the execution of the gRPC router for the terminal.
         private static async Task RunGrpcRouterAsync()
         {
             TerminalGrpcRouterContext routerContext = new(TerminalStartMode.Grpc);
-            await host!.RunTerminalRouterAsync<TerminalGrpcRouter, TerminalGrpcRouterContext>(routerContext);
+            await host!.RunTerminalRouterBlockingAsync<TerminalGrpcRouter, TerminalGrpcRouterContext>(routerContext);
         }
 
         // Runs the application host for non-gRPC, non-HTTP protocols (like TCP, UDP, etc.)
@@ -180,7 +181,7 @@ namespace OneImlx.Terminal.Apps.TestServer
             IPEndPoint iPEndPoint = new(serverLocalIp, port);
             TerminalHttpRouterContext routerContext = new(iPEndPoint, TerminalStartMode.Http);
 
-            await host!.RunTerminalRouterAsync<TerminalHttpRouter, TerminalHttpRouterContext>(routerContext);
+            await host!.RunTerminalRouterBlockingAsync<TerminalHttpRouter, TerminalHttpRouterContext>(routerContext);
         }
 
         // Handles the execution of the TCP router for the terminal.
@@ -192,7 +193,7 @@ namespace OneImlx.Terminal.Apps.TestServer
             IPAddress serverLocalIp = IPAddress.Parse(ipAddress);
             IPEndPoint iPEndPoint = new(serverLocalIp, port);
             TerminalTcpRouterContext routerContext = new(iPEndPoint, TerminalStartMode.Tcp);
-            await host!.RunTerminalRouterAsync<TerminalTcpRouter, TerminalTcpRouterContext>(routerContext);
+            await host!.RunTerminalRouterBlockingAsync<TerminalTcpRouter, TerminalTcpRouterContext>(routerContext);
         }
 
         // Handles the execution of the UDP router for the terminal.
@@ -204,7 +205,7 @@ namespace OneImlx.Terminal.Apps.TestServer
             IPAddress serverLocalIp = IPAddress.Parse(ipAddress);
             IPEndPoint iPEndPoint = new(serverLocalIp, port);
             TerminalUdpRouterContext routerContext = new(iPEndPoint, TerminalStartMode.Udp);
-            await host!.RunTerminalRouterAsync<TerminalUdpRouter, TerminalUdpRouterContext>(routerContext);
+            await host!.RunTerminalRouterBlockingAsync<TerminalUdpRouter, TerminalUdpRouterContext>(routerContext);
         }
 
         // This method sets up a gRPC-based web application. Kestrel is configured to use HTTP/2.
@@ -260,7 +261,7 @@ namespace OneImlx.Terminal.Apps.TestServer
             host = app;
 
             // Map the HTTP service to the terminal commands endpoint
-            app.MapTerminalHttp();
+            app.MapTerminalHttp("/oneimlx/terminal/httprouter");
 
             await app.StartAsync();
             await StartRouterAsync();

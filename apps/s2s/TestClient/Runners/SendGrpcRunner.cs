@@ -8,18 +8,19 @@ using Microsoft.Extensions.Configuration;
 using Grpc.Core;
 using Grpc.Net.Client;
 using OneImlx.Shared.Infrastructure;
-using OneImlx.Terminal.Client;
-using OneImlx.Terminal.Client.Extensions;
+using OneImlx.Terminal.Client.Grpc.Extensions;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Client.Grpc;
+using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("grpc", "gRPC test", "Send gRPC commands to the terminal server.", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("grpc", "gRPC test", "Send gRPC commands to the terminal server.", CommandType.Leaf, CommandFlags.None)]
     public class SendGrpcRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendGrpcRunner(IConfiguration configuration, ITerminalConsole terminalConsole)

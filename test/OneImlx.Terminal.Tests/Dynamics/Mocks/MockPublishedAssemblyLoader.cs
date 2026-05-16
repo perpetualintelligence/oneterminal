@@ -1,15 +1,13 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Shared.Attributes.Validation;
-using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Dynamics;
 using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,7 +17,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 
-namespace OneImlx.Terminals.Integration.Mocks
+namespace OneImlx.Terminal.Dynamics.Mocks
 {
     internal class MockPublishedAssemblyLoader : ITerminalCommandSourceAssemblyLoader<PublishedCommandSourceContext>
     {
@@ -67,7 +65,7 @@ namespace OneImlx.Terminals.Integration.Mocks
             // Add custom attributes to the class Ensure the commandId is unique across multiple assemblies so we just
             // use className
             AddCustomAttribute(typeBuilder, typeof(CommandOwnersAttribute), [new string[] { "oid1", "oid2" }]);
-            AddCustomAttribute(typeBuilder, typeof(CommandDescriptorAttribute), [className, "name1", "description", CommandType.SubCommand, CommandFlags.None]);
+            AddCustomAttribute(typeBuilder, typeof(CommandDescriptorAttribute), [className, "name1", "description", CommandType.Leaf, CommandFlags.None]);
             AddCustomAttribute(typeBuilder, typeof(CommandCheckerAttribute), [typeof(MockCommandChecker)]);
             AddCustomAttribute(typeBuilder, typeof(CommandTagsAttribute), [new string[] { "tag1", "tag2", "tag3" }]);
             AddCustomAttribute(typeBuilder, typeof(CommandCustomPropertyAttribute), ["key1", "value1"]);

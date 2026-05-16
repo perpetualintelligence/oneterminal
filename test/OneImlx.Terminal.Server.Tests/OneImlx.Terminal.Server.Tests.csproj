@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="..\..\build\props\Test.props" />
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\OneImlx.Terminal.Server\OneImlx.Terminal.Server.csproj" />
+        <ProjectReference Include="..\..\src\OneImlx.Terminal.Server\OneImlx.Terminal.Server.csproj" />
+        <ProjectReference Include="..\OneImlx.Terminal.Testing\OneImlx.Terminal.Testing.csproj" />
     </ItemGroup>
 
 </Project>

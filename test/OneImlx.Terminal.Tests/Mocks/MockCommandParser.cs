@@ -8,6 +8,7 @@
 using System.Threading.Tasks;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Parsers;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Mocks
 {
@@ -17,7 +18,7 @@ namespace OneImlx.Terminal.Mocks
         {
             Called = true;
 
-            var cIdt = new CommandDescriptor("testid", "testname", "desc", CommandType.SubCommand, CommandFlags.None);
+            var cIdt = new CommandDescriptor("testid", "testname", "desc", CommandType.Leaf, CommandFlags.None);
             Command command = new(cIdt);
             ParsedCommand extractedCommand = new(command, null);
             context.ParsedCommand = extractedCommand;

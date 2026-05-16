@@ -5,13 +5,13 @@
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
         <Description>
-            The cross-platform shared library for the `OneImlx.Terminal` framework.
+            Cross-platform shared library for the `OneImlx.Terminal` framework.
         </Description>
         <PackageTags>terminal cli options flags commands oneimlx unicode</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="OneImlx.Shared" Version="6.2.2" />
+      <PackageReference Include="OneImlx.Shared" Version="7.0.0-rc.2604012251" />
     </ItemGroup>
 
 </Project>

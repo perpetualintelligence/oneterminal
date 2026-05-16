@@ -1,0 +1,48 @@
+<Solution>
+  <Folder Name="/apps/" />
+  <Folder Name="/apps/auth/">
+    <Project Path="apps/auth/TestMsal/TestMsal.csproj" />
+  </Folder>
+  <Folder Name="/apps/cli/">
+    <Project Path="apps/cli/TestConsole/TestConsole.csproj" />
+  </Folder>
+  <Folder Name="/apps/s2s/">
+    <File Path="apps/s2s/README.md" />
+    <Project Path="apps/s2s/TestApiServer/TestApiServer.csproj" />
+    <Project Path="apps/s2s/TestClient/TestClient.csproj" />
+    <Project Path="apps/s2s/TestServer/TestServer.csproj" />
+  </Folder>
+  <Folder Name="/build/">
+    <File Path=".github/package_version.env" />
+    <File Path="build/props/Package.props" />
+    <File Path="build/props/Test.props" />
+    <File Path="global.json" />
+    <File Path="HISTORY.md" />
+    <File Path="NOTICE.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/OneImlx.Terminal.Authentication/OneImlx.Terminal.Authentication.csproj" />
+    <Project Path="src/OneImlx.Terminal.Client.Grpc/OneImlx.Terminal.Client.Grpc.csproj" Id="66a74c14-ea0d-4163-8d75-4f376b690536" />
+    <Project Path="src/OneImlx.Terminal.Client.Pulsar/OneImlx.Terminal.Client.Pulsar.csproj" />
+    <Project Path="src/OneImlx.Terminal.Client/OneImlx.Terminal.Client.csproj" />
+    <Project Path="src/OneImlx.Terminal.Server.Grpc/OneImlx.Terminal.Server.Grpc.csproj" />
+    <Project Path="src/OneImlx.Terminal.Server.Pulsar/OneImlx.Terminal.Server.Pulsar.csproj" />
+    <Project Path="src/OneImlx.Terminal.Server/OneImlx.Terminal.Server.csproj" />
+    <Project Path="src/OneImlx.Terminal.Shared/OneImlx.Terminal.Shared.csproj" />
+    <Project Path="src/OneImlx.Terminal/OneImlx.Terminal.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/OneImlx.Terminal.Authentication.Tests/OneImlx.Terminal.Authentication.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Client.Grpc.Tests/OneImlx.Terminal.Client.Grpc.Tests.csproj" Id="20cb11f0-9b10-4a0c-b649-9a780293ab08" />
+    <Project Path="test/OneImlx.Terminal.Client.Pulsar.Tests/OneImlx.Terminal.Client.Pulsar.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Client.Tests/OneImlx.Terminal.Client.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.DependentAssembly/OneImlx.Terminal.DependentAssembly.csproj" />
+    <Project Path="test/OneImlx.Terminal.Server.Grpc.Tests/OneImlx.Terminal.Server.Grpc.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Server.Pulsar.Tests/OneImlx.Terminal.Server.Pulsar.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Server.Tests/OneImlx.Terminal.Server.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Shared.Tests/OneImlx.Terminal.Shared.Tests.csproj" />
+    <Project Path="test/OneImlx.Terminal.Testing/OneImlx.Terminal.Testing.csproj" Id="661743c0-3a12-47df-a7fd-0f2b0f7191ba" />
+    <Project Path="test/OneImlx.Terminal.Tests/OneImlx.Terminal.Tests.csproj" />
+  </Folder>
+</Solution>

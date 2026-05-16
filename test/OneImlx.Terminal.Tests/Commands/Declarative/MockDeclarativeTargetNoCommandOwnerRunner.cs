@@ -8,10 +8,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Commands.Declarative
 {
-    [CommandDescriptor("id1_sub", "name", "description", CommandType.SubCommand, CommandFlags.None)]
+    [CommandDescriptor("id1_sub", "name", "description", CommandType.Leaf, CommandFlags.None)]
     [CommandChecker(typeof(MockCommandChecker))]
     [CommandTags("tag1", "tag2", "tag3")]
     [CommandCustomProperty("key1", "value1")]

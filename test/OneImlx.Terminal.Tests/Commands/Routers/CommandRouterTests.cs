@@ -23,11 +23,11 @@ namespace OneImlx.Terminal.Commands.Routers
 {
     public class CommandRouterTests : IAsyncLifetime
     {
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             host?.Dispose();
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace OneImlx.Terminal.Commands.Routers
             commandHandler.Called.Should().BeTrue();
         }
 
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
             var hostBuilder = Host.CreateDefaultBuilder([]);
             host = hostBuilder.Build();
@@ -93,7 +93,7 @@ namespace OneImlx.Terminal.Commands.Routers
             commandTokenSource = new CancellationTokenSource();
             routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
 
-            return Task.CompletedTask;
+            return  ValueTask.CompletedTask;
         }
 
         [Fact]

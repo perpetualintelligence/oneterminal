@@ -4,6 +4,8 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
     /// Command runner for fetching user information from Microsoft Graph API after authentication.
     /// </summary>
     [CommandOwners("auth")]
-    [CommandDescriptor("user", "Get user", "Fetches user information from Microsoft Graph API.", CommandType.GroupCommand, CommandFlags.None)]
+    [CommandDescriptor("user", "Get user", "Fetches user information from Microsoft Graph API.", CommandType.IsolatedGroup, CommandFlags.None)]
     public class AuthUserRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
