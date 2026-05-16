@@ -9,7 +9,6 @@ using OneImlx.Shared.Attributes.Validation;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
-using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Declarative;
 using System;
@@ -393,6 +392,34 @@ namespace OneImlx.Terminal.Commands.Declarative
         {
             Action act = () => terminalBuilder.AddDeclarativeRunner<MockDeclarativeTargetNoCommandDescriptorRunner>();
             act.Should().Throw<TerminalException>().WithMessage("The declarative target does not define command descriptor.");
+        }
+
+        [Fact]
+        public void AddDeclarativeAssembly_Filters_Abstract_Classes()
+        {
+            AssemblyName aName = new("PiCliDeclarativeAbstractAssembly");
+            AssemblyBuilder ab = AssemblyBuilder.DefineDynamicAssembly(aName, AssemblyBuilderAccess.RunAndCollect);
+            ModuleBuilder mb = ab.DefineDynamicModule(aName.Name!);
+            var typeBuilder = mb.DefineType("TestAbstractRunner", TypeAttributes.Public | TypeAttributes.Abstract, parent: null, interfaces: [typeof(IDeclarativeRunner)]);
+            Type abstractType = typeBuilder.CreateType();
+            terminalBuilder.AddDeclarativeAssembly(abstractType.Assembly);
+            ServiceProvider serviceProvider = terminalBuilder.Services.BuildServiceProvider();
+            var cmdDescs = serviceProvider.GetServices<CommandDescriptor>();
+            cmdDescs.Should().NotContain(d => d.Runner!.IsAbstract);
+        }
+
+        [Fact]
+        public void AddDeclarativeAssembly_Filters_Interfaces()
+        {
+            AssemblyName aName = new("PiCliDeclarativeInterfaceAssembly");
+            AssemblyBuilder ab = AssemblyBuilder.DefineDynamicAssembly(aName, AssemblyBuilderAccess.RunAndCollect);
+            ModuleBuilder mb = ab.DefineDynamicModule(aName.Name!);
+            var typeBuilder = mb.DefineType("ITestRunnerInterface", TypeAttributes.Public | TypeAttributes.Interface | TypeAttributes.Abstract, parent: null, interfaces: [typeof(IDeclarativeRunner)]);
+            Type interfaceType = typeBuilder.CreateType();
+            terminalBuilder.AddDeclarativeAssembly(interfaceType.Assembly);
+            ServiceProvider serviceProvider = terminalBuilder.Services.BuildServiceProvider();
+            var cmdDescs = serviceProvider.GetServices<CommandDescriptor>();
+            cmdDescs.Should().NotContain(d => d.Runner!.IsInterface);
         }
 
         private void ConfigureServicesDelegate(IServiceCollection opt2)

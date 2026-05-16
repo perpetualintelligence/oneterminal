@@ -151,8 +151,7 @@ namespace OneImlx.Terminal.Extensions
         /// </remarks>
         public static ITerminalBuilder AddDeclarativeAssembly(this ITerminalBuilder builder, Assembly assembly)
         {
-            IEnumerable<Type> declarativeTypes = assembly.GetTypes()
-                .Where(static e => typeof(IDeclarativeRunner).IsAssignableFrom(e));
+            IEnumerable<Type> declarativeTypes = assembly.GetTypes().Where(static e => typeof(IDeclarativeRunner).IsAssignableFrom(e) && !e.IsAbstract && !e.IsInterface);
 
             foreach (Type type in declarativeTypes)
             {
@@ -559,8 +558,7 @@ namespace OneImlx.Terminal.Extensions
             return commandBuilder;
         }
 
-        private static TInterface? GetDeclarativeInterface<TInterface>(object[] attrs)
-            where TInterface : class
+        private static TInterface? GetDeclarativeInterface<TInterface>(object[] attrs) where TInterface : class
         {
             for (int i = 0; i < attrs.Length; i++)
             {
@@ -573,8 +571,7 @@ namespace OneImlx.Terminal.Extensions
             return null;
         }
 
-        private static List<TInterface> GetDeclarativeInterfaces<TInterface>(object[] attrs)
-            where TInterface : class
+        private static List<TInterface> GetDeclarativeInterfaces<TInterface>(object[] attrs) where TInterface : class
         {
             List<TInterface> results = new();
 
