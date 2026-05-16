@@ -2,8 +2,6 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Parsers;
@@ -11,6 +9,8 @@ using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Events;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands
 {
@@ -28,13 +28,7 @@ namespace OneImlx.Terminal.Commands
         /// <param name="commandHandler">The command handler.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="asyncEventHandler">The event handler.</param>
-        public CommandRouter(
-            TerminalOptions terminalOptions,
-            ILicenseExtractor licenseExtractor,
-            ICommandParser commandParser,
-            ICommandHandler commandHandler,
-            ILogger<CommandRouter> logger,
-            ITerminalEventHandler? asyncEventHandler = null)
+        public CommandRouter(TerminalOptions terminalOptions, ILicenseExtractor licenseExtractor, ICommandParser commandParser, ICommandHandler commandHandler, ILogger<CommandRouter> logger, ITerminalEventHandler? asyncEventHandler = null)
         {
             this.commandParser = commandParser ?? throw new ArgumentNullException(nameof(commandParser));
             this.terminalOptions = terminalOptions ?? throw new ArgumentNullException(nameof(terminalOptions));
@@ -53,15 +47,18 @@ namespace OneImlx.Terminal.Commands
         {
             CommandResult? result = null;
             ParsedCommand? parsedCommand = null;
+            TerminalRequest request = context.Request;
+            string requestId = request.Id;
+
             try
             {
-                logger.LogDebug("Start command router. type={0} request={1}", GetType().Name, context.Request.Id);
+                logger.LogDebug("Start command router. type={0} request={1}", GetType().Name, requestId);
 
                 // Issue a before request event if configured
                 if (asyncEventHandler != null)
                 {
-                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.BeforeCommandRouteAsync), context.Request.Id);
-                    await asyncEventHandler.BeforeCommandRouteAsync(context.Request).ConfigureAwait(false);
+                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.BeforeCommandRouteAsync), requestId);
+                    await asyncEventHandler.BeforeCommandRouteAsync(request).ConfigureAwait(false);
                 }
 
                 // Ensure we have the license extracted before routing
@@ -88,11 +85,11 @@ namespace OneImlx.Terminal.Commands
                 // Issue a after request event if configured
                 if (asyncEventHandler != null)
                 {
-                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.AfterCommandRouteAsync), context.Request.Id);
-                    await asyncEventHandler.AfterCommandRouteAsync(context.Request, parsedCommand?.Command, result).ConfigureAwait(false);
+                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.AfterCommandRouteAsync), requestId);
+                    await asyncEventHandler.AfterCommandRouteAsync(request, parsedCommand?.Command, result).ConfigureAwait(false);
                 }
 
-                logger.LogDebug("End command router. request={0}", context.Request.Id);
+                logger.LogDebug("End command router. request={0}", requestId);
             }
 
             return result;

@@ -2,8 +2,6 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Commands.Checkers;
@@ -11,6 +9,8 @@ using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Events;
 using OneImlx.Terminal.Runtime;
+using System;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Handlers
 {
@@ -22,19 +22,12 @@ namespace OneImlx.Terminal.Commands.Handlers
         /// <summary>
         /// Initialize a news instance.
         /// </summary>
-        public CommandHandler(
-            ICommandResolver commandResolver,
-            IOptions<TerminalOptions> options,
-            ITerminalHelpProvider terminalHelpProvider,
-            ILogger<CommandHandler> logger,
-            ITerminalEventHandler? terminalEventHandler = null)
+        public CommandHandler(ICommandResolver commandResolver, IOptions<TerminalOptions> options, ITerminalHelpProvider terminalHelpProvider, ILogger<CommandHandler> logger, ITerminalEventHandler? terminalEventHandler = null)
         {
             this.commandRuntime = commandResolver ?? throw new ArgumentNullException(nameof(commandResolver));
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.terminalOptions = options?.Value ?? throw new ArgumentNullException(nameof(options));
             this.terminalHelpProvider = terminalHelpProvider ?? throw new ArgumentNullException(nameof(terminalHelpProvider));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            // Optional, only is application wants events
             this.terminalEventHandler = terminalEventHandler;
         }
 
@@ -44,38 +37,34 @@ namespace OneImlx.Terminal.Commands.Handlers
             logger.LogDebug("Handle request. request={0}", context.Request.Id);
 
             // Check and run the command
-            Tuple<CommandCheckerResult, CommandRunnerResult> result = await CheckAndRunCommandInnerAsync(context).ConfigureAwait(false);
+            (CommandCheckerResult checkerResult, CommandRunnerResult runnerResult) = await CheckAndRunCommandInnerAsync(context).ConfigureAwait(false);
 
             // Return the processed result
-            context.Result = new CommandResult(result.Item1, result.Item2);
+            context.Result = new CommandResult(checkerResult, runnerResult);
         }
 
-        private async Task<Tuple<CommandCheckerResult, CommandRunnerResult>> CheckAndRunCommandInnerAsync(CommandContext context)
+        private async Task<(CommandCheckerResult, CommandRunnerResult)> CheckAndRunCommandInnerAsync(CommandContext context)
         {
             Command command = context.EnsureParsedCommand().Command;
 
             // If we are executing a help command then we need to bypass all the checks.
-            if (options.Value.Help.Enabled &&
-                (command.TryGetOption(options.Value.Help.OptionId, out Option? helpOption) ||
-                 command.TryGetOption(options.Value.Help.OptionAlias, out helpOption)
-                ))
+            if (terminalOptions.Help.Enabled)
             {
-                logger.LogDebug("Found help option. option={0}", helpOption != null ? helpOption.Id : "?");
-                CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, runHelp: true).ConfigureAwait(false);
-                return new Tuple<CommandCheckerResult, CommandRunnerResult>(new CommandCheckerResult(), runnerResult);
+                if (command.TryGetOption(terminalOptions.Help.OptionId, out Option? helpOption) || command.TryGetOption(terminalOptions.Help.OptionAlias, out helpOption))
+                {
+                    logger.LogDebug("Found help option. option={0}", helpOption?.Id ?? "?");
+                    CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, command, runHelp: true).ConfigureAwait(false);
+                    return (new CommandCheckerResult(), runnerResult);
+                }
             }
-            else
-            {
-                CommandCheckerResult checkerResult = await CheckCommandInnerAsync(context).ConfigureAwait(false);
-                CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, runHelp: false).ConfigureAwait(false);
-                return new Tuple<CommandCheckerResult, CommandRunnerResult>(checkerResult, runnerResult);
-            }
+
+            CommandCheckerResult checkerResult = await CheckCommandInnerAsync(context, command).ConfigureAwait(false);
+            CommandRunnerResult runResult = await RunCommandInnerAsync(context, command, runHelp: false).ConfigureAwait(false);
+            return (checkerResult, runResult);
         }
 
-        private async Task<CommandCheckerResult> CheckCommandInnerAsync(CommandContext context)
+        private async Task<CommandCheckerResult> CheckCommandInnerAsync(CommandContext context, Command command)
         {
-            Command command = context.EnsureParsedCommand().Command;
-
             // Issue a before check event if configured
             if (terminalEventHandler != null)
             {
@@ -85,7 +74,7 @@ namespace OneImlx.Terminal.Commands.Handlers
 
             // Find the checker and check the command
             ICommandChecker commandChecker = commandRuntime.ResolveCommandChecker(command.Descriptor);
-            var result = await commandChecker.CheckCommandAsync(context).ConfigureAwait(false);
+            CommandCheckerResult result = await commandChecker.CheckCommandAsync(context).ConfigureAwait(false);
 
             // Issue a after check event if configured
             if (terminalEventHandler != null)
@@ -97,10 +86,8 @@ namespace OneImlx.Terminal.Commands.Handlers
             return result;
         }
 
-        private async Task<CommandRunnerResult> RunCommandInnerAsync(CommandContext context, bool runHelp)
+        private async Task<CommandRunnerResult> RunCommandInnerAsync(CommandContext context, Command command, bool runHelp)
         {
-            Command command = context.EnsureParsedCommand().Command;
-
             // Issue a before run event if configured
             if (terminalEventHandler != null)
             {
@@ -135,7 +122,7 @@ namespace OneImlx.Terminal.Commands.Handlers
 
         private readonly ICommandResolver commandRuntime;
         private readonly ILogger<CommandHandler> logger;
-        private readonly IOptions<TerminalOptions> options;
+        private readonly TerminalOptions terminalOptions;
         private readonly ITerminalEventHandler? terminalEventHandler;
         private readonly ITerminalHelpProvider terminalHelpProvider;
     }
