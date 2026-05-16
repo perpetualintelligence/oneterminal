@@ -5,6 +5,8 @@
     https://terms.perpetualintelligence.com/articles/intro.html
 */
 
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.ComponentModel.DataAnnotations;
 

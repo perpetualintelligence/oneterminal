@@ -2,6 +2,8 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 
 namespace OneImlx.Terminal.Commands.Declarative
@@ -10,7 +12,7 @@ namespace OneImlx.Terminal.Commands.Declarative
     /// Declares an <see cref="OptionDescriptor"/> for a command.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public sealed class OptionDescriptorAttribute : Attribute
+    public sealed class OptionDescriptorAttribute : Attribute, IOptionDescriptorAttribute
     {
         /// <summary>
         /// Initializes a new instance.

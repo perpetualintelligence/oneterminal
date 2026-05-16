@@ -30,7 +30,7 @@ namespace OneImlx.Terminal.Shared
             TerminalIdentifiers.Issuer.Should().Be("https://api.perpetualintelligence.com");
             TerminalIdentifiers.ValidationThumbprint.Should().Be("4F8B2E863986461B5FA7F32FD1E8C9E34D914666");
             TerminalIdentifiers.Unknown.Should().Be("$unknown$");
-            TerminalIdentifiers.DeclaritiveDefinition.Should().Be("declaritive");
+            TerminalIdentifiers.DeclaritiveDefinition.Should().Be("declarative");
             TerminalIdentifiers.ExplicitDefinition.Should().Be("explicit");
         }
     }

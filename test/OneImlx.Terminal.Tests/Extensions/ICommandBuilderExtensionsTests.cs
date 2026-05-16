@@ -9,6 +9,7 @@ using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using System;
 using System.Linq;
 using System.Reflection;

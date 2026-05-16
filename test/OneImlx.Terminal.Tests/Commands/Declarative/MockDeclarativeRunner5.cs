@@ -14,6 +14,8 @@
 */
 
 using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Commands.Declarative
 {

@@ -11,6 +11,7 @@ using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

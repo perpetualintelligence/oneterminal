@@ -3,6 +3,7 @@
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Commands.Checkers;
+using OneImlx.Terminal.Shared;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

@@ -4,13 +4,13 @@
 
 using System;
 
-namespace OneImlx.Terminal.Commands
+namespace OneImlx.Terminal.Shared
 {
     /// <summary>
-    /// Defines special command flags.
+    /// Defines special argument flags.
     /// </summary>
     [Flags]
-    public enum CommandFlags
+    public enum ArgumentFlags
     {
         /// <summary>
         /// No special flags.
@@ -18,13 +18,18 @@ namespace OneImlx.Terminal.Commands
         None = 0,
 
         /// <summary>
-        /// The command requires an authorization. No yet supported.
+        /// The argument is required.
         /// </summary>
-        Authorize = 2,
+        Required = 2,
 
         /// <summary>
-        /// The command is obsolete.
+        /// The argument is obsolete.
         /// </summary>
         Obsolete = 4,
+
+        /// <summary>
+        /// The argument is disabled.
+        /// </summary>
+        Disabled = 8,
     }
 }

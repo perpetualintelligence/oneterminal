@@ -2,7 +2,6 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Configuration.Options

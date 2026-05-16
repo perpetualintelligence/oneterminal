@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Hosting;
+using OneImlx.Terminal.Shared;
 using System;
 using System.Linq;
 using System.Reflection;

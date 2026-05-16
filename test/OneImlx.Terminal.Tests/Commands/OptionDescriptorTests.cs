@@ -4,6 +4,7 @@
 
 using FluentAssertions;
 using OneImlx.Terminal.Commands.Checkers;
+using OneImlx.Terminal.Shared;
 using System.ComponentModel.DataAnnotations;
 using Xunit;
 

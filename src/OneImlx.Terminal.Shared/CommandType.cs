@@ -2,7 +2,7 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-namespace OneImlx.Terminal.Commands
+namespace OneImlx.Terminal.Shared
 {
     /// <summary>
     /// Defines the command type.

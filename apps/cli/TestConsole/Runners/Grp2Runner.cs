@@ -8,6 +8,8 @@ using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;

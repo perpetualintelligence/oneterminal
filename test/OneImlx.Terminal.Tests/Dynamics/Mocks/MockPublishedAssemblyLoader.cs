@@ -3,10 +3,11 @@
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Shared.Attributes.Validation;
-using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Dynamics;
 using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

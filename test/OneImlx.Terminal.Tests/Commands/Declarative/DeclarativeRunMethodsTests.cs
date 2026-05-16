@@ -12,6 +12,7 @@ using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

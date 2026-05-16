@@ -17,6 +17,7 @@ using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {

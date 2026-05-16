@@ -1,11 +1,8 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-namespace OneImlx.Terminal.Commands.Declarative
+namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
     /// Specifies a runner that provides declarative command and option descriptors.

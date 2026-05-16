@@ -6,6 +6,8 @@
 */
 
 using OneImlx.Terminal.Mocks;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Declarative;
 using System;
 using System.ComponentModel.DataAnnotations;
 
