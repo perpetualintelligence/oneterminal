@@ -7,11 +7,10 @@ using System;
 namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
-    /// Declares an <see cref="OptionDescriptor"/> validation attribute.
+    /// Declares an option or flag validation attribute.
     /// </summary>
-    /// <seealso cref="OptionDescriptor.ValueCheckers"/>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public sealed class OptionValidationAttribute : Attribute
+    public sealed class OptionValidationAttribute : Attribute, IOptionValidationAttribute
     {
         /// <summary>
         /// Initialize a new instance.

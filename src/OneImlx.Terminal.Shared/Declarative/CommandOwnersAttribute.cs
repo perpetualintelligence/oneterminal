@@ -14,12 +14,11 @@ namespace OneImlx.Terminal.Shared.Declarative
     /// </remarks>
     /// <param name="owners">The command owner identifiers.</param>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class CommandOwnersAttribute(params string[] owners) : Attribute
+    public sealed class CommandOwnersAttribute(params string[] owners) : Attribute, ICommandOwnersAttribute
     {
         /// <summary>
         /// The command owner identifiers.
         /// </summary>
-        /// <seealso cref="CommandDescriptor.Id"/>
         public OwnerIdCollection Owners { get; } = [.. owners];
     }
 }
