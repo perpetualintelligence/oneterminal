@@ -7,7 +7,7 @@ using System;
 namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
-    /// Declares a <see cref="CommandDescriptor"/> for a command.
+    /// Declares a command.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CommandDescriptorAttribute : Attribute, ICommandDescriptorAttribute

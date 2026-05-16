@@ -374,14 +374,15 @@ namespace OneImlx.Terminal.Extensions
             return DefineCommand(builder, id, name, description, typeof(CommandChecker), typeof(TRunner), commandType, commandFlags);
         }
 
-        /// <exclude/>
         private static ITerminalBuilder AddDeclarativeRunnerInner(this ITerminalBuilder builder, Type declarativeRunner)
         {
+            object[] classAttrs = declarativeRunner.GetCustomAttributes(false);
+
             // Command descriptor The declarative runner is the command runner.
-            CommandDescriptorAttribute cmdAttr = declarativeRunner.GetCustomAttribute<CommandDescriptorAttribute>(false) ?? throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command descriptor.");
+            ICommandDescriptorAttribute cmdAttr = GetDeclarativeInterface<ICommandDescriptorAttribute>(classAttrs) ?? throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command descriptor.");
 
             // Get command checker for class level, defaults to CommandChecker if not defined
-            Type checkerType = ProcessCommandChecker(declarativeRunner, typeof(CommandChecker));
+            Type checkerType = ProcessCommandChecker(classAttrs, typeof(CommandChecker));
 
             // Establish command builder
             ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType, cmdAttr.CommandFlags);
@@ -389,21 +390,28 @@ namespace OneImlx.Terminal.Extensions
             // Command runner methods
             if (cmdAttr.CommandType == CommandType.CompositeGroup)
             {
-                // Runner Methods
-                IEnumerable<MethodInfo> runnerMethodsCollections = declarativeRunner.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.GetCustomAttribute<CommandDescriptorAttribute>(false) != null);
-                foreach (MethodInfo runnerMethod in runnerMethodsCollections)
+                MethodInfo[] runnerMethods = declarativeRunner.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+
+                for (int i = 0; i < runnerMethods.Length; i++)
                 {
+                    MethodInfo runnerMethod = runnerMethods[i];
+                    object[] methodAttrs = runnerMethod.GetCustomAttributes(false);
+
                     // Get command descriptor attribute from method
-                    CommandDescriptorAttribute methodCmdAttr = runnerMethod.GetCustomAttribute<CommandDescriptorAttribute>(false) ?? throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command descriptor.");
+                    ICommandDescriptorAttribute? methodCmdAttr = GetDeclarativeInterface<ICommandDescriptorAttribute>(methodAttrs);
+                    if (methodCmdAttr == null)
+                    {
+                        continue;
+                    }
 
                     // Get command checker for method, defaults to CommandChecker if not defined
-                    Type methodCheckerType = ProcessCommandChecker(runnerMethod, typeof(CommandChecker));
+                    Type methodCheckerType = ProcessCommandChecker(methodAttrs, typeof(CommandChecker));
 
                     // Create command descriptor for the method
                     ICommandBuilder methodCommandBuilder = builder.DefineCommand(methodCmdAttr.Id, methodCmdAttr.Name, methodCmdAttr.Description, methodCheckerType, declarativeRunner, methodCmdAttr.CommandType, methodCmdAttr.CommandFlags);
 
                     // Process method-level attributes, parent CompositeGroup as owner
-                    ProcessCommandAttributes(runnerMethod, methodCommandBuilder, declarativeRunner, null, cmdAttr.Id);
+                    ProcessCommandAttributes(methodAttrs, methodCommandBuilder, declarativeRunner, null, cmdAttr.Id);
 
                     // Add the method command descriptor
                     methodCommandBuilder.Add();
@@ -415,34 +423,32 @@ namespace OneImlx.Terminal.Extensions
             }
 
             // Process class-level attributes
-            ProcessCommandAttributes(declarativeRunner, commandBuilder, null, cmdAttr.CommandType);
+            ProcessCommandAttributes(classAttrs, commandBuilder, null, cmdAttr.CommandType);
 
             // Build and add the command descriptor to service collection
             return commandBuilder.Add();
         }
 
-        private static void ProcessCommandAttributes(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
+        private static void ProcessCommandAttributes(object[] attrs, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
         {
-            ProcessArgumentDescriptors(attributeProvider, commandBuilder);
-            ProcessOptionDescriptors(attributeProvider, commandBuilder);
-            ProcessCustomProperties(attributeProvider, commandBuilder);
-            ProcessTags(attributeProvider, commandBuilder);
-            ProcessOwners(attributeProvider, commandBuilder, fallbackAttributeProvider, commandType, parentGroupId);
+            ProcessArgumentDescriptors(attrs, commandBuilder);
+            ProcessOptionDescriptors(attrs, commandBuilder);
+            ProcessCustomProperties(attrs, commandBuilder);
+            ProcessTags(attrs, commandBuilder);
+            ProcessOwners(attrs, commandBuilder, fallbackAttributeProvider, commandType, parentGroupId);
         }
 
-        private static Type ProcessCommandChecker(MemberInfo attributeProvider, Type defaultChecker)
+        private static Type ProcessCommandChecker(object[] attrs, Type defaultChecker)
         {
-            CommandCheckerAttribute? cmdChecker = attributeProvider.GetCustomAttribute<CommandCheckerAttribute>(false);
-            if (cmdChecker != null)
-            {
-                return cmdChecker.Checker;
-            }
-            return defaultChecker;
+            ICommandCheckerAttribute? cmdChecker = GetDeclarativeInterface<ICommandCheckerAttribute>(attrs);
+
+            return cmdChecker?.Checker ?? defaultChecker;
         }
 
-        private static void ProcessOwners(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
+        private static void ProcessOwners(object[] attrs, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
         {
-            CommandOwnersAttribute? ownersAttr = attributeProvider.GetCustomAttribute<CommandOwnersAttribute>(false);
+            ICommandOwnersAttribute? ownersAttr = GetDeclarativeInterface<ICommandOwnersAttribute>(attrs);
+
             if (ownersAttr != null)
             {
                 commandBuilder.Owners(ownersAttr.Owners);
@@ -453,7 +459,10 @@ namespace OneImlx.Terminal.Extensions
             }
             else if (fallbackAttributeProvider != null)
             {
-                CommandOwnersAttribute? fallbackOwnersAttr = fallbackAttributeProvider.GetCustomAttribute<CommandOwnersAttribute>(false);
+                object[] fallbackAttrs = fallbackAttributeProvider.GetCustomAttributes(false);
+
+                ICommandOwnersAttribute? fallbackOwnersAttr = GetDeclarativeInterface<ICommandOwnersAttribute>(fallbackAttrs);
+
                 if (fallbackOwnersAttr != null)
                 {
                     commandBuilder.Owners(fallbackOwnersAttr.Owners);
@@ -465,62 +474,71 @@ namespace OneImlx.Terminal.Extensions
             }
         }
 
-        private static void ProcessArgumentDescriptors(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        private static void ProcessArgumentDescriptors(object[] attrs, ICommandBuilder commandBuilder)
         {
-            IEnumerable<ArgumentDescriptorAttribute> argAttrs = attributeProvider.GetCustomAttributes<ArgumentDescriptorAttribute>(false);
-            IEnumerable<ArgumentValidationAttribute> argVdls = attributeProvider.GetCustomAttributes<ArgumentValidationAttribute>(false);
-            foreach (ArgumentDescriptorAttribute argAttr in argAttrs)
+            List<ArgumentDescriptorAttribute> argAttrs = GetDeclarativeInterfaces<ArgumentDescriptorAttribute>(attrs);
+            List<ArgumentValidationAttribute> argVdls = GetDeclarativeInterfaces<ArgumentValidationAttribute>(attrs);
+
+            for (int i = 0; i < argAttrs.Count; i++)
             {
+                ArgumentDescriptorAttribute argAttr = argAttrs[i];
+
                 IArgumentBuilder argBuilder = commandBuilder.DefineArgument(argAttr.Order, argAttr.Id, argAttr.DataType, argAttr.Description, argAttr.Flags);
-                if (argVdls.Any())
+
+                for (int j = 0; j < argVdls.Count; j++)
                 {
-                    argVdls.All(e =>
+                    ArgumentValidationAttribute argVdl = argVdls[j];
+
+                    if (argVdl.ArgumentId.Equals(argAttr.Id))
                     {
-                        if (e.ArgumentId.Equals(argAttr.Id))
-                        {
-                            argBuilder.ValidationAttribute(e.ValidationAttribute, e.ValidationParams);
-                        }
-                        return true;
-                    });
+                        argBuilder.ValidationAttribute(argVdl.ValidationAttribute, argVdl.ValidationParams);
+                    }
                 }
+
                 argBuilder.Add();
             }
         }
 
-        private static void ProcessOptionDescriptors(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        private static void ProcessOptionDescriptors(object[] attrs, ICommandBuilder commandBuilder)
         {
-            IEnumerable<OptionDescriptorAttribute> optAttrs = attributeProvider.GetCustomAttributes<OptionDescriptorAttribute>(false);
-            IEnumerable<OptionValidationAttribute> optVdls = attributeProvider.GetCustomAttributes<OptionValidationAttribute>(false);
-            foreach (OptionDescriptorAttribute optAttr in optAttrs)
+            List<OptionDescriptorAttribute> optAttrs = GetDeclarativeInterfaces<OptionDescriptorAttribute>(attrs);
+            List<OptionValidationAttribute> optVdls = GetDeclarativeInterfaces<OptionValidationAttribute>(attrs);
+
+            for (int i = 0; i < optAttrs.Count; i++)
             {
+                OptionDescriptorAttribute optAttr = optAttrs[i];
+
                 IOptionBuilder optBuilder = commandBuilder.DefineOption(optAttr.Id, optAttr.DataType, optAttr.Description, optAttr.Flags, optAttr.Alias);
-                if (optVdls.Any())
+
+                for (int j = 0; j < optVdls.Count; j++)
                 {
-                    optVdls.All(e =>
+                    OptionValidationAttribute optVdl = optVdls[j];
+
+                    if (optVdl.OptionId.Equals(optAttr.Id))
                     {
-                        if (e.OptionId.Equals(optAttr.Id))
-                        {
-                            optBuilder.ValidationAttribute(e.ValidationAttribute, e.ValidationParams);
-                        }
-                        return true;
-                    });
+                        optBuilder.ValidationAttribute(optVdl.ValidationAttribute, optVdl.ValidationParams);
+                    }
                 }
+
                 optBuilder.Add();
             }
         }
 
-        private static void ProcessCustomProperties(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        private static void ProcessCustomProperties(object[] attrs, ICommandBuilder commandBuilder)
         {
-            IEnumerable<CommandCustomPropertyAttribute> cmdPropAttrs = attributeProvider.GetCustomAttributes<CommandCustomPropertyAttribute>(false);
-            if (cmdPropAttrs.Any())
+            List<CommandCustomPropertyAttribute> cmdPropAttrs = GetDeclarativeInterfaces<CommandCustomPropertyAttribute>(attrs);
+
+            for (int i = 0; i < cmdPropAttrs.Count; i++)
             {
-                cmdPropAttrs.All(e => { commandBuilder.CustomProperty(e.Key, e.Value); return true; });
+                CommandCustomPropertyAttribute attr = cmdPropAttrs[i];
+                commandBuilder.CustomProperty(attr.Key, attr.Value);
             }
         }
 
-        private static void ProcessTags(MemberInfo attributeProvider, ICommandBuilder commandBuilder)
+        private static void ProcessTags(object[] attrs, ICommandBuilder commandBuilder)
         {
-            CommandTagsAttribute? tagsAttr = attributeProvider.GetCustomAttribute<CommandTagsAttribute>(false);
+            CommandTagsAttribute? tagsAttr = GetDeclarativeInterface<CommandTagsAttribute>(attrs);
+
             if (tagsAttr != null)
             {
                 commandBuilder.Tags(tagsAttr.Tags);
@@ -537,7 +555,38 @@ namespace OneImlx.Terminal.Extensions
 
             ICommandBuilder commandBuilder = new CommandBuilder(builder);
             commandBuilder.Services.AddSingleton(cmd);
+
             return commandBuilder;
+        }
+
+        private static TInterface? GetDeclarativeInterface<TInterface>(object[] attrs)
+            where TInterface : class
+        {
+            for (int i = 0; i < attrs.Length; i++)
+            {
+                if (attrs[i] is TInterface attr)
+                {
+                    return attr;
+                }
+            }
+
+            return null;
+        }
+
+        private static List<TInterface> GetDeclarativeInterfaces<TInterface>(object[] attrs)
+            where TInterface : class
+        {
+            List<TInterface> results = new();
+
+            for (int i = 0; i < attrs.Length; i++)
+            {
+                if (attrs[i] is TInterface attr)
+                {
+                    results.Add(attr);
+                }
+            }
+
+            return results;
         }
     }
 }
