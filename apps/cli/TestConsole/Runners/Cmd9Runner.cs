@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Apps.Test.Checkers;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Apps.Test.Runners
 {
     /// <summary>
-    /// The sub-command <c>cmd2</c> runner for the TestApp.
+    /// The sub-command <c>cmd9</c> runner under grp3 with custom checker.
     /// </summary>
-    [CommandOwners("grp2")]
-    [CommandDescriptor("cmd3", "Command 3", "Command3 description.", CommandType.Leaf, CommandFlags.None)]
+    [CommandOwners("grp3")]
+    [CommandDescriptor("cmd9", "Command 9", "Command 9 under grp3 with custom checker.", CommandType.Leaf, CommandFlags.None)]
     [CommandChecker(typeof(Cmd3CommandChecker))]
-    public class Cmd3Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Cmd9Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
-        private readonly ILogger<Cmd2Runner> logger;
+        private readonly ILogger<Cmd9Runner> logger;
 
-        public Cmd3Runner(ITerminalConsole terminalConsole, ILogger<Cmd2Runner> logger)
+        public Cmd9Runner(ITerminalConsole terminalConsole, ILogger<Cmd9Runner> logger)
         {
             this.terminalConsole = terminalConsole;
             this.logger = logger;
@@ -28,7 +28,9 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
-            await terminalConsole.WriteLineAsync("Command3 of Group2 called.");
+            logger.LogInformation("Executing grp3 cmd9");
+            await terminalConsole.WriteLineAsync("Executing: grp3 cmd9");
+            await terminalConsole.WriteLineAsync("This is a leaf command with custom checker under grp3.");
             return new CommandRunnerResult();
         }
     }

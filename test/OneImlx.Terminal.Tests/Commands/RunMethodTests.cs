@@ -7,6 +7,7 @@ using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -113,6 +114,48 @@ namespace OneImlx.Terminal.Commands
             runner.MethodCalled.Should().BeTrue();
             result.Should().NotBeNull();
             result.Should().BeOfType<MockRunnerDerviedResult>();
+        }
+
+        [Fact]
+        public async Task RunAsync_Throws_WhenParsedCommandIsNull()
+        {
+            MockRunnerWithBaseResult runner = new();
+            var runMethod = new RunMethod("cmd-id", nameof(MockRunnerWithBaseResult.TestMethodBase));
+            var contextWithoutParsedCommand = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, null);
+            Func<Task> act = async () => await runMethod.DelegateRunAsync(runner, contextWithoutParsedCommand);
+            await act.Should().ThrowAsync<TerminalException>().WithMessage("The parsed command is missing in the context.");
+        }
+
+        [Fact]
+        public async Task RunAsync_Throws_WhenCommandIdDoesNotMatch()
+        {
+            MockRunnerWithBaseResult runner = new();
+            var runMethod = new RunMethod("wrong-id", nameof(MockRunnerWithBaseResult.TestMethodBase));
+            Func<Task> act = async () => await runMethod.DelegateRunAsync(runner, routerContext);
+            await act.Should().ThrowAsync<TerminalException>().WithMessage("The method's command is invalid. command=wrong-id");
+        }
+
+        [Fact]
+        public async Task RunAsync_Throws_WhenMethodNameNotFound()
+        {
+            MockRunnerWithBaseResult runner = new();
+            var runMethod = new RunMethod("cmd-id", "NonExistentMethod");
+            Func<Task> act = async () => await runMethod.DelegateRunAsync(runner, routerContext);
+            await act.Should().ThrowAsync<TerminalException>().WithMessage("No public run method found on the command. command=cmd-id, name=NonExistentMethod");
+        }
+
+        [Fact]
+        public async Task RunAsync_Throws_WhenBothMethodInfoAndMethodNameAreNull()
+        {
+            MockRunnerWithBaseResult runner = new();
+            var runMethod = new RunMethod("cmd-id", "SomeMethod");
+            var runMethodType = runMethod.GetType();
+            var methodInfoField = runMethodType.GetField("<MethodInfo>k__BackingField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var methodNameField = runMethodType.GetField("<MethodName>k__BackingField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            methodInfoField!.SetValue(runMethod, null);
+            methodNameField!.SetValue(runMethod, null);
+            Func<Task> act = async () => await runMethod.DelegateRunAsync(runner, routerContext);
+            await act.Should().ThrowAsync<TerminalException>().WithMessage("The method name or method info is not registered. command=cmd-id");
         }
 
         private readonly ParsedCommand parsedCommand = null!;

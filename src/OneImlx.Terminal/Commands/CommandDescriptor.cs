@@ -10,7 +10,7 @@ namespace OneImlx.Terminal.Commands
     /// <summary>
     /// The <see cref="CommandDescriptor"/> defines the command identity and its supported options that an end-user or
     /// an application can use. You can also describe the command behavior, such as whether the command is a root,
-    /// grouped, or subcommand.
+    /// grouped, or sub-command.
     /// </summary>
     /// <seealso cref="Command"/>
     /// <seealso cref="OptionDescriptor"/>
@@ -127,5 +127,16 @@ namespace OneImlx.Terminal.Commands
         /// The tags to find the command.
         /// </summary>
         public TagIdCollection? TagIds { get; internal set; }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            if (OwnerIds != null && OwnerIds.Count > 0)
+            {
+                return $"{Id} | {Name} | {Type} | {OwnerIds[OwnerIds.Count - 1]}";
+            }
+
+            return $"{Id} | {Name} | {Type}";
+        }
     }
 }

@@ -1,9 +1,6 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Shared;
@@ -106,6 +103,19 @@ namespace OneImlx.Terminal.Commands
                 {
                     Flags |= OptionFlags.Required;
                 }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            if (Alias == null)
+            {
+                return $"{Id} | {DataType} | {Flags}";
+            }
+            else
+            {
+                return $"{Id} | {DataType} | {Flags} | {Alias}";
             }
         }
 

@@ -82,6 +82,20 @@ namespace OneImlx.Terminal.Hosting
             act.Should().Throw<TerminalException>().WithMessage("The argument builder is missing an argument descriptor.");
         }
 
+        [Fact]
+        public void Build_Adds_Argument_With_ValidationAttributes()
+        {
+            TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>();
+            commandBuilder.DefineArgument(1, "arg1", nameof(String), "test arg desc1", ArgumentFlags.None).ValidationAttribute(typeof(System.ComponentModel.DataAnnotations.RequiredAttribute)).ValidationAttribute(typeof(System.ComponentModel.DataAnnotations.RangeAttribute), 1, 10).Add();
+            ITerminalBuilder tb = commandBuilder.Add();
+            ServiceProvider sp = tb.Services.BuildServiceProvider();
+            var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
+            cmdDesc.ArgumentDescriptors.Should().NotBeNull();
+            cmdDesc.ArgumentDescriptors!["arg1"].ValueCheckers.Should().NotBeNull();
+            cmdDesc.ArgumentDescriptors["arg1"].ValueCheckers!.Count().Should().Be(2);
+        }
+
         private void ConfigureServicesDelegate(IServiceCollection services)
         {
             serviceCollection = services;

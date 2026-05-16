@@ -25,7 +25,7 @@ namespace OneImlx.Terminal.Commands
         CompositeGroup = 3,
 
         /// <summary>
-        /// The command represents a leaf command that can belong to a group or root.
+        /// The command represents a leaf or a sub-command that can belong to a group or root.
         /// </summary>
         Leaf = 4,
 

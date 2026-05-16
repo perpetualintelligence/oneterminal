@@ -140,5 +140,7 @@ namespace OneImlx.Terminal.Server.Pulsar
         public string Topic => "test-topic";
 
         public bool IsAcknowledged => _acknowledged;
+
+        public IState<ConsumerState> State => throw new NotImplementedException();
     }
 }

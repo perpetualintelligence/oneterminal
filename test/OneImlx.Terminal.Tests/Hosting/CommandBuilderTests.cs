@@ -94,6 +94,72 @@ namespace OneImlx.Terminal.Hosting
             commandBuilder.Services.Should().NotBeSameAs(serviceCollection);
         }
 
+        [Fact]
+        public void Build_Adds_Command_With_Arguments()
+        {
+            TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>();
+            commandBuilder.DefineArgument(1, "arg1", nameof(String), "arg1 desc", ArgumentFlags.None).Add();
+            commandBuilder.DefineArgument(2, "arg2", nameof(String), "arg2 desc", ArgumentFlags.Required).Add();
+            ITerminalBuilder tb = commandBuilder.Add();
+            ServiceProvider sp = tb.Services.BuildServiceProvider();
+            var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
+            cmdDesc.ArgumentDescriptors.Should().NotBeNull();
+            cmdDesc.ArgumentDescriptors!.Count.Should().Be(2);
+        }
+
+        [Fact]
+        public void Build_Adds_Command_With_Options()
+        {
+            TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>();
+            commandBuilder.DefineOption("opt1", nameof(String), "opt1 desc", OptionFlags.None).Add();
+            commandBuilder.DefineOption("opt2", nameof(String), "opt2 desc", OptionFlags.Required).Add();
+            ITerminalBuilder tb = commandBuilder.Add();
+            ServiceProvider sp = tb.Services.BuildServiceProvider();
+            var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
+            cmdDesc.OptionDescriptors.Should().NotBeNull();
+            cmdDesc.OptionDescriptors!.Count.Should().Be(2);
+        }
+
+        [Fact]
+        public void Build_Adds_Command_With_Tags()
+        {
+            TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().Tags(new("tag1", "tag2", "tag3"));
+            ITerminalBuilder tb = commandBuilder.Add();
+            ServiceProvider sp = tb.Services.BuildServiceProvider();
+            var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
+            cmdDesc.TagIds.Should().NotBeNull();
+            cmdDesc.TagIds!.Should().BeEquivalentTo(["tag1", "tag2", "tag3"]);
+        }
+
+        [Fact]
+        public void Build_Adds_Command_With_CustomProperties()
+        {
+            TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandType.Leaf, CommandFlags.None).Checker<MockCommandChecker>().CustomProperty("key1", "value1").CustomProperty("key2", 42);
+            ITerminalBuilder tb = commandBuilder.Add();
+            ServiceProvider sp = tb.Services.BuildServiceProvider();
+            var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
+            cmdDesc.CustomProperties.Should().NotBeNull();
+            cmdDesc.CustomProperties!.Should().ContainKey("key1").WhoseValue.Should().Be("value1");
+            cmdDesc.CustomProperties.Should().ContainKey("key2").WhoseValue.Should().Be(42);
+        }
+
+        [Fact]
+        public void Build_Adds_Command_With_RunMethods()
+        {
+            TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandType.CompositeGroup, CommandFlags.None).Checker<MockCommandChecker>();
+            commandBuilder.DefineRunMethod("method1", "TestMethod1").Add();
+            commandBuilder.DefineRunMethod("method2", "TestMethod2").Add();
+            ITerminalBuilder tb = commandBuilder.Add();
+            ServiceProvider sp = tb.Services.BuildServiceProvider();
+            var runMethods = sp.GetServices<RunMethod>();
+            runMethods.Count().Should().Be(2);
+        }
+
         ~CommandBuilderTests()
         {
             host.Dispose();

@@ -402,8 +402,8 @@ namespace OneImlx.Terminal.Extensions
                     // Create command descriptor for the method
                     ICommandBuilder methodCommandBuilder = builder.DefineCommand(methodCmdAttr.Id, methodCmdAttr.Name, methodCmdAttr.Description, methodCheckerType, declarativeRunner, methodCmdAttr.CommandType, methodCmdAttr.CommandFlags);
 
-                    // Process method-level attributes
-                    ProcessCommandAttributes(runnerMethod, methodCommandBuilder, declarativeRunner);
+                    // Process method-level attributes, parent CompositeGroup as owner
+                    ProcessCommandAttributes(runnerMethod, methodCommandBuilder, declarativeRunner, null, cmdAttr.Id);
 
                     // Add the method command descriptor
                     methodCommandBuilder.Add();
@@ -421,13 +421,13 @@ namespace OneImlx.Terminal.Extensions
             return commandBuilder.Add();
         }
 
-        private static void ProcessCommandAttributes(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null)
+        private static void ProcessCommandAttributes(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
         {
             ProcessArgumentDescriptors(attributeProvider, commandBuilder);
             ProcessOptionDescriptors(attributeProvider, commandBuilder);
             ProcessCustomProperties(attributeProvider, commandBuilder);
             ProcessTags(attributeProvider, commandBuilder);
-            ProcessOwners(attributeProvider, commandBuilder, fallbackAttributeProvider, commandType);
+            ProcessOwners(attributeProvider, commandBuilder, fallbackAttributeProvider, commandType, parentGroupId);
         }
 
         private static Type ProcessCommandChecker(MemberInfo attributeProvider, Type defaultChecker)
@@ -440,12 +440,16 @@ namespace OneImlx.Terminal.Extensions
             return defaultChecker;
         }
 
-        private static void ProcessOwners(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null)
+        private static void ProcessOwners(MemberInfo attributeProvider, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
         {
             CommandOwnersAttribute? ownersAttr = attributeProvider.GetCustomAttribute<CommandOwnersAttribute>(false);
             if (ownersAttr != null)
             {
                 commandBuilder.Owners(ownersAttr.Owners);
+            }
+            else if (parentGroupId != null)
+            {
+                commandBuilder.Owners(new OwnerIdCollection(parentGroupId));
             }
             else if (fallbackAttributeProvider != null)
             {

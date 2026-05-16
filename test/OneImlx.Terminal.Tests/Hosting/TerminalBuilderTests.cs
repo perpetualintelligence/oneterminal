@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Text;
@@ -28,6 +25,28 @@ namespace OneImlx.Terminal.Hosting
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             terminalBuilder.Services.Should().BeSameAs(serviceCollection);
+        }
+
+        [Fact]
+        public void TerminalBuilder_Constructor_ThrowsArgumentNullException_WhenServicesIsNull()
+        {
+            Action act = () => new TerminalBuilder(null!, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            act.Should().Throw<ArgumentNullException>().WithParameterName("services");
+        }
+
+        [Fact]
+        public void TerminalBuilder_Constructor_ThrowsArgumentNullException_WhenTextHandlerIsNull()
+        {
+            Action act = () => new TerminalBuilder(serviceCollection, null!);
+            act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
+        }
+
+        [Fact]
+        public void TerminalBuilder_TextHandler_ReturnsCorrectInstance()
+        {
+            var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII);
+            TerminalBuilder terminalBuilder = new(serviceCollection, textHandler);
+            terminalBuilder.TextHandler.Should().BeSameAs(textHandler);
         }
 
         ~TerminalBuilderTests()
