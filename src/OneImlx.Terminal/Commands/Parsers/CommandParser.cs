@@ -2,16 +2,16 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Parsers
 {
@@ -29,12 +29,7 @@ namespace OneImlx.Terminal.Commands.Parsers
         /// <param name="commandStore"></param>
         /// <param name="terminalOptions"></param>
         /// <param name="logger">The logger.</param>
-        public CommandParser(
-            ITerminalRequestParser terminalRequestParser,
-            ITerminalTextHandler textHandler,
-            ITerminalCommandStore commandStore,
-            IOptions<TerminalOptions> terminalOptions,
-            ILogger<CommandParser> logger)
+        public CommandParser(ITerminalRequestParser terminalRequestParser, ITerminalTextHandler textHandler, ITerminalCommandStore commandStore, IOptions<TerminalOptions> terminalOptions, ILogger<CommandParser> logger)
         {
             this.terminalRequestParser = terminalRequestParser;
             this.textHandler = textHandler;
@@ -74,14 +69,15 @@ namespace OneImlx.Terminal.Commands.Parsers
                     }
 
                     // Make sure the current command belongs to the right owner
-                    CommandDescriptor? lastCommand = parsedCommands.LastOrDefault();
-                    if (lastCommand != null)
+                    int parsedCommandsCount = parsedCommands.Count;
+                    if (parsedCommandsCount > 0)
                     {
                         if (currentCommand.OwnerIds == null)
                         {
                             throw new TerminalException(TerminalErrors.InvalidCommand, "The command does not define an owner. command={0}", currentCommand.Id);
                         }
 
+                        CommandDescriptor lastCommand = parsedCommands[parsedCommandsCount - 1];
                         if (!currentCommand.OwnerIds.Contains(lastCommand.Id))
                         {
                             throw new TerminalException(TerminalErrors.InvalidCommand, "The command owner is not valid. owner={0} command={1}", lastCommand.Id, currentCommand.Id);
@@ -112,10 +108,10 @@ namespace OneImlx.Terminal.Commands.Parsers
                         throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support arguments. command={0}", parsedCommand.Id);
                     }
 
-                    int nextCount = parsedArguments.Count + 1;
-                    if (parsedCommand.ArgumentDescriptors.Count < nextCount)
+                    int currentArgCount = parsedArguments.Count;
+                    if (parsedCommand.ArgumentDescriptors.Count <= currentArgCount)
                     {
-                        throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support {0} arguments. command={1}", nextCount, parsedCommand.Id);
+                        throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support {0} arguments. command={1}", currentArgCount + 1, parsedCommand.Id);
                     }
 
                     ArgumentDescriptor argumentDescriptor = parsedCommand.ArgumentDescriptors[argId];
@@ -130,7 +126,8 @@ namespace OneImlx.Terminal.Commands.Parsers
 
         private Options? MapOptions(CommandDescriptor commandDescriptor, Dictionary<string, ValueTuple<string, bool>> parsedOptions)
         {
-            if (parsedOptions.Count == 0)
+            int optionsCount = parsedOptions.Count;
+            if (optionsCount == 0)
             {
                 return null;
             }
@@ -143,7 +140,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             // 1. An input can be either an option or an alias, but not both.
             // 2. If a segment is identified as an option, it must match the option ID.
             // 3. If identified as an alias, it must match the alias.
-            List<Option> options = new(parsedOptions.Count);
+            List<Option> options = new(optionsCount);
             foreach (var optKvp in parsedOptions)
             {
                 string optionOrAliasKey = optKvp.Key;
@@ -183,7 +180,8 @@ namespace OneImlx.Terminal.Commands.Parsers
             var (commandDescriptors, parsedArguments) = await MapCommandAndArguments(parsedOutput).ConfigureAwait(false);
 
             // Process Options
-            CommandDescriptor commandDescriptor = commandDescriptors.Last();
+            int commandDescriptorsCount = commandDescriptors.Count;
+            CommandDescriptor commandDescriptor = commandDescriptors[commandDescriptorsCount - 1];
             Options? parsedOptions = MapOptions(commandDescriptor, parsedOutput.Options);
 
             // Final result.
@@ -195,7 +193,7 @@ namespace OneImlx.Terminal.Commands.Parsers
 
             // Hierarchy is all expect the current command.
             Command command = new(commandDescriptor, arguments, parsedOptions);
-            return new ParsedCommand(command, commandDescriptors.Count > 1 ? commandDescriptors.Take(commandDescriptors.Count - 1) : null);
+            return new ParsedCommand(command, commandDescriptorsCount > 1 ? commandDescriptors.Take(commandDescriptorsCount - 1) : null);
         }
 
         private readonly ITerminalCommandStore commandStore;
