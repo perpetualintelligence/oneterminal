@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -253,6 +250,17 @@ namespace OneImlx.Terminal.Runtime
         [InlineData("root1 grp1 cmd1", new string[] { "root1", "grp1", "cmd1" })]
         [InlineData("root1 grp1 cmd1 arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10", new string[] { "root1", "grp1", "cmd1", "arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9", "arg10" })]
         public async Task Parses_Tokens_Correctly(string raw, string[] tokens)
+        {
+            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("id1", raw));
+            parsedOutput.Tokens.Should().BeEquivalentTo(tokens);
+            parsedOutput.Options.Should().BeEmpty();
+        }
+
+        [Theory(Skip = "Nested quotes parsing is not yet supported")]
+        [InlineData("root1 grp1 cmd1 arg1 \"arg2 with \"quotes\" spaces\" arg3", new string[] { "root1", "grp1", "cmd1", "arg1", "arg2 with \"quotes\" spaces", "arg3" })]
+        [InlineData("cmdOwn run -c \"echo \"Mock Test\"\"", new string[] { "cmdOwn", "run", "-c", "echo \"Mock Test\"" })]
+        [InlineData("cmdOwn run -c \"C:\\Users\\User\\Downloads\\limitStreamer.sh \"Mock Test\" 1 1\"", new string[] { "cmdOwn", "run", "-c", "C:\\Users\\User\\Downloads\\limitStreamer.sh \"Mock Test\" 1 1" })]
+        public async Task Parses_Nested_Quotes_Correctly(string raw, string[] tokens)
         {
             TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("id1", raw));
             parsedOutput.Tokens.Should().BeEquivalentTo(tokens);
