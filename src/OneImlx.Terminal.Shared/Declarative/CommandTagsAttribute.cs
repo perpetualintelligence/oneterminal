@@ -4,7 +4,7 @@
 
 using System;
 
-namespace OneImlx.Terminal.Commands.Declarative
+namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
     /// Declares the command tags.
@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Commands.Declarative
         /// <param name="tags">The tags.</param>
         public CommandTagsAttribute(params string[] tags)
         {
-            Tags = new TagIdCollection(tags);
+            Tags = [.. tags];
         }
 
         /// <summary>

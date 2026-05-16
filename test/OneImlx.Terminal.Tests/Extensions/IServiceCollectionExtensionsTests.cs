@@ -12,6 +12,7 @@ using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
 using System;
 using System.Text;

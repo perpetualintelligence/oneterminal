@@ -6,7 +6,7 @@
 */
 
 using OneImlx.Terminal.Commands;
-using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;

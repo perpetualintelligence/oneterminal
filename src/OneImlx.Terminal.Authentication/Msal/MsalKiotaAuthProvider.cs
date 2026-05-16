@@ -140,7 +140,7 @@ namespace OneImlx.Terminal.Authentication.Msal
 
         private List<string> ExtractScopesFromContext(Dictionary<string, object>? additionalAuthenticationContext)
         {
-            List<string> scopes = new(terminalOptions.Authentication.DefaultScopes ?? Enumerable.Empty<string>());
+            List<string> scopes = [.. terminalOptions.Authentication.DefaultScopes ?? Enumerable.Empty<string>()];
             if (additionalAuthenticationContext != null && additionalAuthenticationContext.TryGetValue("scopes", out var additionalScopesObj))
             {
                 if (additionalScopesObj is IEnumerable<string> additionalScopesEnumerable)

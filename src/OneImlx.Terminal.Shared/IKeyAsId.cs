@@ -1,11 +1,8 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-namespace OneImlx.Terminal.Commands
+namespace OneImlx.Terminal.Shared
 {
     /// <summary>
     /// An abstraction of an entity with a key as an identifier.

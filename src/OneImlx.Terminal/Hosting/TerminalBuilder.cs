@@ -6,7 +6,7 @@
 */
 
 using Microsoft.Extensions.DependencyInjection;
-using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using System;
 
 namespace OneImlx.Terminal.Hosting

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace OneImlx.Terminal.Commands.Declarative
+namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
     /// Declares a command checker.

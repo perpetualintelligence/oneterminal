@@ -11,7 +11,6 @@ using Microsoft.Extensions.Options;
 using OneImlx.Shared.Infrastructure;
 using OneImlx.Terminal.Client.Extensions;
 using OneImlx.Terminal.Commands;
-using OneImlx.Terminal.Commands.Declarative;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Extensions;
