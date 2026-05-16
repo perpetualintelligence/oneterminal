@@ -10,7 +10,6 @@ using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Parsers
@@ -34,7 +33,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             this.terminalRequestParser = terminalRequestParser;
             this.textHandler = textHandler;
             this.commandStore = commandStore;
-            this.terminalOptions = terminalOptions;
+            this.terminalOptions = terminalOptions.Value;
             this.logger = logger;
         }
 
@@ -51,6 +50,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             List<CommandDescriptor> parsedCommands = [];
             List<Argument> parsedArguments = [];
             CommandDescriptor? parsedCommand = null;
+            CommandDescriptor? lastCommand = null;
 
             // Process tokens
             int argId = 0;
@@ -69,15 +69,13 @@ namespace OneImlx.Terminal.Commands.Parsers
                     }
 
                     // Make sure the current command belongs to the right owner
-                    int parsedCommandsCount = parsedCommands.Count;
-                    if (parsedCommandsCount > 0)
+                    if (lastCommand != null)
                     {
                         if (currentCommand.OwnerIds == null)
                         {
                             throw new TerminalException(TerminalErrors.InvalidCommand, "The command does not define an owner. command={0}", currentCommand.Id);
                         }
 
-                        CommandDescriptor lastCommand = parsedCommands[parsedCommandsCount - 1];
                         if (!currentCommand.OwnerIds.Contains(lastCommand.Id))
                         {
                             throw new TerminalException(TerminalErrors.InvalidCommand, "The command owner is not valid. owner={0} command={1}", lastCommand.Id, currentCommand.Id);
@@ -94,6 +92,7 @@ namespace OneImlx.Terminal.Commands.Parsers
                     // The parsedCommand is used to keep track of the last command that is used as the basis for parsing
                     // and validating the arguments.
                     parsedCommand = currentCommand;
+                    lastCommand = currentCommand;
                     parsedCommands.Add(currentCommand);
                 }
                 else
@@ -103,20 +102,19 @@ namespace OneImlx.Terminal.Commands.Parsers
                         throw new TerminalException(TerminalErrors.MissingCommand, "The arguments were provided, but no command was found or specified.");
                     }
 
-                    if (parsedCommand.ArgumentDescriptors == null)
+                    ArgumentDescriptors? argumentDescriptors = parsedCommand.ArgumentDescriptors;
+                    if (argumentDescriptors == null)
                     {
                         throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support arguments. command={0}", parsedCommand.Id);
                     }
 
                     int currentArgCount = parsedArguments.Count;
-                    if (parsedCommand.ArgumentDescriptors.Count <= currentArgCount)
+                    if (argumentDescriptors.Count <= currentArgCount)
                     {
                         throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support {0} arguments. command={1}", currentArgCount + 1, parsedCommand.Id);
                     }
 
-                    ArgumentDescriptor argumentDescriptor = parsedCommand.ArgumentDescriptors[argId];
-                    Argument argument = new(argumentDescriptor, token);
-                    parsedArguments.Add(argument);
+                    parsedArguments.Add(new Argument(argumentDescriptors[argId], token));
                     argId++;
                 }
             }
@@ -132,7 +130,8 @@ namespace OneImlx.Terminal.Commands.Parsers
                 return null;
             }
 
-            if (commandDescriptor.OptionDescriptors == null)
+            OptionDescriptors? optionDescriptors = commandDescriptor.OptionDescriptors;
+            if (optionDescriptors == null)
             {
                 throw new TerminalException(TerminalErrors.UnsupportedOption, "The command does not support options. command={0}", commandDescriptor.Id);
             }
@@ -144,7 +143,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             foreach (var optKvp in parsedOptions)
             {
                 string optionOrAliasKey = optKvp.Key;
-                if (!commandDescriptor.OptionDescriptors.TryGetValue(optionOrAliasKey, out var optionDescriptor))
+                if (!optionDescriptors.TryGetValue(optionOrAliasKey, out var optionDescriptor))
                 {
                     throw new TerminalException(TerminalErrors.UnsupportedOption, "The command does not support option or its alias. command={0} option={1}", commandDescriptor.Id, optionOrAliasKey);
                 }
@@ -192,13 +191,18 @@ namespace OneImlx.Terminal.Commands.Parsers
             }
 
             // Hierarchy is all expect the current command.
-            Command command = new(commandDescriptor, arguments, parsedOptions);
-            return new ParsedCommand(command, commandDescriptorsCount > 1 ? commandDescriptors.Take(commandDescriptorsCount - 1) : null);
+            IEnumerable<CommandDescriptor>? hierarchy = null;
+            if (commandDescriptorsCount > 1)
+            {
+                hierarchy = commandDescriptors.GetRange(0, commandDescriptorsCount - 1);
+            }
+
+            return new ParsedCommand(new(commandDescriptor, arguments, parsedOptions), hierarchy);
         }
 
         private readonly ITerminalCommandStore commandStore;
         private readonly ILogger<CommandParser> logger;
-        private readonly IOptions<TerminalOptions> terminalOptions;
+        private readonly TerminalOptions terminalOptions;
         private readonly ITerminalRequestParser terminalRequestParser;
         private readonly ITerminalTextHandler textHandler;
     }
