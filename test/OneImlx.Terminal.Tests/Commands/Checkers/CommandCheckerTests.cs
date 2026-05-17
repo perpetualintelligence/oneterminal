@@ -28,7 +28,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             LoggerFactory loggerFactory = new();
 
-            request = new TerminalRequest(Guid.NewGuid().ToString(), "test_raw");
+            request = new CommandRequest(Guid.NewGuid().ToString(), "test_raw");
             terminalOptions = MockTerminalOptions.NewLegacyOptions();
             textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII);
             optionMapper = new DataTypeMapper<Option>(terminalOptions, loggerFactory.CreateLogger<DataTypeMapper<Option>>());
@@ -248,7 +248,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         private readonly ITerminalCommandStore commands = null!;
         private readonly CancellationTokenSource commandTokenSource = null!;
         private readonly IDataTypeMapper<Option> optionMapper = null!;
-        private readonly TerminalRequest request = null!;
+        private readonly CommandRequest request = null!;
         private readonly CommandContext routerContext = null!;
         private readonly TerminalRouterContext routingContext = null!;
         private readonly TerminalOptions terminalOptions = null!;

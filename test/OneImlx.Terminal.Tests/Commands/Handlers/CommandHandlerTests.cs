@@ -36,7 +36,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             terminalEventHandler.BeforeCheckCalled.Should().Be(false);
             terminalEventHandler.AfterCheckCalled.Should().Be(false);
 
-            TerminalRequest request = new("test_id", "test_raw");
+            CommandRequest request = new("test_id", "test_raw");
             ParsedCommand extractedCommand = new(command.Item2, null);
             routerContext.License = license;
             routerContext.ParsedCommand = extractedCommand;
@@ -56,7 +56,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             terminalEventHandler.BeforeRunCalled.Should().Be(false);
             terminalEventHandler.AfterRunCalled.Should().Be(false);
 
-            TerminalRequest request = new("test_id", "test_raw");
+            CommandRequest request = new("test_id", "test_raw");
             ParsedCommand extractedCommand = new(command.Item2, null);
             routerContext.License = license;
             routerContext.ParsedCommand = extractedCommand;
@@ -73,7 +73,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             command.Item1.Checker = typeof(MockErrorCommandCheckerInner);
             commandRuntime.ReturnThisChecker = new MockErrorCommandCheckerInner();
 
-            TerminalRequest request = new("test_id", "test_raw");
+            CommandRequest request = new("test_id", "test_raw");
             ParsedCommand extractedCommand = new(command.Item2, null);
             routerContext.License = license;
             routerContext.ParsedCommand = extractedCommand;
@@ -100,7 +100,7 @@ namespace OneImlx.Terminal.Commands.Handlers
 
             try
             {
-                TerminalRequest request = new("test_id", "test_raw");
+                CommandRequest request = new("test_id", "test_raw");
                 ParsedCommand extractedCommand = new(command.Item2, null);
                 routerContext.License = license;
                 routerContext.ParsedCommand = extractedCommand;
@@ -133,7 +133,7 @@ namespace OneImlx.Terminal.Commands.Handlers
 
             try
             {
-                TerminalRequest request = new("test_id", "test_raw");
+                CommandRequest request = new("test_id", "test_raw");
                 ParsedCommand extractedCommand = new(command.Item2, null);
                 routerContext.License = license;
                 routerContext.ParsedCommand = extractedCommand;
@@ -159,7 +159,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             command.Item1.Checker = typeof(MockCommandCheckerInner);
             command.Item1.Runner = typeof(MockCommandRunnerInner);
 
-            TerminalRequest request = new("test_id", "test_raw");
+            CommandRequest request = new("test_id", "test_raw");
             ParsedCommand extractedCommand = new(command.Item2, null);
             routerContext.License = license;
             routerContext.ParsedCommand = extractedCommand;

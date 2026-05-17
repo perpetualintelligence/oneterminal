@@ -173,7 +173,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             return new Options(textHandler, options);
         }
 
-        private async Task<ParsedCommand> MapParsedRequestAsync(TerminalRequest request, TerminalParsedRequest parsedOutput)
+        private async Task<ParsedCommand> MapParsedRequestAsync(CommandRequest request, TerminalParsedRequest parsedOutput)
         {
             // Map to command and arguments
             var (commandDescriptors, parsedArguments) = await MapCommandAndArguments(parsedOutput).ConfigureAwait(false);

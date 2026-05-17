@@ -35,7 +35,7 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task Delimited_Argument_Non_Ending_Throws()
         {
-            Func<Task> act = async () => { await parser.ParseRequestAsync(new TerminalRequest("पहचान", "मूल1 समूह1 समूह2 आदेश1 तर्क1 \"तर्क मान समापन नहीं")); };
+            Func<Task> act = async () => { await parser.ParseRequestAsync(new CommandRequest("पहचान", "मूल1 समूह1 समूह2 आदेश1 तर्क1 \"तर्क मान समापन नहीं")); };
             await act.Should().ThrowAsync<TerminalException>()
                 .WithErrorCode("invalid_argument")
                 .WithErrorDescription("The argument value is missing the closing delimiter. argument=\"तर्क मान समापन नहीं");
@@ -44,7 +44,7 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task Delimited_Option_Non_Ending_Throws()
         {
-            Func<Task> act = async () => { await parser.ParseRequestAsync(new TerminalRequest("पहचान", "मूल1 समूह1 समूह2 आदेश1 तर्क1 -विकल्प1 \"विकल्प मान समापन नहीं")); };
+            Func<Task> act = async () => { await parser.ParseRequestAsync(new CommandRequest("पहचान", "मूल1 समूह1 समूह2 आदेश1 तर्क1 -विकल्प1 \"विकल्प मान समापन नहीं")); };
             await act.Should().ThrowAsync<TerminalException>()
                 .WithErrorCode("invalid_option")
                 .WithErrorDescription("The option value is missing the closing delimiter. option=विकल्प1");
@@ -53,11 +53,11 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task Empty_Raw_Does_Not_Throws()
         {
-            TerminalParsedRequest parsed = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", ""));
+            TerminalParsedRequest parsed = await parser.ParseRequestAsync(new CommandRequest("पहचान1", ""));
             parsed.Tokens.Should().BeEmpty();
             parsed.Options.Should().BeEmpty();
 
-            parsed = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", "    "));
+            parsed = await parser.ParseRequestAsync(new CommandRequest("पहचान1", "    "));
             parsed.Tokens.Should().BeEmpty();
             parsed.Options.Should().BeEmpty();
         }
@@ -65,27 +65,27 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task Null_or_Empty_Id_Throws()
         {
-            Func<Task> act = async () => { await parser.ParseRequestAsync(new TerminalRequest("", "मूल1 समूह1 आदेश1 तर्क1 तर्क2")); };
+            Func<Task> act = async () => { await parser.ParseRequestAsync(new CommandRequest("", "मूल1 समूह1 आदेश1 तर्क1 तर्क2")); };
             await act.Should().ThrowAsync<ArgumentNullException>().WithParameterName("id");
 
-            act = async () => { await parser.ParseRequestAsync(new TerminalRequest(null!, "मूल1 समूह1 आदेश1 तर्क1 तर्क2")); };
+            act = async () => { await parser.ParseRequestAsync(new CommandRequest(null!, "मूल1 समूह1 आदेश1 तर्क1 तर्क2")); };
             await act.Should().ThrowAsync<ArgumentNullException>().WithParameterName("id");
 
-            act = async () => { await parser.ParseRequestAsync(new TerminalRequest("   ", "मूल1 समूह1 आदेश1 तर्क1 तर्क2")); };
+            act = async () => { await parser.ParseRequestAsync(new CommandRequest("   ", "मूल1 समूह1 आदेश1 तर्क1 तर्क2")); };
             await act.Should().ThrowAsync<ArgumentNullException>().WithParameterName("id");
         }
 
         [Fact]
         public async Task Null_Raw_Throws()
         {
-            Func<Task> act = async () => { await parser.ParseRequestAsync(new TerminalRequest("पहचान1", null!)); };
+            Func<Task> act = async () => { await parser.ParseRequestAsync(new CommandRequest("पहचान1", null!)); };
             await act.Should().ThrowAsync<ArgumentNullException>().WithParameterName("raw");
         }
 
         [Fact]
         public async Task Only_Options_Does_Not_Error()
         {
-            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", "-विकल्प1 मान1 --विकल्प2 मान2 -विकल्प3"));
+            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new CommandRequest("पहचान1", "-विकल्प1 मान1 --विकल्प2 मान2 -विकल्प3"));
             parsedOutput.Tokens.Should().BeEmpty();
             parsedOutput.Options.Should().HaveCount(3);
             parsedOutput.Options!["विकल्प1"].Should().Be(new("मान1", true));
@@ -96,7 +96,7 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task Parses_All_Delimited_Options_Values()
         {
-            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", "मूल1 समूह1 आदेश1 तर्क1 तर्क2 -विकल्प1 \"मान1\" --विकल्प2 \"मान2\" --विकल्प3 \"सीमांकित मान3\" -विकल्प4 \"सीमांकित मान4\""));
+            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new CommandRequest("पहचान1", "मूल1 समूह1 आदेश1 तर्क1 तर्क2 -विकल्प1 \"मान1\" --विकल्प2 \"मान2\" --विकल्प3 \"सीमांकित मान3\" -विकल्प4 \"सीमांकित मान4\""));
             parsedOutput.Tokens.Should().BeEquivalentTo(["मूल1", "समूह1", "आदेश1", "तर्क1", "तर्क2"]);
             parsedOutput.Options.Should().HaveCount(4);
             parsedOutput.Options!["विकल्प1"].Should().Be(("मान1", true));
@@ -108,14 +108,14 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task Parses_Delimited_Arguments()
         {
-            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", "मूल1 समूह1 आदेश1 \"तर्क1\" \"तर्क2\" तर्क3"));
+            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new CommandRequest("पहचान1", "मूल1 समूह1 आदेश1 \"तर्क1\" \"तर्क2\" तर्क3"));
             parsedOutput.Tokens.Should().BeEquivalentTo(["मूल1", "समूह1", "आदेश1", "तर्क1", "तर्क2", "तर्क3"]);
         }
 
         [Fact]
         public async Task Parses_Ending_With_No_Value_Option()
         {
-            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", "मूल1 समूह1 आदेश1 तर्क1 तर्क2 तर्क3 तर्क4 तर्क5 तर्क6 तर्क7 तर्क8 तर्क9 तर्क10 -विकल्प1 मान1 --विकल्प2 मान2 -विकल्प3 -विकल्प4 36.69 --विकल्प5 \"सीमांकित मान\" -विकल्प6"));
+            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new CommandRequest("पहचान1", "मूल1 समूह1 आदेश1 तर्क1 तर्क2 तर्क3 तर्क4 तर्क5 तर्क6 तर्क7 तर्क8 तर्क9 तर्क10 -विकल्प1 मान1 --विकल्प2 मान2 -विकल्प3 -विकल्प4 36.69 --विकल्प5 \"सीमांकित मान\" -विकल्प6"));
             parsedOutput.Tokens.Should().BeEquivalentTo(["मूल1", "समूह1", "आदेश1", "तर्क1", "तर्क2", "तर्क3", "तर्क4", "तर्क5", "तर्क6", "तर्क7", "तर्क8", "तर्क9", "तर्क10"]);
             parsedOutput.Options.Should().HaveCount(6);
             parsedOutput.Options!["विकल्प1"].Should().Be(("मान1", true));
@@ -129,7 +129,7 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task Parses_Full_Correctly()
         {
-            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", "मूल1 समूह1 आदेश1 तर्क1 तर्क2 तर्क3 तर्क4 तर्क5 तर्क6 तर्क7 तर्क8 तर्क9 तर्क10 -विकल्प1 मान1 --विकल्प2 मान2 -विकल्प3 -विकल्प4 36.69 --विकल्प5 \"सीमांकित मान\""));
+            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new CommandRequest("पहचान1", "मूल1 समूह1 आदेश1 तर्क1 तर्क2 तर्क3 तर्क4 तर्क5 तर्क6 तर्क7 तर्क8 तर्क9 तर्क10 -विकल्प1 मान1 --विकल्प2 मान2 -विकल्प3 -विकल्प4 36.69 --विकल्प5 \"सीमांकित मान\""));
             parsedOutput.Tokens.Should().BeEquivalentTo(["मूल1", "समूह1", "आदेश1", "तर्क1", "तर्क2", "तर्क3", "तर्क4", "तर्क5", "तर्क6", "तर्क7", "तर्क8", "तर्क9", "तर्क10"]);
             parsedOutput.Options.Should().HaveCount(5);
             parsedOutput.Options!["विकल्प1"].Should().Be(("मान1", true));
@@ -147,7 +147,7 @@ namespace OneImlx.Terminal.Runtime
         [InlineData("मूल1 समूह1 आदेश1 तर्क1 तर्क2 तर्क3 तर्क4 तर्क5 तर्क6 तर्क7 तर्क8 तर्क9 तर्क10", new string[] { "मूल1", "समूह1", "आदेश1", "तर्क1", "तर्क2", "तर्क3", "तर्क4", "तर्क5", "तर्क6", "तर्क7", "तर्क8", "तर्क9", "तर्क10" })]
         public async Task Parses_Tokens_Correctly(string raw, string[] tokens)
         {
-            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new TerminalRequest("पहचान1", raw));
+            TerminalParsedRequest parsedOutput = await parser.ParseRequestAsync(new CommandRequest("पहचान1", raw));
             parsedOutput.Tokens.Should().BeEquivalentTo(tokens);
             parsedOutput.Options.Should().BeEmpty();
         }
@@ -162,7 +162,7 @@ namespace OneImlx.Terminal.Runtime
             terminalOptions.Value.Parser.Separator = separator;
             terminalOptions.Value.Parser.OptionValueSeparator = valueSeparator;
 
-            var request = new TerminalRequest
+            var request = new CommandRequest
             (
                 "पहचान1",
                 $"मूल1{separator}समूह1{separator}आदेश1{separator}तर्क1{separator}तर्क2{separator}तर्क3{separator}तर्क4{separator}तर्क5{separator}तर्क6{separator}तर्क7{separator}तर्क8{separator}तर्क9{separator}तर्क10{separator}" +

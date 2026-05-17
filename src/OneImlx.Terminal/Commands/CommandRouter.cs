@@ -46,7 +46,7 @@ namespace OneImlx.Terminal.Commands
         public async Task RouteCommandAsync(CommandContext context)
         {
             ParsedCommand? parsedCommand = null;
-            TerminalRequest request = context.Request;
+            CommandRequest request = context.Request;
             string requestId = request.Id;
 
             try

@@ -344,7 +344,7 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task ExecuteAsync_Routes_Batched_Commands_And_Processes_In_Order()
         {
-            TerminalRequest testRequest = new("id1", "command1,command2,command3|");
+            CommandRequest testRequest = new("id1", "command1,command2,command3|");
 
             // Create mock command router results for each command
             CommandResult routerResult1 = new(new CommandCheckerResult(), new CommandRunnerResult("sender_result1"));
@@ -408,7 +408,7 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task ExecuteAsync_Routes_Batched_Commands_With_Null_Value_Result()
         {
-            TerminalRequest testRequest = new("id1", "command1,command2,command3,command4,command5|");
+            CommandRequest testRequest = new("id1", "command1,command2,command3,command4,command5|");
 
             // Create mock command router results: 4 valid and 1 null
             CommandResult routerResult1 = new(new CommandCheckerResult(), new CommandRunnerResult("sender_result1"));
@@ -484,7 +484,7 @@ namespace OneImlx.Terminal.Runtime
         [Fact]
         public async Task ExecuteAsync_Routes_Command_And_Returns_Result()
         {
-            TerminalRequest testRequest = new("id1", "command1|");
+            CommandRequest testRequest = new("id1", "command1|");
 
             // Create a mock command router result with
             CommandResult routerResult = new(new CommandCheckerResult(), new CommandRunnerResult("sender_result"));

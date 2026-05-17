@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace OneImlx.Terminal.Runtime
 {
     /// <summary>
-    /// The raw representation of a parsed <see cref="TerminalRequest"/>.
+    /// The raw representation of a parsed <see cref="CommandRequest"/>.
     /// </summary>
     public sealed class TerminalParsedRequest
     {

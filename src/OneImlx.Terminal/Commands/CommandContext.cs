@@ -2,19 +2,19 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Collections.Generic;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Collections.Generic;
 
 namespace OneImlx.Terminal.Commands
 {
     /// <summary>
     /// The generic command router context.
     /// </summary>
-    public sealed class CommandContext
+    public class CommandContext
     {
         /// <summary>
         /// The command string.
@@ -23,7 +23,7 @@ namespace OneImlx.Terminal.Commands
         /// <param name="context">The terminal routing context.</param>
         /// <param name="properties">The additional router properties.</param>
         public CommandContext(
-            TerminalRequest request,
+            CommandRequest request,
             TerminalRouterContext context,
             Dictionary<string, object>? properties)
         {
@@ -50,7 +50,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The terminal request.
         /// </summary>
-        public TerminalRequest Request { get; }
+        public CommandRequest Request { get; }
 
         /// <summary>
         /// The result of the command execution.

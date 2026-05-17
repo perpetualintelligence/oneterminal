@@ -262,7 +262,7 @@ namespace OneImlx.Terminal.Runtime
 
             for (int idx = 0; idx < terminalOutput.Count; ++idx)
             {
-                TerminalRequest request = terminalOutput[idx];
+                CommandRequest request = terminalOutput[idx];
 
                 // If cancellation is requested then stop routing the requests.
                 if (cancellationToken.IsCancellationRequested)

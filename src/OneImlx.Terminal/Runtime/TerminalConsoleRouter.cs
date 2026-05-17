@@ -70,7 +70,7 @@ namespace OneImlx.Terminal.Runtime
 
                 while (true)
                 {
-                    TerminalRequest? request = null;
+                    CommandRequest? request = null;
 
                     try
                     {

@@ -15,9 +15,9 @@ namespace OneImlx.Terminal.Mocks
     {
         public bool Called { get; private set; }
 
-        public TerminalRequest PassedRequest { get; private set; } = null!;
+        public CommandRequest PassedRequest { get; private set; } = null!;
 
-        public Task<TerminalParsedRequest> ParseRequestAsync(TerminalRequest request)
+        public Task<TerminalParsedRequest> ParseRequestAsync(CommandRequest request)
         {
             PassedRequest = request;
             Called = true;
