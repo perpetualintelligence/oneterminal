@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Shared.Infrastructure;
 using OneImlx.Terminal.Commands;
@@ -41,7 +38,7 @@ namespace OneImlx.Terminal.Mocks
         //This is used in the context of singleton Router
         public int RouteCounter { get; set; }
 
-        public async Task<CommandResult> RouteCommandAsync(CommandContext context)
+        public async Task RouteCommandAsync(CommandContext context)
         {
             // For testing this is a singleton router so make sure it is thread safe
             await routeLock.WaitAsync();
@@ -75,8 +72,7 @@ namespace OneImlx.Terminal.Mocks
                 }
 
                 ReturnedRouterResult = new CommandResult();
-
-                return ReturnedRouterResult;
+                context.Result = ReturnedRouterResult;
             }
             finally
             {

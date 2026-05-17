@@ -283,7 +283,8 @@ namespace OneImlx.Terminal.Runtime
                     var routeTask = commandRouter.RouteCommandAsync(context);
                     if (await Task.WhenAny(routeTask, Task.Delay(timeout, cancellationToken)).ConfigureAwait(false) == routeTask)
                     {
-                        CommandResult result = await routeTask.ConfigureAwait(false);
+                        await routeTask.ConfigureAwait(false);
+                        CommandResult result = context.EnsureResult();
                         object? value = null;
                         if (result.RunnerResult != null)
                         {

@@ -2,12 +2,12 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -143,7 +143,7 @@ namespace OneImlx.Terminal.Runtime
                         }
 
                         // Process the result. If this is a driver program then we terminate the loop.
-                        CommandResult result = await routeTask.ConfigureAwait(false);
+                        await routeTask.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException oex)
                     {

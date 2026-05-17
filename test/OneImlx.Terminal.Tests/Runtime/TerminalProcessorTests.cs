@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -82,8 +79,7 @@ namespace OneImlx.Terminal.Runtime
             // Mock the setup for the command router
             List<string> routedCommands = [];
             _mockCommandRouter.Setup(r => r.RouteCommandAsync(It.IsAny<CommandContext>()))
-                .Callback<CommandContext>(c => routedCommands.Add(c.Request.Raw))
-                .ReturnsAsync(new CommandResult());
+                .Callback<CommandContext>(c => routedCommands.Add(c.Request.Raw));
 
             _terminalProcessor.StartProcessing(_mockTerminalRouterContext.Object, background: true);
             int idx = 0;
@@ -97,7 +93,7 @@ namespace OneImlx.Terminal.Runtime
             });
             await Task.WhenAll(tasks);
 
-            await Task.Delay(500);
+            await Task.Delay(500, TestContext.Current.CancellationToken);
 
             // Assert all were processed without error
             routedCommands.Distinct().Should().HaveCount(1500);
@@ -111,7 +107,7 @@ namespace OneImlx.Terminal.Runtime
             // Act
             _terminalProcessor.StartProcessing(_mockTerminalRouterContext.Object, background: true);
             await _terminalProcessor.AddAsync(TerminalInputOutput.Single("id1", "command1", "sender", "endpoint"));
-            await Task.Delay(500);
+            await Task.Delay(500, TestContext.Current.CancellationToken);
 
             // Assert exception handler was called
             _mockExceptionHandler.Verify(static e => e.HandleExceptionAsync(It.IsAny<TerminalExceptionHandlerContext>()), Times.Once);
@@ -129,7 +125,7 @@ namespace OneImlx.Terminal.Runtime
 
             // Act
             await _terminalProcessor.AddAsync(TerminalInputOutput.Single("id1", "command1", "sender", "endpoint"));
-            await Task.Delay(500);
+            await Task.Delay(500, TestContext.Current.CancellationToken);
 
             // Assert only a single command was processed
             routedCommands.Should().HaveCount(1);
@@ -152,7 +148,7 @@ namespace OneImlx.Terminal.Runtime
             });
             await Task.WhenAll(tasks);
 
-            await Task.Delay(500);
+            await Task.Delay(500, TestContext.Current.CancellationToken);
 
             // Assert all were processed without error
             routedCommands.Distinct().Should().HaveCount(500);
@@ -167,8 +163,7 @@ namespace OneImlx.Terminal.Runtime
             // Setup that the mock command router was invoked
             List<string> routedCommands = [];
             _mockCommandRouter.Setup(r => r.RouteCommandAsync(It.IsAny<CommandContext>()))
-                .Callback<CommandContext>(c => routedCommands.Add(c.Request.Raw))
-                .ReturnsAsync(new CommandResult());
+                .Callback<CommandContext>(c => routedCommands.Add(c.Request.Raw));
 
             OrderedDictionary commands1 = [];
             for (int i = 0; i < 1000; i++)
@@ -290,8 +285,7 @@ namespace OneImlx.Terminal.Runtime
             // Setup that the mock command router was invoked
             Dictionary<string, string> routedCommands = [];
             _mockCommandRouter.Setup(r => r.RouteCommandAsync(It.IsAny<CommandContext>()))
-                .Callback<CommandContext>(c => routedCommands.Add(c.Request.Id, c.Request.Raw))
-                .ReturnsAsync(new CommandResult());
+                .Callback<CommandContext>(c => routedCommands.Add(c.Request.Id, c.Request.Raw));
 
             // Send batch of 100000 commands by using TerminalServices
             Dictionary<string, string> allCommands = [];
@@ -360,16 +354,27 @@ namespace OneImlx.Terminal.Runtime
             // Arrange
             CommandContext? routeContext = null;
             _mockCommandRouter.Setup(r => r.RouteCommandAsync(It.IsAny<CommandContext>()))
-                .Callback<CommandContext>(c => routeContext = c)
-                .ReturnsAsync((CommandContext context) =>
+                .Callback<CommandContext>(c =>
                 {
-                    return context.Request.Raw switch
+                    routeContext = c;
+                    switch (c.Request.Raw)
                     {
-                        "command1" => routerResult1,
-                        "command2" => routerResult2,
-                        "command3" => routerResult3,
-                        _ => throw new InvalidOperationException("Unexpected command")
-                    };
+                        case "command1":
+                            c.Result = routerResult1;
+                            break;
+
+                        case "command2":
+                            c.Result = routerResult2;
+                            break;
+
+                        case "command3":
+                            c.Result = routerResult3;
+                            break;
+
+                        default:
+                            throw new InvalidOperationException("Unexpected command");
+                    }
+                    ;
                 });
 
             _terminalProcessor.StartProcessing(_mockTerminalRouterContext.Object, background: true);
@@ -415,18 +420,35 @@ namespace OneImlx.Terminal.Runtime
             // Arrange
             CommandContext? routeContext = null;
             _mockCommandRouter.Setup(r => r.RouteCommandAsync(It.IsAny<CommandContext>()))
-                .Callback<CommandContext>(c => routeContext = c)
-                .ReturnsAsync((CommandContext context) =>
+                .Callback<CommandContext>(c =>
                 {
-                    return context.Request.Raw switch
+                    routeContext = c;
+                    switch (c.Request.Raw)
                     {
-                        "command1" => routerResult1,
-                        "command2" => routerResult2,
-                        "command3" => routerResult3,
-                        "command4" => routerResult4,
-                        "command5" => routerResult5,
-                        _ => throw new InvalidOperationException("Unexpected command")
-                    };
+                        case "command1":
+                            c.Result = routerResult1;
+                            break;
+
+                        case "command2":
+                            c.Result = routerResult2;
+                            break;
+
+                        case "command3":
+                            c.Result = routerResult3;
+                            break;
+
+                        case "command4":
+                            c.Result = routerResult4;
+                            break;
+
+                        case "command5":
+                            c.Result = routerResult5;
+                            break;
+
+                        default:
+                            throw new InvalidOperationException("Unexpected command");
+                    }
+                    ;
                 });
 
             _terminalProcessor.StartProcessing(_mockTerminalRouterContext.Object, background: true);
@@ -470,8 +492,11 @@ namespace OneImlx.Terminal.Runtime
             // Arrange
             CommandContext? routeContext = null;
             _mockCommandRouter.Setup(r => r.RouteCommandAsync(It.IsAny<CommandContext>()))
-                .Callback<CommandContext>(c => routeContext = c)
-                .ReturnsAsync(routerResult);
+                .Callback<CommandContext>(c =>
+                    {
+                        routeContext = c;
+                        c.Result = routerResult;
+                    });
 
             _terminalProcessor.StartProcessing(_mockTerminalRouterContext.Object, background: true);
 
@@ -617,7 +642,7 @@ namespace OneImlx.Terminal.Runtime
             _terminalProcessor.IsProcessing.Should().BeTrue();
 
             _terminalTokenSource.CancelAfter(300);
-            
+
             bool timeout = await _terminalProcessor.StopProcessingAsync(Timeout.Infinite);
             _terminalProcessor.IsProcessing.Should().BeFalse();
             timeout.Should().BeFalse();
@@ -641,13 +666,13 @@ namespace OneImlx.Terminal.Runtime
             _terminalProcessor.IsProcessing.Should().BeTrue();
 
             _terminalTokenSource.CancelAfter(400);
-            
+
             bool timeout = await _terminalProcessor.StopProcessingAsync(100);
             _terminalProcessor.IsProcessing.Should().BeTrue();
             timeout.Should().BeTrue();
 
             // give time for the processor to stop
-            await Task.Delay(500);
+            await Task.Delay(500, TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -663,8 +688,7 @@ namespace OneImlx.Terminal.Runtime
                 .Callback<CommandContext>(ctx =>
                 {
                     processedCommands.Add(ctx.Request.Raw);
-                })
-                .ReturnsAsync(new CommandResult());
+                });
 
             // Start the processor
             _terminalProcessor.StartProcessing(_mockTerminalRouterContext.Object, background: true);
@@ -684,7 +708,7 @@ namespace OneImlx.Terminal.Runtime
             await _terminalProcessor.StreamAsync(bytes, bytes.Length, senderId, senderEndpoint);
 
             // Allow time for processing to complete
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Assert: Verify command was are processed since the batch is partial
             processedCommands.Should().HaveCount(2);
@@ -718,7 +742,7 @@ namespace OneImlx.Terminal.Runtime
             await _terminalProcessor.StreamAsync(bytes, bytes.Length, senderId, senderEndpoint);
 
             // Allow time for processing to complete
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Assert: Verify command was not processed since the batch is incomplete
             processedCommand.Should().BeNull();
@@ -740,8 +764,7 @@ namespace OneImlx.Terminal.Runtime
                 .Callback<CommandContext>(ctx =>
                 {
                     processedCommands.Enqueue(ctx.Request.Raw);
-                })
-                .ReturnsAsync(new CommandResult());
+                });
 
             // Create a large batch of commands to simulate streaming
             var ids = Enumerable.Range(1, 1500).Select(i => $"id{i}").ToArray();
@@ -766,7 +789,7 @@ namespace OneImlx.Terminal.Runtime
             }
 
             // Allow time for processing to complete
-            await Task.Delay(3000);
+            await Task.Delay(3000, TestContext.Current.CancellationToken);
 
             // Assert: Verify all commands were processed in the correct order
             processedCommands.ToArray().Should().BeEquivalentTo(commands);
@@ -800,7 +823,7 @@ namespace OneImlx.Terminal.Runtime
             await _terminalProcessor.StreamAsync(delimitedBytes, delimitedBytes.Length, senderId, senderEndpoint);
 
             // Allow time for processing to complete
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Assert: Verify all commands were processed in the correct order
             processedCommand.Should().Be("command1");
@@ -818,13 +841,13 @@ namespace OneImlx.Terminal.Runtime
             // Check periodically to ensure the task is not yet completed
             for (int i = 0; i < 10; i++)
             {
-                await Task.Delay(100);
+                await Task.Delay(100, TestContext.Current.CancellationToken);
                 waiting.Status.Should().NotBe(TaskStatus.RanToCompletion);
             }
 
             // Trigger cancellation and verify the task completes
             _terminalTokenSource.Cancel();
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
             waiting.Status.Should().Be(TaskStatus.RanToCompletion);
         }
 

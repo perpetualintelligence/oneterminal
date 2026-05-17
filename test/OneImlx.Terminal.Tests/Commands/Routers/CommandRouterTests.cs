@@ -107,7 +107,7 @@ namespace OneImlx.Terminal.Commands.Routers
             CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
 
             routerContext.ParsedCommand.Should().BeNull();
-            var result = await commandRouter.RouteCommandAsync(routerContext);
+            await commandRouter.RouteCommandAsync(routerContext);
             routerContext.ParsedCommand.Should().BeNull();
 
             commandParser.Called.Should().BeTrue();
@@ -229,7 +229,7 @@ namespace OneImlx.Terminal.Commands.Routers
             try
             {
                 CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-                var result = await commandRouter.RouteCommandAsync(routerContext);
+                await commandRouter.RouteCommandAsync(routerContext);
             }
             catch (TerminalException eex)
             {

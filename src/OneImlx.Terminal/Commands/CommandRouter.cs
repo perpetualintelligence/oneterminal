@@ -43,9 +43,8 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="context">The router context.</param>
         /// <returns>The <see cref="CommandResult"/> instance.</returns>
-        public async Task<CommandResult> RouteCommandAsync(CommandContext context)
+        public async Task RouteCommandAsync(CommandContext context)
         {
-            CommandResult? result = null;
             ParsedCommand? parsedCommand = null;
             TerminalRequest request = context.Request;
             string requestId = request.Id;
@@ -76,9 +75,6 @@ namespace OneImlx.Terminal.Commands
 
                 // Handle the command
                 await commandHandler.HandleCommandAsync(context).ConfigureAwait(false);
-
-                // Ensure we have result.
-                result = context.EnsureResult();
             }
             finally
             {
@@ -86,13 +82,11 @@ namespace OneImlx.Terminal.Commands
                 if (asyncEventHandler != null)
                 {
                     logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.AfterCommandRouteAsync), requestId);
-                    await asyncEventHandler.AfterCommandRouteAsync(request, parsedCommand?.Command, result).ConfigureAwait(false);
+                    await asyncEventHandler.AfterCommandRouteAsync(request, parsedCommand?.Command, context.Result).ConfigureAwait(false);
                 }
 
                 logger.LogDebug("End command router. request={0}", requestId);
             }
-
-            return result;
         }
 
         private readonly ITerminalEventHandler? asyncEventHandler;

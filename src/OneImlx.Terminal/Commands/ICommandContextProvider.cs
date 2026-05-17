@@ -2,20 +2,17 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System.Threading.Tasks;
-
 namespace OneImlx.Terminal.Commands
 {
     /// <summary>
-    /// An abstraction of a command router.
+    /// An abstraction of a context provider for command execution.
     /// </summary>
-    public interface ICommandRouter
+    public interface ICommandContextProvider
     {
         /// <summary>
-        /// Routes the request asynchronously.
+        /// Gets the command execution context.
         /// </summary>
-        /// <param name="context">The router context.</param>
-        /// <returns>The router result.</returns>
-        Task RouteCommandAsync(CommandContext context);
+        /// <returns>The command execution context.</returns>
+        CommandContext GetContext();
     }
 }
