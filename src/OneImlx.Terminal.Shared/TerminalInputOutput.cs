@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Text.Json;
@@ -12,11 +9,8 @@ using System.Text.Json.Serialization;
 namespace OneImlx.Terminal.Shared
 {
     /// <summary>
-    /// Represents the terminal IO class that is sent to the terminal server as an ordered collection of <see cref="TerminalRequest"/>.
+    /// Represents the terminal IO class that is sent to the terminal server as a collection of <see cref="TerminalRequest"/>.
     /// </summary>
-    /// <remarks>
-    /// The requests in the <see cref="TerminalInputOutput"/> are executed by the router in the order they are added.
-    /// </remarks>
     public sealed class TerminalInputOutput
     {
         /// <summary>

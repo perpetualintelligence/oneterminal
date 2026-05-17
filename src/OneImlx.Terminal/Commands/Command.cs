@@ -37,7 +37,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The command arguments.
         /// </summary>
-        public Arguments? Arguments { get; set; }
+        public Arguments? Arguments { get; }
 
         /// <summary>
         /// The command custom properties.
@@ -67,7 +67,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The command options.
         /// </summary>
-        public Options? Options { get; set; }
+        public Options? Options { get; }
 
         /// <summary>
         /// Get the argument value for the specified id.
