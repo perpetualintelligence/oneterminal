@@ -20,11 +20,6 @@ namespace OneImlx.Terminal.Shared.Declarative
         public CommandType CommandType { get; }
 
         /// <summary>
-        /// The command flags.
-        /// </summary>
-        public CommandFlags CommandFlags { get; }
-
-        /// <summary>
         /// The command id.
         /// </summary>
         /// <remarks>The command id is unique across all commands.</remarks>

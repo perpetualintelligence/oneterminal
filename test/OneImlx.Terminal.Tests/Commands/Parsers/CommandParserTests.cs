@@ -46,15 +46,15 @@ namespace OneImlx.Terminal.Commands.Parsers
 
             commandDescriptors = new(textHandler,
             [
-                new("root1", "root1_name", "root1_desc", CommandType.Root, CommandFlags.None),
-                new("root2", "root2_name", "root2_desc", CommandType.Root, CommandFlags.None),
-                new("root3", "root3_name", "root3_desc", CommandType.Root, CommandFlags.None, new OwnerIdCollection("root2")),
-                new("grp1", "grp1_name", "grp1_desc", CommandType.IsolatedGroup, CommandFlags.None, new OwnerIdCollection("root1"), argumentDescriptors: arguments),
-                new("grp2", "grp2_name", "grp2_desc", CommandType.IsolatedGroup, CommandFlags.None, new OwnerIdCollection("root2")),
-                new("cmd1", "cmd1_name", "cmd1_desc", CommandType.Leaf, CommandFlags.None, new OwnerIdCollection("grp1")),
-                new("cmd2", "cmd2_name", "cmd2_desc", CommandType.Leaf, CommandFlags.None, new OwnerIdCollection("grp2"), argumentDescriptors: arguments,  optionDescriptors: options),
-                new("cmd_nr1", "cmd_nr1_name", "cmd_nr1_desc", CommandType.Leaf, CommandFlags.None),
-                new("cmd_nr2", "cmd_nr2_name", "cmd_nr2_desc", CommandType.Leaf, CommandFlags.None)
+                new("root1", "root1_name", "root1_desc", CommandType.Root),
+                new("root2", "root2_name", "root2_desc", CommandType.Root),
+                new("root3", "root3_name", "root3_desc", CommandType.Root,  new OwnerIdCollection("root2")),
+                new("grp1", "grp1_name", "grp1_desc", CommandType.IsolatedGroup,  new OwnerIdCollection("root1"), argumentDescriptors: arguments),
+                new("grp2", "grp2_name", "grp2_desc", CommandType.IsolatedGroup,  new OwnerIdCollection("root2")),
+                new("cmd1", "cmd1_name", "cmd1_desc", CommandType.Leaf,  new OwnerIdCollection("grp1")),
+                new("cmd2", "cmd2_name", "cmd2_desc", CommandType.Leaf,  new OwnerIdCollection("grp2"), argumentDescriptors: arguments,  optionDescriptors: options),
+                new("cmd_nr1", "cmd_nr1_name", "cmd_nr1_desc", CommandType.Leaf),
+                new("cmd_nr2", "cmd_nr2_name", "cmd_nr2_desc", CommandType.Leaf)
 
             ]);
             commandStore = new TerminalInMemoryCommandStore(textHandler, commandDescriptors.Values);

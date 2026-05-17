@@ -368,9 +368,9 @@ namespace OneImlx.Terminal.Extensions
         /// <typeparam name="TRunner">The command runner type.</typeparam>
         /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
         /// <returns>The configured <see cref="ICommandBuilder"/>.</returns>
-        public static ICommandBuilder DefineCommand<TRunner>(this ITerminalBuilder builder, string id, string name, string description, CommandType commandType, CommandFlags commandFlags) where TRunner : ICommandRunner<CommandRunnerResult>
+        public static ICommandBuilder DefineCommand<TRunner>(this ITerminalBuilder builder, string id, string name, string description, CommandType commandType) where TRunner : ICommandRunner<CommandRunnerResult>
         {
-            return DefineCommand(builder, id, name, description, typeof(CommandChecker), typeof(TRunner), commandType, commandFlags);
+            return DefineCommand(builder, id, name, description, typeof(CommandChecker), typeof(TRunner), commandType);
         }
 
         private static ITerminalBuilder AddDeclarativeRunnerInner(this ITerminalBuilder builder, Type declarativeRunner)
@@ -384,7 +384,7 @@ namespace OneImlx.Terminal.Extensions
             Type checkerType = ProcessCommandChecker(classAttrs, typeof(CommandChecker));
 
             // Establish command builder
-            ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType, cmdAttr.CommandFlags);
+            ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType);
 
             // Command runner methods
             if (cmdAttr.CommandType == CommandType.CompositeGroup)
@@ -407,7 +407,7 @@ namespace OneImlx.Terminal.Extensions
                     Type methodCheckerType = ProcessCommandChecker(methodAttrs, typeof(CommandChecker));
 
                     // Create command descriptor for the method
-                    ICommandBuilder methodCommandBuilder = builder.DefineCommand(methodCmdAttr.Id, methodCmdAttr.Name, methodCmdAttr.Description, methodCheckerType, declarativeRunner, methodCmdAttr.CommandType, methodCmdAttr.CommandFlags);
+                    ICommandBuilder methodCommandBuilder = builder.DefineCommand(methodCmdAttr.Id, methodCmdAttr.Name, methodCmdAttr.Description, methodCheckerType, declarativeRunner, methodCmdAttr.CommandType);
 
                     // Process method-level attributes, parent CompositeGroup as owner
                     ProcessCommandAttributes(methodAttrs, methodCommandBuilder, declarativeRunner, null, cmdAttr.Id);
@@ -544,9 +544,9 @@ namespace OneImlx.Terminal.Extensions
             }
         }
 
-        private static ICommandBuilder DefineCommand(this ITerminalBuilder builder, string id, string name, string description, Type checker, Type runner, CommandType commandType, CommandFlags commandFlags)
+        private static ICommandBuilder DefineCommand(this ITerminalBuilder builder, string id, string name, string description, Type checker, Type runner, CommandType commandType)
         {
-            CommandDescriptor cmd = new(id, name, description, commandType, commandFlags)
+            CommandDescriptor cmd = new(id, name, description, commandType)
             {
                 Checker = checker,
                 Runner = runner,

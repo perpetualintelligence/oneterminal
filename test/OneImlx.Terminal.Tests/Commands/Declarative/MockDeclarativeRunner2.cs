@@ -1,9 +1,6 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Shared;
@@ -14,7 +11,7 @@ using System.ComponentModel.DataAnnotations;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("oid1, oid2")]
-    [CommandDescriptor("id2", "name2", "description", CommandType.Leaf, CommandFlags.None)]
+    [CommandDescriptor("id2", "name2", "description", CommandType.Leaf)]
     [CommandChecker(typeof(MockCommandChecker))]
     [OptionDescriptor("opt1", nameof(String), "test arg desc1", OptionFlags.None)]
     [OptionDescriptor("opt2", nameof(String), "test arg desc2", OptionFlags.None)]

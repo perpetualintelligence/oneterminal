@@ -36,10 +36,10 @@
 
 //            _commandDescriptors = new CommandDescriptors(_textHandler,
 //            [
-//               new("यूनिकोड", "यूनिकोड नाम", "यूनिकोड रूट कमांड", CommandType.Root, CommandFlags.None),
-//               new("परीक्षण", "परीक्षण नाम", "यूनिकोड समूहीकृत कमांड", CommandType.Group, CommandFlags.None, new OwnerIdCollection("यूनिकोड")),
-//               new("प्रिंट", "प्रिंट नाम", "प्रिंट कमांड", CommandType.SubCommand, CommandFlags.None, new OwnerIdCollection("परीक्षण"), argumentDescriptors : null, optionDescriptors : options),
-//               new("दूसरा", "दूसरा नाम", "दूसरा आदेश", CommandType.SubCommand, CommandFlags.None, new OwnerIdCollection("परीक्षण"), argumentDescriptors : null, optionDescriptors : options)
+//               new("यूनिकोड", "यूनिकोड नाम", "यूनिकोड रूट कमांड", CommandType.Root),
+//               new("परीक्षण", "परीक्षण नाम", "यूनिकोड समूहीकृत कमांड", CommandType.Group,  new OwnerIdCollection("यूनिकोड")),
+//               new("प्रिंट", "प्रिंट नाम", "प्रिंट कमांड", CommandType.SubCommand,  new OwnerIdCollection("परीक्षण"), argumentDescriptors : null, optionDescriptors : options),
+//               new("दूसरा", "दूसरा नाम", "दूसरा आदेश", CommandType.SubCommand,  new OwnerIdCollection("परीक्षण"), argumentDescriptors : null, optionDescriptors : options)
 //            ]);
 
 //            _commandStore = new TerminalInMemoryCommandStore(_textHandler, _commandDescriptors.Values);

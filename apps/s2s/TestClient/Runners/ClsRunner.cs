@@ -1,16 +1,16 @@
-﻿using System.Threading.Tasks;
-using OneImlx.Terminal.Commands;
+﻿using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Declarative;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     /// <summary>
     /// Clears the console.
     /// </summary>
-    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandType.Native, CommandFlags.None)]
+    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandType.Native)]
     public class ClsRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>

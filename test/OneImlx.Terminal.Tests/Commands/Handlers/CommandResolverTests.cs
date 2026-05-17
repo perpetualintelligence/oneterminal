@@ -41,7 +41,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void NullChecker_ResolveChecker_Throws()
         {
-            CommandDescriptor commandDescriptor = new("test", "test_name", "test_desc", CommandType.IsolatedGroup, CommandFlags.None)
+            CommandDescriptor commandDescriptor = new("test", "test_name", "test_desc", CommandType.IsolatedGroup)
             {
                 Checker = null
             };
@@ -55,7 +55,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void NullRunner_ResolveRunner_Throws()
         {
-            CommandDescriptor commandDescriptor = new("test", "test_name", "test_desc", CommandType.IsolatedGroup, CommandFlags.None)
+            CommandDescriptor commandDescriptor = new("test", "test_name", "test_desc", CommandType.IsolatedGroup)
             {
                 Runner = null
             };
@@ -69,7 +69,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void ValidChecker_ResolveChecker_Success()
         {
-            CommandDescriptor commandDescriptor = new("validChecker", "valid_name", "valid_desc", CommandType.IsolatedGroup, CommandFlags.None)
+            CommandDescriptor commandDescriptor = new("validChecker", "valid_name", "valid_desc", CommandType.IsolatedGroup)
             {
                 Checker = typeof(MockCommandCheckerInner)
             };
@@ -83,7 +83,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void ValidRunner_ResolveRunner_Success()
         {
-            CommandDescriptor commandDescriptor = new("validRunner", "valid_name", "valid_desc", CommandType.IsolatedGroup, CommandFlags.None)
+            CommandDescriptor commandDescriptor = new("validRunner", "valid_name", "valid_desc", CommandType.IsolatedGroup)
             {
                 Runner = typeof(MockCommandRunnerInner)
             };
@@ -97,7 +97,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void InvalidTypeAsChecker_ResolveChecker_Throws()
         {
-            CommandDescriptor commandDescriptor = new("invalidTypeChecker", "invalid_name", "invalid_desc", CommandType.IsolatedGroup, CommandFlags.None)
+            CommandDescriptor commandDescriptor = new("invalidTypeChecker", "invalid_name", "invalid_desc", CommandType.IsolatedGroup)
             {
                 Checker = typeof(MockCommandRunnerInner) // Set to a type that does not implement ICommandChecker
             };
@@ -112,7 +112,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void InvalidTypeAsRunner_ResolveRunner_Throws()
         {
-            CommandDescriptor commandDescriptor = new("invalidTypeRunner", "invalid_name", "invalid_desc", CommandType.IsolatedGroup, CommandFlags.None)
+            CommandDescriptor commandDescriptor = new("invalidTypeRunner", "invalid_name", "invalid_desc", CommandType.IsolatedGroup)
             {
                 Runner = typeof(MockCommandCheckerInner) // Set to a type that does not implement IDelegateCommandRunner
             };
@@ -127,7 +127,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void NonLeafCommand_ResolveCommandRunMethod_Throws()
         {
-            CommandDescriptor commandDescriptor = new("test", "test_name", "test_desc", CommandType.IsolatedGroup, CommandFlags.None);
+            CommandDescriptor commandDescriptor = new("test", "test_name", "test_desc", CommandType.IsolatedGroup);
             Action act = () => _commandRuntime.ResolveCommandRunMethod(commandDescriptor);
             act.Should().Throw<TerminalException>().WithErrorCode("server_error").WithErrorDescription("The command runner method is only supported for leaf commands. command=test type=IsolatedGroup");
         }
@@ -135,7 +135,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void NotFoundRunMethod_ResolveCommandRunMethod_Throws()
         {
-            CommandDescriptor commandDescriptor = new("not_found", "test_name", "test_desc", CommandType.Leaf, CommandFlags.None);
+            CommandDescriptor commandDescriptor = new("not_found", "test_name", "test_desc", CommandType.Leaf);
             Action act = () => _commandRuntime.ResolveCommandRunMethod(commandDescriptor);
             act.Should().Throw<TerminalException>().WithErrorCode("server_error").WithErrorDescription("The command runner method is not configured. command=not_found");
         }
@@ -143,7 +143,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         [Fact]
         public void ValidCommandId_ResolveCommandRunMethod_Finds()
         {
-            CommandDescriptor commandDescriptor = new("test2", "test_name2", "test_desc2", CommandType.Leaf, CommandFlags.None);
+            CommandDescriptor commandDescriptor = new("test2", "test_name2", "test_desc2", CommandType.Leaf);
             var runMethod = _commandRuntime.ResolveCommandRunMethod(commandDescriptor);
             runMethod.Id.Should().Be("test2");
             runMethod.MethodName.Should().Be("test_method2");

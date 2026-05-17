@@ -78,11 +78,8 @@ namespace OneImlx.Terminal.Commands.Declarative
             method1.Name.Should().Be("method1_name");
             method1.Description.Should().Be("method1 description");
             method1.Type.Should().Be(CommandType.Leaf);
-            method1.Flags.Should().Be(CommandFlags.None);
             var method2 = cmdDescs.First(c => c.Id == "method2");
-            method2.Flags.Should().Be(CommandFlags.Obsolete);
             var method3 = cmdDescs.First(c => c.Id == "method3");
-            method3.Flags.Should().Be(CommandFlags.Authorize);
         }
 
         [Fact]

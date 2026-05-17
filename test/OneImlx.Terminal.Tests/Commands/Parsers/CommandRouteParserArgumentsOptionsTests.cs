@@ -39,12 +39,12 @@ namespace OneImlx.Terminal.Commands.Parsers
 
         // terminalOptions = MockTerminalOptions.NewAliasOptions(); textHandler = new TerminalAsciiTextHandler();
         // commandDescriptors = new(textHandler, [ new("root1", "root1_name", "root1_desc", CommandType.Root,
-        // CommandFlags.None, argumentDescriptors: argumentDescriptors, optionDescriptors: optionDescriptors),
-        // new("grp1", "grp1_name", "grp1_desc", CommandType.Group, CommandFlags.None, new OwnerIdCollection("root1"),
+        //  argumentDescriptors: argumentDescriptors, optionDescriptors: optionDescriptors),
+        // new("grp1", "grp1_name", "grp1_desc", CommandType.Group,  new OwnerIdCollection("root1"),
         // argumentDescriptors: argumentDescriptors, optionDescriptors: optionDescriptors), new("cmd1", "cmd1_name",
-        // "cmd1_desc", CommandType.SubCommand, CommandFlags.None, new OwnerIdCollection("grp1"), argumentDescriptors:
+        // "cmd1_desc", CommandType.SubCommand,  new OwnerIdCollection("grp1"), argumentDescriptors:
         // argumentDescriptors, optionDescriptors: optionDescriptors), new("cmd_nr2", "cmd_nr2_name", "cmd_nr2_desc",
-        // CommandType.SubCommand, CommandFlags.None, argumentDescriptors: argumentDescriptors, optionDescriptors:
+        // CommandType.SubCommand,  argumentDescriptors: argumentDescriptors, optionDescriptors:
         // optionDescriptors) ]); commandStore = new TerminalInMemoryCommandStore(textHandler,
         // commandDescriptors.Values); logger = new NullLogger<TerminalRequestQueueParser>();
 

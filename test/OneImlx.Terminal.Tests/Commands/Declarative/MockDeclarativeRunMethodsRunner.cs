@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("owner1", "owner2")]
-    [CommandDescriptor("composite1", "composite_name1", "composite description", CommandType.CompositeGroup, CommandFlags.None)]
+    [CommandDescriptor("composite1", "composite_name1", "composite description", CommandType.CompositeGroup)]
     [CommandChecker(typeof(MockCommandChecker))]
     [CommandTags("comp_tag1", "comp_tag2")]
     [CommandCustomProperty("comp_key1", "comp_value1")]
@@ -31,7 +31,7 @@ namespace OneImlx.Terminal.Commands.Declarative
 
         public string? LastMethodCalled { get; private set; }
 
-        [CommandDescriptor("method1", "method1_name", "method1 description", CommandType.Leaf, CommandFlags.None)]
+        [CommandDescriptor("method1", "method1_name", "method1 description", CommandType.Leaf)]
         [CommandChecker(typeof(MockCommandChecker))]
         [CommandTags("m1_tag1", "m1_tag2", "m1_tag3")]
         [CommandCustomProperty("m1_key1", "m1_value1")]
@@ -50,7 +50,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        [CommandDescriptor("method2", "method2_name", "method2 description", CommandType.Leaf, CommandFlags.Obsolete)]
+        [CommandDescriptor("method2", "method2_name", "method2 description", CommandType.Leaf)]
         [CommandChecker(typeof(MockCommandCheckerInner))]
         [CommandTags("m2_tag1")]
         [CommandCustomProperty("m2_key1", "m2_value1")]
@@ -67,7 +67,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        [CommandDescriptor("method3", "method3_name", "method3 description", CommandType.Leaf, CommandFlags.Authorize)]
+        [CommandDescriptor("method3", "method3_name", "method3 description", CommandType.Leaf)]
         [CommandTags("m3_tag1", "m3_tag2")]
         [CommandCustomProperty("m3_key1", "m3_value1")]
         [CommandCustomProperty("m3_key2", "m3_value2")]
