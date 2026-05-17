@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Collections.Generic;
@@ -30,7 +27,7 @@ namespace OneImlx.Terminal.Commands
             TerminalRouterContext context,
             Dictionary<string, object>? properties)
         {
-            TerminalContext = context ?? throw new ArgumentNullException(nameof(context));
+            RouterContext = context ?? throw new ArgumentNullException(nameof(context));
             Properties = properties;
             Request = request ?? throw new ArgumentNullException(nameof(request));
         }
@@ -61,9 +58,9 @@ namespace OneImlx.Terminal.Commands
         public CommandResult? Result { get; internal set; }
 
         /// <summary>
-        /// The terminal routing context.
+        /// The terminal router context.
         /// </summary>
-        public TerminalRouterContext TerminalContext { get; }
+        public TerminalRouterContext RouterContext { get; }
 
         /// <summary>
         /// Ensures the license is available.

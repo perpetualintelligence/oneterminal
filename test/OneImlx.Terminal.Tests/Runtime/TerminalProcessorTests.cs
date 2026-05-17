@@ -383,7 +383,7 @@ namespace OneImlx.Terminal.Runtime
             routeContext!.Properties.Should().HaveCount(2);
             routeContext.Properties!["sender_endpoint"].Should().Be("sender_endpoint_1");
             routeContext.Properties!["sender_id"].Should().Be("sender_1");
-            routeContext.TerminalContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
+            routeContext.RouterContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
 
             batch.Requests.Should().HaveCount(3);
 
@@ -440,7 +440,7 @@ namespace OneImlx.Terminal.Runtime
             routeContext!.Properties.Should().HaveCount(2);
             routeContext.Properties!["sender_endpoint"].Should().Be("sender_endpoint_1");
             routeContext.Properties!["sender_id"].Should().Be("sender_1");
-            routeContext.TerminalContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
+            routeContext.RouterContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
 
             // Assert requests and results
             terminalIO.Requests[0].Raw.Should().Be("command1");
@@ -486,7 +486,7 @@ namespace OneImlx.Terminal.Runtime
             routeContext.Properties!["sender_id"].Should().Be("sender_1");
             routeContext.Request.Id.Should().NotBeNullOrWhiteSpace();
             routeContext.Request.Raw.Should().Be("command1");
-            routeContext.TerminalContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
+            routeContext.RouterContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
 
             // Make sure response is correct
             terminalIO.SenderId.Should().Be("sender_1");
@@ -544,7 +544,7 @@ namespace OneImlx.Terminal.Runtime
             routeContext.Request.Id.Should().NotBeNullOrWhiteSpace();
             routeContext.Request.Raw.Should().Be("command1");
 
-            routeContext.TerminalContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
+            routeContext.RouterContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
 
             // Add without sender endpoint and sender id
             routeContext = null;
@@ -559,7 +559,7 @@ namespace OneImlx.Terminal.Runtime
             routeContext.Request.Id.Should().NotBeNullOrWhiteSpace();
             routeContext.Request.Raw.Should().Be("command2");
 
-            routeContext.TerminalContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
+            routeContext.RouterContext.Should().BeSameAs(_mockTerminalRouterContext.Object);
 
             await _terminalProcessor.StopProcessingAsync(2000);
         }
