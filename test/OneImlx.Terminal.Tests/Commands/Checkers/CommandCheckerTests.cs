@@ -36,8 +36,8 @@ namespace OneImlx.Terminal.Commands.Checkers
             commands = new TerminalInMemoryCommandStore(textHandler, MockCommands.Commands.Values);
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
-            routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            routerContext = new CommandContext(request, routingContext, null);
+            routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
+            commandContext = new CommandContext(request, routerContext, null);
         }
 
         [Fact]
@@ -50,10 +50,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(disabledArgsDescriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            Func<Task> func = () => checker.CheckCommandAsync(routerContext);
+            Func<Task> func = () => checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option is disabled. command=id1 option=key1");
         }
 
@@ -67,10 +66,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
@@ -83,11 +81,10 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
             terminalOptions.Checker.AllowObsolete = true;
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
@@ -100,11 +97,10 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
             terminalOptions.Checker.AllowObsolete = false;
-            Func<Task> func = async () => await checker.CheckCommandAsync(routerContext);
+            Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option is obsolete. command=id1 option=key1");
         }
 
@@ -119,10 +115,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            Func<Task> func = async () => await checker.CheckCommandAsync(routerContext);
+            Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.MissingOption).WithErrorDescription("The required option is missing. command=id1 option=key1");
         }
 
@@ -136,10 +131,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
@@ -154,10 +148,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
 
             options["key1"].Value.Should().Be("non-date");
         }
@@ -174,10 +167,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            Func<Task> func = async () => await checker.CheckCommandAsync(routerContext);
+            Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option value does not match the mapped type. option=key1 type=System.DateTime data_type=DateTime value_type=String value=non-date");
         }
 
@@ -193,14 +185,13 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
             object oldValue = options["key1"].Value;
             oldValue.Should().BeOfType<string>();
 
             // Value should pass and converted to date
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
 
             object newValue = options["key1"].Value;
             newValue.Should().BeOfType<DateTime>();
@@ -217,10 +208,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            var result = await checker.CheckCommandAsync(routerContext);
+            var result = await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
@@ -233,10 +223,9 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.ParsedCommand = extractedCommand;
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         private readonly IArgumentChecker argumentChecker = null!;
@@ -246,8 +235,8 @@ namespace OneImlx.Terminal.Commands.Checkers
         private readonly CancellationTokenSource commandTokenSource = null!;
         private readonly IDataTypeMapper<Option> optionMapper = null!;
         private readonly CommandRequest request = null!;
-        private readonly CommandContext routerContext = null!;
-        private readonly TerminalRouterContext routingContext = null!;
+        private readonly CommandContext commandContext = null!;
+        private readonly TerminalRouterContext routerContext = null!;
         private readonly TerminalOptions terminalOptions = null!;
         private readonly CancellationTokenSource terminalTokenSource = null!;
         private readonly ITerminalTextHandler textHandler = null!;

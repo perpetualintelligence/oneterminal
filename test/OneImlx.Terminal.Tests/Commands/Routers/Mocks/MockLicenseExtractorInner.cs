@@ -1,14 +1,11 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using System.Threading.Tasks;
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Mocks;
-using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Routers.Mocks
 {
@@ -17,6 +14,8 @@ namespace OneImlx.Terminal.Commands.Routers.Mocks
         public bool NoLicense { get; set; }
 
         public License TestLicense { get; set; } = new License(ProductCatalog.TerminalPlanDemo, LicenseUsage.RnD, "testKey", MockLicenses.TestClaims, MockLicenses.TestQuota);
+
+        public bool GetCalled { get; private set; }
 
         public Task<LicenseExtractorResult> ExtractLicenseAsync()
         {
@@ -30,6 +29,7 @@ namespace OneImlx.Terminal.Commands.Routers.Mocks
 
         public Task<License?> GetLicenseAsync()
         {
+            GetCalled = true;
             if (NoLicense)
             {
                 return Task.FromResult<License?>(null);

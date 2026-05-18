@@ -66,7 +66,6 @@ namespace OneImlx.Terminal.Commands
                 {
                     throw new TerminalException(license.Failed);
                 }
-                context.License = license;
                 logger.LogDebug("Get license. id={0} tenant={1} plan={2}", license.Claims.Id, license.Claims.TenantId, license.Plan);
 
                 // Parse the command

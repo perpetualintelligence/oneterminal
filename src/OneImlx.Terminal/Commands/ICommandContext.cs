@@ -2,11 +2,11 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using System.Collections.Generic;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
-using System.Collections.Generic;
 
 namespace OneImlx.Terminal.Commands
 {
@@ -15,11 +15,6 @@ namespace OneImlx.Terminal.Commands
     /// </summary>
     public interface ICommandContext
     {
-        /// <summary>
-        /// The extracted license.
-        /// </summary>
-        public License? License { get; }
-
         /// <summary>
         /// The parsed command.
         /// </summary>
@@ -44,13 +39,6 @@ namespace OneImlx.Terminal.Commands
         /// The terminal router context.
         /// </summary>
         public TerminalRouterContext RouterContext { get; }
-
-        /// <summary>
-        /// Ensures the license is available.
-        /// </summary>
-        /// <returns>The available license.</returns>
-        /// <exception cref="TerminalException">Thrown when the license is not available.</exception>
-        public License EnsureLicense();
 
         /// <summary>
         /// Ensures the parsed command is available.

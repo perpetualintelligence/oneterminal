@@ -1,15 +1,12 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using OneImlx.Terminal.Licensing;
+using OneImlx.Terminal.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OneImlx.Terminal.Licensing;
-using OneImlx.Terminal.Runtime;
 
 namespace OneImlx.Terminal.Commands.Runners
 {
@@ -21,9 +18,10 @@ namespace OneImlx.Terminal.Commands.Runners
         /// <summary>
         /// Initialize a new instance.
         /// </summary>
-        public LicenseInfoRunner(ITerminalConsole terminalConsole, ILicenseChecker licenseChecker)
+        public LicenseInfoRunner(ITerminalConsole terminalConsole, ILicenseExtractor licenseExtractor, ILicenseChecker licenseChecker)
         {
             this.terminalConsole = terminalConsole;
+            this.licenseExtractor = licenseExtractor;
             this.licenseChecker = licenseChecker;
         }
 
@@ -33,7 +31,8 @@ namespace OneImlx.Terminal.Commands.Runners
             // Recheck the license to get the current consumption.
             // TODO: This should be tolerant of over-consumption since it is printing the usage. At present CheckLicenseAsync
             // throw exception on over-consumption.
-            License license = context.EnsureLicense();
+            LicenseExtractorResult licenseResult = await licenseExtractor.ExtractLicenseAsync().ConfigureAwait(false);
+            License license = licenseResult.License;
             LicenseCheckerResult checkResult = await licenseChecker.CheckLicenseAsync(license);
 
             {
@@ -124,5 +123,6 @@ namespace OneImlx.Terminal.Commands.Runners
 
         private readonly ILicenseChecker licenseChecker;
         private readonly ITerminalConsole terminalConsole;
+        private readonly ILicenseExtractor licenseExtractor;
     }
 }

@@ -26,11 +26,6 @@ namespace OneImlx.Terminal.Commands
         Dictionary<string, object>? properties) : ICommandContext
     {
         /// <summary>
-        /// The extracted license.
-        /// </summary>
-        public License? License { get; internal set; }
-
-        /// <summary>
         /// The parsed command.
         /// </summary>
         public ParsedCommand? ParsedCommand { get; internal set; }
@@ -54,21 +49,6 @@ namespace OneImlx.Terminal.Commands
         /// The terminal router context.
         /// </summary>
         public TerminalRouterContext RouterContext { get; } = context ?? throw new ArgumentNullException(nameof(context));
-
-        /// <summary>
-        /// Ensures the license is available.
-        /// </summary>
-        /// <returns>The available license.</returns>
-        /// <exception cref="TerminalException">Thrown when the license is not available.</exception>
-        public License EnsureLicense()
-        {
-            if (License is null)
-            {
-                throw new TerminalException(TerminalErrors.ServerError, "The license is not available.");
-            }
-
-            return License;
-        }
 
         /// <summary>
         /// Ensures the parsed command is available.
