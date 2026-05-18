@@ -2,36 +2,29 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using System;
+using System.Collections.Generic;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
-using System;
-using System.Collections.Generic;
 
 namespace OneImlx.Terminal.Commands
 {
     /// <summary>
     /// The generic command router context.
     /// </summary>
-    public class CommandContext
+    /// <remarks>
+    /// The command string.
+    /// </remarks>
+    /// <param name="request">The request to process.</param>
+    /// <param name="context">The terminal routing context.</param>
+    /// <param name="properties">The additional router properties.</param>
+    public sealed class CommandContext(
+        CommandRequest request,
+        TerminalRouterContext context,
+        Dictionary<string, object>? properties) : ICommandContext
     {
-        /// <summary>
-        /// The command string.
-        /// </summary>
-        /// <param name="request">The request to process.</param>
-        /// <param name="context">The terminal routing context.</param>
-        /// <param name="properties">The additional router properties.</param>
-        public CommandContext(
-            CommandRequest request,
-            TerminalRouterContext context,
-            Dictionary<string, object>? properties)
-        {
-            RouterContext = context ?? throw new ArgumentNullException(nameof(context));
-            Properties = properties;
-            Request = request ?? throw new ArgumentNullException(nameof(request));
-        }
-
         /// <summary>
         /// The extracted license.
         /// </summary>
@@ -45,12 +38,12 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The additional router properties.
         /// </summary>
-        public Dictionary<string, object>? Properties { get; }
+        public Dictionary<string, object>? Properties { get; } = properties;
 
         /// <summary>
         /// The terminal request.
         /// </summary>
-        public CommandRequest Request { get; }
+        public CommandRequest Request { get; } = request ?? throw new ArgumentNullException(nameof(request));
 
         /// <summary>
         /// The result of the command execution.
@@ -60,7 +53,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The terminal router context.
         /// </summary>
-        public TerminalRouterContext RouterContext { get; }
+        public TerminalRouterContext RouterContext { get; } = context ?? throw new ArgumentNullException(nameof(context));
 
         /// <summary>
         /// Ensures the license is available.
