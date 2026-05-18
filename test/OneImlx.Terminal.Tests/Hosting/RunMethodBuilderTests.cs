@@ -29,7 +29,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Adds_RunMethod_To_CommandBuilder_ServiceCollection()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
             ServiceDescriptor? serviceDescriptor = commandBuilder.Services.FirstOrDefault(static e => e.ServiceType.Equals(typeof(RunMethod)));
             serviceDescriptor.Should().BeNull();
 
@@ -46,7 +46,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Returns_Same_CommandBuilder()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
             IRunMethodBuilder runMethodBuilder = commandBuilder.DefineRunMethod("method1", "TestMethod");
             ICommandBuilder commandBuilderFromRunMethodBuilder = runMethodBuilder.Add();
             commandBuilder.Should().BeSameAs(commandBuilderFromRunMethodBuilder);
@@ -56,7 +56,7 @@ namespace OneImlx.Terminal.Hosting
         public void NewBuilder_Returns_New_IServiceCollection()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
             RunMethodBuilder runMethodBuilder = new(commandBuilder);
             runMethodBuilder.Services.Should().NotBeSameAs(serviceCollection);
             runMethodBuilder.Services.Should().NotBeSameAs(commandBuilder.Services);
@@ -66,7 +66,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Multiple_RunMethods_Adds_All()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("cmd1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
 
             IRunMethodBuilder runMethodBuilder = commandBuilder.DefineRunMethod("method1", "TestMethod1");
             runMethodBuilder.Services.AddSingleton(new RunMethod("method2", "TestMethod2"));

@@ -11,7 +11,7 @@ using System.ComponentModel.DataAnnotations;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("oid1, oid2")]
-    [CommandDescriptor("id2", "name2", "description", ReservedCommandTypes.Leaf)]
+    [CommandDescriptor("id2", "name2", "description", CommandTypes.Leaf)]
     [CommandChecker(typeof(MockCommandChecker))]
     [OptionDescriptor("opt1", nameof(String), "test arg desc1", ReservedFlags.None)]
     [OptionDescriptor("opt2", nameof(String), "test arg desc2", ReservedFlags.None)]

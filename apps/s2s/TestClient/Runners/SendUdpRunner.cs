@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("udp", "UDP test", "Send UDP commands to the terminal server.", ReservedCommandTypes.Leaf)]
+    [CommandDescriptor("udp", "UDP test", "Send UDP commands to the terminal server.", CommandTypes.Leaf)]
     public class SendUdpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendUdpRunner(

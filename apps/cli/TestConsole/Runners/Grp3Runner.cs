@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The group <c>grp3</c> runner - INDEPENDENT IsolatedGroup under test.
     /// </summary>
     [CommandOwners("test")]
-    [CommandDescriptor("grp3", "Group 3", "Group 3 IsolatedGroup (independent) with cmd7, cmd8, cmd9.", ReservedCommandTypes.IsolatedGroup)]
+    [CommandDescriptor("grp3", "Group 3", "Group 3 IsolatedGroup (independent) with cmd7, cmd8, cmd9.", CommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "isolated", "independent")]
     public class Grp3Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner

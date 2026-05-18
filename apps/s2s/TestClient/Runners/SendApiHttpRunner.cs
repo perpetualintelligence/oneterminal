@@ -16,7 +16,7 @@ using OneImlx.Terminal.Shared.Declarative;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("apihttp", "HTTP test", "Send HTTP commands to both Terminal router and ASP.NET API server.", ReservedCommandTypes.Leaf)]
+    [CommandDescriptor("apihttp", "HTTP test", "Send HTTP commands to both Terminal router and ASP.NET API server.", CommandTypes.Leaf)]
     public class SendApiHttpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendApiHttpRunner(IConfiguration configuration, ITerminalConsole terminalConsole, IHttpClientFactory httpClientFactory)

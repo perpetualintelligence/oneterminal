@@ -30,7 +30,7 @@ namespace OneImlx.Terminal.Hosting
         public void Add_Native_With_Owner_Throws()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "root1", "root1_desc", ReservedCommandTypes.Native).Owners(new("owner1", "owner2"));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "root1", "root1_desc", CommandTypes.Native).Owners(new("owner1", "owner2"));
 
             Action act = () => commandBuilder.Add();
             act.Should().Throw<TerminalException>().WithErrorCode("invalid_command").WithErrorDescription("The command cannot have an owner. command_type=5 command=id1");
@@ -40,7 +40,7 @@ namespace OneImlx.Terminal.Hosting
         public void Add_Root_With_Owner_Throws()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "root1", "root1_desc", ReservedCommandTypes.Root).Owners(new("owner1", "owner2"));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "root1", "root1_desc", CommandTypes.Root).Owners(new("owner1", "owner2"));
 
             Action act = () => commandBuilder.Add();
             act.Should().Throw<TerminalException>().WithErrorCode("invalid_command").WithErrorDescription("The command cannot have an owner. command_type=1 command=id1");
@@ -55,7 +55,7 @@ namespace OneImlx.Terminal.Hosting
             serviceDescriptor.Should().BeNull();
 
             // Add command to local
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
 
             // Build
             ITerminalBuilder cliBuilderFromCommandBuilder = commandBuilder.Add();
@@ -75,7 +75,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Returns_Same_TerminalBuilder()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
             ITerminalBuilder cliBuilderFromCommandBuilder = commandBuilder.Add();
             terminalBuilder.Should().BeSameAs(cliBuilderFromCommandBuilder);
         }
@@ -92,7 +92,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Adds_Command_With_Arguments()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
             commandBuilder.DefineArgument(1, "arg1", nameof(String), "arg1 desc", ReservedFlags.None).Add();
             commandBuilder.DefineArgument(2, "arg2", nameof(String), "arg2 desc", ReservedFlags.Required).Add();
             ITerminalBuilder tb = commandBuilder.Add();
@@ -106,7 +106,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Adds_Command_With_Options()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
             commandBuilder.DefineOption("opt1", nameof(String), "opt1 desc", ReservedFlags.None).Add();
             commandBuilder.DefineOption("opt2", nameof(String), "opt2 desc", ReservedFlags.Required).Add();
             ITerminalBuilder tb = commandBuilder.Add();
@@ -120,7 +120,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Adds_Command_With_Tags()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>().Tags(new("tag1", "tag2", "tag3"));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>().Tags(new("tag1", "tag2", "tag3"));
             ITerminalBuilder tb = commandBuilder.Add();
             ServiceProvider sp = tb.Services.BuildServiceProvider();
             var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
@@ -132,7 +132,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Adds_Command_With_CustomProperties()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", ReservedCommandTypes.Leaf).Checker<MockCommandChecker>().CustomProperty("key1", "value1").CustomProperty("key2", 42);
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>().CustomProperty("key1", "value1").CustomProperty("key2", 42);
             ITerminalBuilder tb = commandBuilder.Add();
             ServiceProvider sp = tb.Services.BuildServiceProvider();
             var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
@@ -145,7 +145,7 @@ namespace OneImlx.Terminal.Hosting
         public void Build_Adds_Command_With_RunMethods()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", ReservedCommandTypes.CompositeGroup).Checker<MockCommandChecker>();
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.CompositeGroup).Checker<MockCommandChecker>();
             commandBuilder.DefineRunMethod("method1", "TestMethod1").Add();
             commandBuilder.DefineRunMethod("method2", "TestMethod2").Add();
             ITerminalBuilder tb = commandBuilder.Add();
@@ -158,7 +158,7 @@ namespace OneImlx.Terminal.Hosting
         public void Owners_EmptyCollection_Throws()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc1", ReservedCommandTypes.Leaf);
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc1", CommandTypes.Leaf);
             Action act = () => commandBuilder.Owners([]);
             act.Should().Throw<InvalidOperationException>().WithMessage("The owners cannot be null or empty.");
         }
@@ -167,7 +167,7 @@ namespace OneImlx.Terminal.Hosting
         public void Tags_EmptyCollection_Throws()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc1", ReservedCommandTypes.Leaf);
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc1", CommandTypes.Leaf);
             Action act = () => commandBuilder.Tags([]);
             act.Should().Throw<InvalidOperationException>().WithMessage("The tag identifiers cannot be null or empty.");
         }
@@ -185,7 +185,7 @@ namespace OneImlx.Terminal.Hosting
         public void Checker_UpdatesCommandDescriptor()
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
-            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc1", ReservedCommandTypes.Leaf);
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "desc1", CommandTypes.Leaf);
             commandBuilder.Checker<MockCommandChecker>();
             commandBuilder.Add();
 

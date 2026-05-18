@@ -67,116 +67,116 @@ namespace OneImlx.Terminal.Mocks
             [
 
                 // Different name and prefix
-                NewCommandDefinition("id1", "name1", "desc1", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner <CommandRunnerResult>)).Item1,
+                NewCommandDefinition("id1", "name1", "desc1", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner <CommandRunnerResult>)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("id2", "name2", "desc2", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("id2", "name2", "desc2", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Multiple prefix names
-                NewCommandDefinition("id3", "name3", "desc3", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("id3", "name3", "desc3", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Command with no args
-                NewCommandDefinition("id4", "name4", "desc4", ReservedCommandTypes.Leaf).Item1,
+                NewCommandDefinition("id4", "name4", "desc4", CommandTypes.Leaf).Item1,
 
                 // Command with no default arg
-                NewCommandDefinition("id5", "name5", "desc5", ReservedCommandTypes.Leaf, new OptionDescriptors(new TerminalTextHandler( StringComparison.OrdinalIgnoreCase, Encoding.Unicode )), typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("id5", "name5", "desc5", CommandTypes.Leaf, new OptionDescriptors(new TerminalTextHandler( StringComparison.OrdinalIgnoreCase, Encoding.Unicode )), typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
             ]);
 
             GroupedCommands = new(unicodeTextHandler,
             [
 
                 // Different name and prefix
-                NewCommandDefinition("pi", "pi", "the top org grouped command", ReservedCommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("pi", "pi", "the top org grouped command", CommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("auth", "pi:auth", "the auth grouped command", ReservedCommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("auth", "pi:auth", "the auth grouped command", CommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("login", "pi:auth:login", "the login command within the auth group", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("login", "pi:auth:login", "the login command within the auth group", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("slogin", "pi:auth:slogin", "the silent login command within the auth group", ReservedCommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("slogin", "pi:auth:slogin", "the silent login command within the auth group", CommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("oidc", "pi:auth:slogin:oidc", "the slient oidc login command within the slogin group", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("oidc", "pi:auth:slogin:oidc", "the slient oidc login command within the slogin group", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("outh", "pi:auth:slogin:oauth", "the slient oauth login command within the slogin group", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("outh", "pi:auth:slogin:oauth", "the slient oauth login command within the slogin group", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
             ]);
 
             GroupedOptionsCommands = new(unicodeTextHandler,
             [
 
                 // Different name and prefix
-                NewCommandDefinition("orgid", "pi", "top org cmd group", ReservedCommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("orgid", "pi", "top org cmd group", CommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("orgid:authid", "auth", "org auth cmd group", ReservedCommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("orgid:authid", "auth", "org auth cmd group", CommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("orgid:authid:loginid", "login", "org auth login cmd", ReservedCommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("orgid:authid:loginid", "login", "org auth login cmd", CommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("orgid:authid:sloginid", "slogin", "org auth slogin cmd", ReservedCommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("orgid:authid:sloginid", "slogin", "org auth slogin cmd", CommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("orgid:authid:sloginid:oidc", "oidc", "org auth slogin oidc cmd", ReservedCommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("orgid:authid:sloginid:oidc", "oidc", "org auth slogin oidc cmd", CommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("orgid:authid:sloginid:oauth", "oauth", "org auth slogin oauth cmd", ReservedCommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("orgid:authid:sloginid:oauth", "oauth", "org auth slogin oauth cmd", CommandTypes.Leaf, TestOptionsDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
             ]);
 
             LicensingCommands = new(unicodeTextHandler,
             [
 
                 // Different name and prefix
-                NewCommandDefinition("root1", "name1", "desc1", ReservedCommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("root1", "name1", "desc1", CommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Different name and prefix
-                NewCommandDefinition("root2", "name2", "desc2", ReservedCommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("root2", "name2", "desc2", CommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Different name and prefix
-                NewCommandDefinition("root3", "name3", "desc3", ReservedCommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("root3", "name3", "desc3", CommandTypes.Root, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Different name and prefix
-                NewCommandDefinition("grp1", "name1", "desc1", ReservedCommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("grp1", "name1", "desc1", CommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Different name and prefix
-                NewCommandDefinition("grp2", "name2", "desc2", ReservedCommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("grp2", "name2", "desc2", CommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Different name and prefix
-                NewCommandDefinition("grp3", "name3", "desc3", ReservedCommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("grp3", "name3", "desc3", CommandTypes.IsolatedGroup, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Different name and prefix
-                NewCommandDefinition("id1", "name1", "desc1", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("id1", "name1", "desc1", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Same name and prefix with args
-                NewCommandDefinition("id2", "name2", "desc2", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("id2", "name2", "desc2", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Multiple prefix names
-                NewCommandDefinition("id3", "name3", "desc3", ReservedCommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("id3", "name3", "desc3", CommandTypes.Leaf, TestOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Command with no args
-                NewCommandDefinition("id4", "name4", "desc4", ReservedCommandTypes.Leaf).Item1,
+                NewCommandDefinition("id4", "name4", "desc4", CommandTypes.Leaf).Item1,
 
                 // Command with no default arg
-                NewCommandDefinition("id5", "name5", "desc5",ReservedCommandTypes.Leaf, new OptionDescriptors( new TerminalTextHandler( StringComparison.OrdinalIgnoreCase, Encoding.Unicode )), typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("id5", "name5", "desc5",CommandTypes.Leaf, new OptionDescriptors( new TerminalTextHandler( StringComparison.OrdinalIgnoreCase, Encoding.Unicode )), typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
             ]);
 
             UnicodeCommands = new(unicodeTextHandler,
             [
 
                 // --- Hindi --- Root command
-                NewCommandDefinition("यूनिकोड", "यूनिकोड नाम", "यूनिकोड रूट कमांड", ReservedCommandTypes.Root, null, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("यूनिकोड", "यूनिकोड नाम", "यूनिकोड रूट कमांड", CommandTypes.Root, null, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Grouped command
-                NewCommandDefinition("परीक्षण", "परीक्षण नाम", "यूनिकोड समूहीकृत कमांड", ReservedCommandTypes.IsolatedGroup, null, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("परीक्षण", "परीक्षण नाम", "यूनिकोड समूहीकृत कमांड", CommandTypes.IsolatedGroup, null, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Subcommand
-                NewCommandDefinition("प्रिंट", "प्रिंट नाम", "प्रिंट कमांड", ReservedCommandTypes.Leaf, TestHindiUnicodeOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("प्रिंट", "प्रिंट नाम", "प्रिंट कमांड", CommandTypes.Leaf, TestHindiUnicodeOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
 
                 // Subcommand
-                NewCommandDefinition("दूसरा", "दूसरा नाम", "दूसरा आदेश", ReservedCommandTypes.Leaf, TestHindiUnicodeOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
+                NewCommandDefinition("दूसरा", "दूसरा नाम", "दूसरा आदेश", CommandTypes.Leaf, TestHindiUnicodeOptionDescriptors, typeof(CommandChecker), typeof(CommandRunner < CommandRunnerResult >)).Item1,
             ]);
         }
 

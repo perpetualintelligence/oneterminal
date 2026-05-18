@@ -11,7 +11,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer.Runners
     /// The sub-command <c>cmd1</c> runner for the <see cref="TestApiServer"/>.
     /// </summary>
     [CommandOwners("grp1")]
-    [CommandDescriptor("cmd1", "Command 1", "Command1 description.", ReservedCommandTypes.Leaf)]
+    [CommandDescriptor("cmd1", "Command 1", "Command1 description.", CommandTypes.Leaf)]
     [CommandChecker(typeof(CommandChecker))]
     public class Cmd1Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

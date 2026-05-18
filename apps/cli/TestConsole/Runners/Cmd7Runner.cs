@@ -12,7 +12,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The sub-command <c>cmd7</c> runner under grp3.
     /// </summary>
     [CommandOwners("grp3")]
-    [CommandDescriptor("cmd7", "Command 7", "Command 7 under grp3.", ReservedCommandTypes.Leaf)]
+    [CommandDescriptor("cmd7", "Command 7", "Command 7 under grp3.", CommandTypes.Leaf)]
     public class Cmd7Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;

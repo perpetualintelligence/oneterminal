@@ -50,7 +50,7 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <summary>
         /// The command type.
         /// </summary>
-        /// <seealso cref="ReservedCommandTypes"/>
+        /// <seealso cref="CommandTypes"/>
         public int CommandType { get; }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace OneImlx.Terminal.Commands
     {
         public RunMethodTests()
         {
-            Command command = new(new CommandDescriptor("cmd-id", "cmd-name", "cmd-desc", ReservedCommandTypes.Leaf));
+            Command command = new(new CommandDescriptor("cmd-id", "cmd-name", "cmd-desc", CommandTypes.Leaf));
             parsedCommand = new ParsedCommand(command);
             commandTokenSource = new CancellationTokenSource();
             routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);

@@ -44,7 +44,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task DisabledOptionShouldErrorAsync()
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", ReservedFlags.Disabled);
-            CommandDescriptor disabledArgsDescriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor disabledArgsDescriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
@@ -61,7 +61,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task EnabledOptionShouldNotErrorAsync()
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", ReservedFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
@@ -77,7 +77,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task ObsoleteOptionAndObsoleteAllowedShouldNotErrorAsync()
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", ReservedFlags.Obsolete);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
@@ -94,7 +94,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task ObsoleteOptionAndObsoleteNotAllowedShouldErrorAsync()
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", ReservedFlags.Obsolete);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
@@ -113,7 +113,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", ReservedFlags.Required);
             OptionDescriptor optionDescriptor2 = new("key2", nameof(String), "desc1", ReservedFlags.Required);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor2, "value2")]);
 
@@ -130,7 +130,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task RequiredOptionPassedShouldNotErrorAsync()
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", ReservedFlags.Required);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
@@ -148,7 +148,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             terminalOptions.Checker.ValueDataType = false;
 
             OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", ReservedFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "non-date")]);
 
@@ -168,7 +168,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             terminalOptions.Checker.ValueDataType = true;
 
             OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", ReservedFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "non-date")]);
 
@@ -187,7 +187,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             terminalOptions.Checker.ValueDataType = true;
 
             OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", ReservedFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "25-Mar-2021")]);
 
@@ -211,7 +211,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task ValueValidCustomDataTypeShouldNotErrorAsync()
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(Double), "test desc", ReservedFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, 25.36)]);
 
@@ -227,7 +227,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task ValueValidShouldNotErrorAsync()
         {
             OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", ReservedFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", ReservedCommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, DateTime.Now)]);
 

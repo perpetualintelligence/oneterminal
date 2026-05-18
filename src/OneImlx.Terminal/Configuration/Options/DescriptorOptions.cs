@@ -27,7 +27,7 @@ namespace OneImlx.Terminal.Configuration.Options
         /// <summary>
         /// Gets or sets a value indicating whether composite groups are enabled.
         /// </summary>
-        /// <seealso cref="ReservedCommandTypes.CompositeGroup"/>
+        /// <seealso cref="CommandTypes.CompositeGroup"/>
         public bool CompositeGroups { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using OneImlx.Terminal.Shared.Declarative;
 
 namespace OneImlx.Terminal.Commands.Declarative
 {
-    [CommandDescriptor("id1_grp", "name", "description", ReservedCommandTypes.IsolatedGroup)]
+    [CommandDescriptor("id1_grp", "name", "description", CommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(MockCommandChecker))]
     [CommandTags("tag1", "tag2", "tag3")]
     [CommandCustomProperty("key1", "value1")]

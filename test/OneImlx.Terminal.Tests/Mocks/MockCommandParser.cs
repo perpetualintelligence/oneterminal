@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Mocks
         {
             Called = true;
 
-            var cIdt = new CommandDescriptor("testid", "testname", "desc", ReservedCommandTypes.Leaf);
+            var cIdt = new CommandDescriptor("testid", "testname", "desc", CommandTypes.Leaf);
             Command command = new(cIdt);
             ParsedCommand extractedCommand = new(command, null);
             context.ParsedCommand = extractedCommand;

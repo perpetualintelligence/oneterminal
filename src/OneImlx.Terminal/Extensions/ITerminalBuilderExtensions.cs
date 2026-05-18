@@ -386,7 +386,7 @@ namespace OneImlx.Terminal.Extensions
             ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType);
 
             // Command runner methods
-            if (cmdAttr.CommandType == ReservedCommandTypes.CompositeGroup)
+            if (cmdAttr.CommandType == CommandTypes.CompositeGroup)
             {
                 MethodInfo[] runnerMethods = declarativeRunner.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
@@ -466,7 +466,7 @@ namespace OneImlx.Terminal.Extensions
                     commandBuilder.Owners(fallbackOwnersAttr.Owners);
                 }
             }
-            else if (commandType.HasValue && (commandType.Value == ReservedCommandTypes.IsolatedGroup || commandType.Value == ReservedCommandTypes.CompositeGroup || commandType.Value == ReservedCommandTypes.Leaf))
+            else if (commandType.HasValue && (commandType.Value == CommandTypes.IsolatedGroup || commandType.Value == CommandTypes.CompositeGroup || commandType.Value == CommandTypes.Leaf))
             {
                 throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command owner.");
             }

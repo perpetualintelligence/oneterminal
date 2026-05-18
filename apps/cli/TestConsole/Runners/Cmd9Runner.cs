@@ -14,7 +14,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The sub-command <c>cmd9</c> runner under grp3 with custom checker.
     /// </summary>
     [CommandOwners("grp3")]
-    [CommandDescriptor("cmd9", "Command 9", "Command 9 under grp3 with custom checker.", ReservedCommandTypes.Leaf)]
+    [CommandDescriptor("cmd9", "Command 9", "Command 9 under grp3 with custom checker.", CommandTypes.Leaf)]
     [CommandChecker(typeof(Cmd3CommandChecker))]
     public class Cmd9Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

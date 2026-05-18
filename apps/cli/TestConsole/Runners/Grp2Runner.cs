@@ -15,7 +15,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The group <c>grp2</c> runner under grp1 demonstrating CompositeGroup with run methods.
     /// </summary>
     [CommandOwners("grp1")]
-    [CommandDescriptor("grp2", "Group 2", "Group 2 CompositeGroup under grp1 with cmd4, cmd5, cmd6.", ReservedCommandTypes.CompositeGroup)]
+    [CommandDescriptor("grp2", "Group 2", "Group 2 CompositeGroup under grp1 with cmd4, cmd5, cmd6.", CommandTypes.CompositeGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "composite", "nested")]
     public class Grp2Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
@@ -43,7 +43,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             return new CommandRunnerResult();
         }
 
-        [CommandDescriptor("cmd4", "Command 4", "Command 4 in grp2.", ReservedCommandTypes.Leaf)]
+        [CommandDescriptor("cmd4", "Command 4", "Command 4 in grp2.", CommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
         [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", ReservedFlags.None)]
         [ArgumentDescriptor(2, "arg2", nameof(String), "Second argument", ReservedFlags.None)]
@@ -58,7 +58,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             return new CommandRunnerResult();
         }
 
-        [CommandDescriptor("cmd5", "Command 5", "Command 5 in grp2.", ReservedCommandTypes.Leaf)]
+        [CommandDescriptor("cmd5", "Command 5", "Command 5 in grp2.", CommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
         [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", ReservedFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
@@ -73,7 +73,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             return new CommandRunnerResult();
         }
 
-        [CommandDescriptor("cmd6", "Command 6", "Command 6 in grp2.", ReservedCommandTypes.Leaf)]
+        [CommandDescriptor("cmd6", "Command 6", "Command 6 in grp2.", CommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
         [ArgumentDescriptor(1, "arg1", nameof(Boolean), "Boolean argument", ReservedFlags.None)]
         [OptionDescriptor("opt1", nameof(String), "String option", ReservedFlags.Required)]

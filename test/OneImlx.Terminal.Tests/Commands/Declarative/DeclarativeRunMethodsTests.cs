@@ -67,8 +67,8 @@ namespace OneImlx.Terminal.Commands.Declarative
         public void Creates_Descriptors_For_Group_And_Methods()
         {
             cmdDescs.Should().HaveCount(4);
-            cmdDescs.Where(c => c.Type == ReservedCommandTypes.Leaf).Should().HaveCount(3);
-            cmdDescs.Where(c => c.Type == ReservedCommandTypes.CompositeGroup).Should().HaveCount(1);
+            cmdDescs.Where(c => c.Type == CommandTypes.Leaf).Should().HaveCount(3);
+            cmdDescs.Where(c => c.Type == CommandTypes.CompositeGroup).Should().HaveCount(1);
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             var method1 = cmdDescs.First(c => c.Id == "method1");
             method1.Name.Should().Be("method1_name");
             method1.Description.Should().Be("method1 description");
-            method1.Type.Should().Be(ReservedCommandTypes.Leaf);
+            method1.Type.Should().Be(CommandTypes.Leaf);
             var method2 = cmdDescs.First(c => c.Id == "method2");
             var method3 = cmdDescs.First(c => c.Id == "method3");
         }

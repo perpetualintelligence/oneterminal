@@ -12,11 +12,16 @@ namespace OneImlx.Terminal.Shared
         [Fact]
         public void HasCorrectValues()
         {
-            ReservedCommandTypes.Root.Should().Be(1);
-            ReservedCommandTypes.IsolatedGroup.Should().Be(2);
-            ReservedCommandTypes.CompositeGroup.Should().Be(3);
-            ReservedCommandTypes.Leaf.Should().Be(4);
-            ReservedCommandTypes.Native.Should().Be(5);
+            CommandTypes.Root.Should().Be(1);
+            CommandTypes.IsolatedGroup.Should().Be(2);
+            CommandTypes.CompositeGroup.Should().Be(3);
+            CommandTypes.Leaf.Should().Be(4);
+            CommandTypes.Native.Should().Be(5);
+            CommandTypes.Future1.Should().Be(6);
+            CommandTypes.Future2.Should().Be(7);
+            CommandTypes.Future3.Should().Be(8);
+            CommandTypes.Future4.Should().Be(9);
+            CommandTypes.Future5.Should().Be(10);
         }
     }
 }
