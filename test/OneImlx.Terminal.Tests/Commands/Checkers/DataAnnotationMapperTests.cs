@@ -39,7 +39,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         [InlineData(nameof(DateTime), typeof(DateTime))]
         public async Task MapperShouldReturnCorrectMappingAsync(string dataType, Type systemType)
         {
-            Option option = new(new OptionDescriptor("opt1", dataType, "desc", ReservedFlags.None), "val1");
+            Option option = new(new OptionDescriptor("opt1", dataType, "desc", BehaviorFlags.None), "val1");
             var result = await mapper.MapToTypeAsync(option);
             result.MappedType.Should().Be(systemType);
         }
@@ -50,7 +50,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         [InlineData("12343")]
         public async Task MapperShouldThrowForInvalidDataType(string dataType)
         {
-            Option option = new(new OptionDescriptor("opt1", dataType, "desc", ReservedFlags.None), "val1");
+            Option option = new(new OptionDescriptor("opt1", dataType, "desc", BehaviorFlags.None), "val1");
             Func<Task> result = async () => await mapper.MapToTypeAsync(option);
             await result.Should().ThrowAsync<TerminalException>().WithMessage($"The value data type is not supported. value=opt1 data_type={dataType}");
         }
@@ -58,16 +58,16 @@ namespace OneImlx.Terminal.Commands.Checkers
         [Fact]
         public async Task NullOrWhitespaceDataTypeShouldErrorAsync()
         {
-            Option test = new(new OptionDescriptor("opt1", "   ", "desc", ReservedFlags.None), "val1");
+            Option test = new(new OptionDescriptor("opt1", "   ", "desc", BehaviorFlags.None), "val1");
             Func<Task> func = async () => await mapper.MapToTypeAsync(test);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidRequest).WithErrorDescription("The value data type cannot be null or whitespace. value=opt1");
 
-            test = new(new OptionDescriptor("opt1", "", "desc", ReservedFlags.None), "val1");
+            test = new(new OptionDescriptor("opt1", "", "desc", BehaviorFlags.None), "val1");
             func = async () => await mapper.MapToTypeAsync(test);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidRequest).WithErrorDescription("The value data type cannot be null or whitespace. value=opt1");
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            test = new(new OptionDescriptor("opt1", null, "desc", ReservedFlags.None), "val1");
+            test = new(new OptionDescriptor("opt1", null, "desc", BehaviorFlags.None), "val1");
             func = async () => await mapper.MapToTypeAsync(test);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidRequest).WithErrorDescription("The value data type cannot be null or whitespace. value=opt1");
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

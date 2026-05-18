@@ -45,9 +45,9 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         [CommandDescriptor("cmd4", "Command 4", "Command 4 in grp2.", CommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
-        [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", ReservedFlags.None)]
-        [ArgumentDescriptor(2, "arg2", nameof(String), "Second argument", ReservedFlags.None)]
-        [OptionDescriptor("opt1", nameof(String), "Option 1", ReservedFlags.None)]
+        [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", BehaviorFlags.None)]
+        [ArgumentDescriptor(2, "arg2", nameof(String), "Second argument", BehaviorFlags.None)]
+        [OptionDescriptor("opt1", nameof(String), "Option 1", BehaviorFlags.None)]
         public async Task<CommandRunnerResult> Cmd4Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 grp2 cmd4");
@@ -60,10 +60,10 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         [CommandDescriptor("cmd5", "Command 5", "Command 5 in grp2.", CommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
-        [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", ReservedFlags.Required)]
+        [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", BehaviorFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
         [ArgumentValidation("arg1", typeof(RangeAttribute), 1, 100)]
-        [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", ReservedFlags.None)]
+        [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", BehaviorFlags.None)]
         public async Task<CommandRunnerResult> Cmd5Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 grp2 cmd5");
@@ -75,8 +75,8 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         [CommandDescriptor("cmd6", "Command 6", "Command 6 in grp2.", CommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
-        [ArgumentDescriptor(1, "arg1", nameof(Boolean), "Boolean argument", ReservedFlags.None)]
-        [OptionDescriptor("opt1", nameof(String), "String option", ReservedFlags.Required)]
+        [ArgumentDescriptor(1, "arg1", nameof(Boolean), "Boolean argument", BehaviorFlags.None)]
+        [OptionDescriptor("opt1", nameof(String), "String option", BehaviorFlags.Required)]
         [OptionValidation("opt1", typeof(RequiredAttribute))]
         public async Task<CommandRunnerResult> Cmd6Async(CommandContext context)
         {

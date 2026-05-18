@@ -14,16 +14,16 @@ namespace OneImlx.Terminal.Shared
         [Fact]
         public void FlagValuesAreValid()
         {
-            ReservedFlags.None.Should().Be(0);
-            ReservedFlags.Required.Should().Be(1);
-            ReservedFlags.Obsolete.Should().Be(2);
-            ReservedFlags.Disabled.Should().Be(4);
-            ReservedFlags.Authorize.Should().Be(8);
-            ReservedFlags.Future1.Should().Be(16);
-            ReservedFlags.Future2.Should().Be(32);
-            ReservedFlags.Future3.Should().Be(64);
-            ReservedFlags.Future4.Should().Be(128);
-            ReservedFlags.Future5.Should().Be(256);
+            BehaviorFlags.None.Should().Be(0);
+            BehaviorFlags.Required.Should().Be(1);
+            BehaviorFlags.Obsolete.Should().Be(2);
+            BehaviorFlags.Disabled.Should().Be(4);
+            BehaviorFlags.Authorize.Should().Be(8);
+            BehaviorFlags.Future1.Should().Be(16);
+            BehaviorFlags.Future2.Should().Be(32);
+            BehaviorFlags.Future3.Should().Be(64);
+            BehaviorFlags.Future4.Should().Be(128);
+            BehaviorFlags.Future5.Should().Be(256);
         }
     }
 }

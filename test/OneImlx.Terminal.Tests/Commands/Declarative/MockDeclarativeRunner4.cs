@@ -13,12 +13,12 @@ namespace OneImlx.Terminal.Commands.Declarative
     [CommandDescriptor("id4", "name4", "description", CommandTypes.Leaf)]
     [CommandChecker(typeof(MockCommandChecker))]
     [CommandTags("tag1", "tag2", "tag3")]
-    [OptionDescriptor("opt1", nameof(String), "test arg desc1", ReservedFlags.None)]
-    [OptionDescriptor("opt2", nameof(String), "test arg desc2", ReservedFlags.None)]
-    [OptionDescriptor("opt3", nameof(String), "test arg desc3", ReservedFlags.None)]
-    [ArgumentDescriptor(1, "arg1", nameof(String), "test arg desc1", ReservedFlags.None)]
-    [ArgumentDescriptor(2, "arg2", nameof(String), "test arg desc2", ReservedFlags.None)]
-    [ArgumentDescriptor(3, "arg3", nameof(Double), "test arg desc3", ReservedFlags.None)]
+    [OptionDescriptor("opt1", nameof(String), "test arg desc1", BehaviorFlags.None)]
+    [OptionDescriptor("opt2", nameof(String), "test arg desc2", BehaviorFlags.None)]
+    [OptionDescriptor("opt3", nameof(String), "test arg desc3", BehaviorFlags.None)]
+    [ArgumentDescriptor(1, "arg1", nameof(String), "test arg desc1", BehaviorFlags.None)]
+    [ArgumentDescriptor(2, "arg2", nameof(String), "test arg desc2", BehaviorFlags.None)]
+    [ArgumentDescriptor(3, "arg3", nameof(Double), "test arg desc3", BehaviorFlags.None)]
     public class MockDeclarativeRunner4 : IDeclarativeRunner
     {
     }

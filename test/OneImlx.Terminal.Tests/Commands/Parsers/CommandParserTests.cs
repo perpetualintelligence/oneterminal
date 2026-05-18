@@ -31,16 +31,16 @@ namespace OneImlx.Terminal.Commands.Parsers
 
             ArgumentDescriptors arguments = new(textHandler,
             [
-                new (1, "arg1", nameof(String), "arg1_desc", ReservedFlags.None),
-                new (2, "arg2", nameof(String), "arg2_desc", ReservedFlags.None)
+                new (1, "arg1", nameof(String), "arg1_desc", BehaviorFlags.None),
+                new (2, "arg2", nameof(String), "arg2_desc", BehaviorFlags.None)
             ]);
 
             OptionDescriptors options = new(textHandler,
             [
-                new ("opt1", nameof(String), "opt1_desc", ReservedFlags.None),
-                new ("opt2", nameof(Int32), "opt2_desc", ReservedFlags.None),
-                new ("opt3", nameof(Boolean), "opt3_desc", ReservedFlags.None, alias: "o3"),
-                new ("opt4", nameof(Double), "opt4_desc", ReservedFlags.None, alias: "o4")
+                new ("opt1", nameof(String), "opt1_desc", BehaviorFlags.None),
+                new ("opt2", nameof(Int32), "opt2_desc", BehaviorFlags.None),
+                new ("opt3", nameof(Boolean), "opt3_desc", BehaviorFlags.None, alias: "o3"),
+                new ("opt4", nameof(Double), "opt4_desc", BehaviorFlags.None, alias: "o4")
 
             ]);
 

@@ -18,7 +18,9 @@ namespace OneImlx.Terminal.Shared
     /// an application may define <c>Suite = 3</c> instead of <c>CompositeGroup = 3</c>. The underlying
     /// numeric value preserves the expected framework behavior.
     /// </para>
+    /// <para>
     /// Reserved framework command type values:
+    /// </para>
     /// <list type="bullet">
     /// <item><description>1 = Root</description></item>
     /// <item><description>2 = IsolatedGroup</description></item>

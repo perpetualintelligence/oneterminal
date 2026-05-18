@@ -102,7 +102,7 @@ namespace OneImlx.Terminal.Commands
             {
                 if (valueCheckers.Any(static e => e.GetRawType() == typeof(RequiredAttribute)))
                 {
-                    Flags = Flags.AddFlag(ReservedFlags.Required);
+                    Flags = Flags.AddFlag(BehaviorFlags.Required);
                 }
             }
         }

@@ -93,8 +93,8 @@ namespace OneImlx.Terminal.Hosting
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
-            commandBuilder.DefineArgument(1, "arg1", nameof(String), "arg1 desc", ReservedFlags.None).Add();
-            commandBuilder.DefineArgument(2, "arg2", nameof(String), "arg2 desc", ReservedFlags.Required).Add();
+            commandBuilder.DefineArgument(1, "arg1", nameof(String), "arg1 desc", BehaviorFlags.None).Add();
+            commandBuilder.DefineArgument(2, "arg2", nameof(String), "arg2 desc", BehaviorFlags.Required).Add();
             ITerminalBuilder tb = commandBuilder.Add();
             ServiceProvider sp = tb.Services.BuildServiceProvider();
             var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
@@ -107,8 +107,8 @@ namespace OneImlx.Terminal.Hosting
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
-            commandBuilder.DefineOption("opt1", nameof(String), "opt1 desc", ReservedFlags.None).Add();
-            commandBuilder.DefineOption("opt2", nameof(String), "opt2 desc", ReservedFlags.Required).Add();
+            commandBuilder.DefineOption("opt1", nameof(String), "opt1 desc", BehaviorFlags.None).Add();
+            commandBuilder.DefineOption("opt2", nameof(String), "opt2 desc", BehaviorFlags.Required).Add();
             ITerminalBuilder tb = commandBuilder.Add();
             ServiceProvider sp = tb.Services.BuildServiceProvider();
             var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");

@@ -368,7 +368,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             TerminalTextHandler unicodeHandler = new(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
             OptionDescriptors helpIdOptionDescriptors = new(unicodeHandler,
             [
-                new(terminalOptions.Value.Help.OptionId, nameof(Boolean), "Help options", ReservedFlags.None)
+                new(terminalOptions.Value.Help.OptionId, nameof(Boolean), "Help options", BehaviorFlags.None)
             ]);
             Options helpIdOptions = new(unicodeHandler, [new(helpIdOptionDescriptors.First().Value, true)]);
             helpIdCommand = MockCommands.NewCommandDefinition("helpId1", "helpIdName", "helpIdDesc", CommandTypes.Leaf,  helpIdOptionDescriptors, options: helpIdOptions);
@@ -376,7 +376,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             // This mocks the help alias request
             OptionDescriptors helpAliasOptionDescriptors = new(unicodeHandler,
             [
-                new(terminalOptions.Value.Help.OptionAlias, nameof(Boolean), "Help alias options", ReservedFlags.None)
+                new(terminalOptions.Value.Help.OptionAlias, nameof(Boolean), "Help alias options", BehaviorFlags.None)
             ]);
             Options helpAliasOptions = new(unicodeHandler, [new(helpAliasOptionDescriptors.First().Value, true)]);
             helpAliasCommand = MockCommands.NewCommandDefinition("helpAlias", "helpAliasName", "helpAliasDesc", CommandTypes.Leaf,  helpAliasOptionDescriptors, options: helpAliasOptions);

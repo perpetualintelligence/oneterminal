@@ -29,7 +29,7 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <summary>
         /// The option flags.
         /// </summary>
-        /// <seealso cref="ReservedFlags"/>
+        /// <seealso cref="BehaviorFlags"/>
         public int Flags { get; }
     }
 }

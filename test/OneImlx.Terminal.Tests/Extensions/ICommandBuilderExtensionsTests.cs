@@ -38,7 +38,7 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void DefineOption_Adds_Custom_DataType_Correctly()
         {
-            IOptionBuilder argumentBuilder = commandBuilder.DefineOption("opt1", "custom-dt", "description1", ReservedFlags.Disabled, alias: null);
+            IOptionBuilder argumentBuilder = commandBuilder.DefineOption("opt1", "custom-dt", "description1", BehaviorFlags.Disabled, alias: null);
 
             // Option builder, command builder have different service collections.
             argumentBuilder.Services.Should().NotBeSameAs(commandBuilder.Services);
@@ -52,13 +52,13 @@ namespace OneImlx.Terminal.Extensions
             option.DataType.Should().Be("custom-dt");
             option.Description.Should().Be("description1");
             option.Alias.Should().BeNull();
-            option.Flags.Should().Be(ReservedFlags.Disabled);
+            option.Flags.Should().Be(BehaviorFlags.Disabled);
         }
 
         [Fact]
         public void DefineOption_Adds_Std_DataType_Correctly()
         {
-            IOptionBuilder argumentBuilder = commandBuilder.DefineOption("opt1", nameof(Int32), "description1", ReservedFlags.Required | ReservedFlags.Obsolete, alias: "arg-alias1");
+            IOptionBuilder argumentBuilder = commandBuilder.DefineOption("opt1", nameof(Int32), "description1", BehaviorFlags.Required | BehaviorFlags.Obsolete, alias: "arg-alias1");
 
             // Option builder, command builder have different service collections.
             argumentBuilder.Services.Should().NotBeSameAs(commandBuilder.Services);
@@ -72,7 +72,7 @@ namespace OneImlx.Terminal.Extensions
             option.DataType.Should().Be(nameof(Int32));
             option.Description.Should().Be("description1");
             option.Alias.Should().Be("arg-alias1");
-            option.Flags.Should().Be(ReservedFlags.Required | ReservedFlags.Obsolete);
+            option.Flags.Should().Be(BehaviorFlags.Required | BehaviorFlags.Obsolete);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace OneImlx.Terminal.Extensions
         [Fact]
         public void DefineArgument_Adds_Correctly()
         {
-            IArgumentBuilder argumentBuilder = commandBuilder.DefineArgument(1, "arg1", nameof(String), "description1", ReservedFlags.Required);
+            IArgumentBuilder argumentBuilder = commandBuilder.DefineArgument(1, "arg1", nameof(String), "description1", BehaviorFlags.Required);
 
             argumentBuilder.Services.Should().NotBeSameAs(commandBuilder.Services);
 
@@ -126,7 +126,7 @@ namespace OneImlx.Terminal.Extensions
             argument.Id.Should().Be("arg1");
             argument.DataType.Should().Be(nameof(String));
             argument.Description.Should().Be("description1");
-            argument.Flags.Should().Be(ReservedFlags.Required);
+            argument.Flags.Should().Be(BehaviorFlags.Required);
         }
 
         [Fact]

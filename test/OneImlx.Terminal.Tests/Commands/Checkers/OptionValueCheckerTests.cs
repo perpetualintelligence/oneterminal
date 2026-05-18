@@ -32,7 +32,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         public async Task MapperFailureShouldErrorAsync()
         {
             // Any failure, we just want to test that mapper failure is correctly returned
-            OptionDescriptor identity = new("opt1", "invalid_dt", "desc1", ReservedFlags.None);
+            OptionDescriptor identity = new("opt1", "invalid_dt", "desc1", BehaviorFlags.None);
             Option value = new(identity, "non int value");
 
             Func<Task> func = () => checker.CheckOptionAsync(value);
@@ -42,7 +42,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         [Fact]
         public async Task NullOptionValueShouldErrorAsync()
         {
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None);
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None);
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Option value = new(identity, null);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
@@ -57,7 +57,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             options.Checker.ValueDataType = true;
 
             // Value is double, but we can convert it so this should not error.
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None);
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None);
             Option value = new(identity, 23.69);
 
             await checker.CheckOptionAsync(value);
@@ -72,7 +72,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             options.Checker.ValueDataType = true;
 
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("test1", "test2"))] };
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("test1", "test2"))] };
             Option value = new(identity, "test3");
 
             Func<Task> func = async () => await checker.CheckOptionAsync(value);
@@ -85,7 +85,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             options.Checker.ValueDataType = false;
 
             // Value is double, strict checking is disabled so we will not convert it
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None);
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None);
             Option value = new(identity, 23.69);
 
             await checker.CheckOptionAsync(value);
@@ -100,7 +100,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             options.Checker.ValueDataType = false;
 
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("test1", "test2"))] };
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("test1", "test2"))] };
             Option value = new(identity, "test3");
 
             Func<Task> func = async () => await checker.CheckOptionAsync(value);
@@ -112,7 +112,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             options.Checker.ValueDataType = false;
 
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new CreditCardAttribute())] };
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new CreditCardAttribute())] };
             Option value = new(identity, "invalid_4242424242424242");
 
             Func<Task> func = async () => await checker.CheckOptionAsync(value);
@@ -124,7 +124,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             options.Checker.ValueDataType = true;
 
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new CreditCardAttribute())] };
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new CreditCardAttribute())] };
             Option value = new(identity, "invalid_4242424242424242");
 
             Func<Task> func = async () => await checker.CheckOptionAsync(value);
@@ -134,7 +134,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         [Fact]
         public async Task SupportedValueShouldNotErrorAsync()
         {
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("test1", "test2"))] };
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("test1", "test2"))] };
             Option value = new(identity, "test2");
 
             await checker.CheckOptionAsync(value);
@@ -143,7 +143,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         [Fact]
         public async Task SystemTypeMatchAndDataValidationSuccessShouldNotErrorAsync()
         {
-            OptionDescriptor identity = new("opt1", nameof(String), "desc1", ReservedFlags.None);
+            OptionDescriptor identity = new("opt1", nameof(String), "desc1", BehaviorFlags.None);
             Option value = new(identity, "4242424242424242");
 
             var result = await checker.CheckOptionAsync(value);

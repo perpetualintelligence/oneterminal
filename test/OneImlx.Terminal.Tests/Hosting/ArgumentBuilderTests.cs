@@ -31,9 +31,9 @@ namespace OneImlx.Terminal.Hosting
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
 
-            commandBuilder.DefineArgument(1, "arg1", nameof(String), "test arg desc1", ReservedFlags.None).Add()
-                          .DefineArgument(2, "arg2", nameof(String), "test arg desc2", ReservedFlags.None).Add()
-                          .DefineArgument(3, "arg3", nameof(String), "test arg desc3", ReservedFlags.None).Add();
+            commandBuilder.DefineArgument(1, "arg1", nameof(String), "test arg desc1", BehaviorFlags.None).Add()
+                          .DefineArgument(2, "arg2", nameof(String), "test arg desc2", BehaviorFlags.None).Add()
+                          .DefineArgument(3, "arg3", nameof(String), "test arg desc3", BehaviorFlags.None).Add();
 
             ServiceProvider serviceProvider = commandBuilder.Services.BuildServiceProvider();
             var argDescriptors = serviceProvider.GetServices<ArgumentDescriptor>();
@@ -49,7 +49,7 @@ namespace OneImlx.Terminal.Hosting
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
 
-            IArgumentBuilder argumentBuilder = commandBuilder.DefineArgument(1, "arg1", nameof(String), "test arg desc1", ReservedFlags.None);
+            IArgumentBuilder argumentBuilder = commandBuilder.DefineArgument(1, "arg1", nameof(String), "test arg desc1", BehaviorFlags.None);
             ICommandBuilder cmdBuilderFromArgBuilder = argumentBuilder.Add();
             commandBuilder.Should().BeSameAs(cmdBuilderFromArgBuilder);
         }
@@ -87,7 +87,7 @@ namespace OneImlx.Terminal.Hosting
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.Leaf).Checker<MockCommandChecker>();
-            commandBuilder.DefineArgument(1, "arg1", nameof(String), "test arg desc1", ReservedFlags.None).ValidationAttribute(typeof(System.ComponentModel.DataAnnotations.RequiredAttribute)).ValidationAttribute(typeof(System.ComponentModel.DataAnnotations.RangeAttribute), 1, 10).Add();
+            commandBuilder.DefineArgument(1, "arg1", nameof(String), "test arg desc1", BehaviorFlags.None).ValidationAttribute(typeof(System.ComponentModel.DataAnnotations.RequiredAttribute)).ValidationAttribute(typeof(System.ComponentModel.DataAnnotations.RangeAttribute), 1, 10).Add();
             ITerminalBuilder tb = commandBuilder.Add();
             ServiceProvider sp = tb.Services.BuildServiceProvider();
             var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");

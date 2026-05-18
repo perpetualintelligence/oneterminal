@@ -65,7 +65,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                 if (!containsArg)
                 {
                     // Required argument is missing
-                    if (flags.HasFlag(ReservedFlags.Required))
+                    if (flags.HasFlag(BehaviorFlags.Required))
                     {
                         throw new TerminalException(TerminalErrors.MissingArgument, "The required argument is missing. command={0} argument={1}", command.Id, arg.Id);
                     }
@@ -74,13 +74,13 @@ namespace OneImlx.Terminal.Commands.Checkers
                 }
 
                 // Check obsolete
-                if (flags.HasFlag(ReservedFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
+                if (flags.HasFlag(BehaviorFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
                 {
                     throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is obsolete. command={0} argument={1}", command.Id, arg.Id);
                 }
 
                 // Check disabled
-                if (flags.HasFlag(ReservedFlags.Disabled))
+                if (flags.HasFlag(BehaviorFlags.Disabled))
                 {
                     throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is disabled. command={0} argument={1}", command.Id, arg.Id);
                 }
@@ -112,7 +112,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                 if (!containsOpt)
                 {
                     // Required option is missing
-                    if (flags.HasFlag(ReservedFlags.Required))
+                    if (flags.HasFlag(BehaviorFlags.Required))
                     {
                         throw new TerminalException(TerminalErrors.MissingOption, "The required option is missing. command={0} option={1}", command.Id, optKvp.Key);
                     }
@@ -121,13 +121,13 @@ namespace OneImlx.Terminal.Commands.Checkers
                 }
 
                 // Check obsolete
-                if (flags.HasFlag(ReservedFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
+                if (flags.HasFlag(BehaviorFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
                 {
                     throw new TerminalException(TerminalErrors.InvalidOption, "The option is obsolete. command={0} option={1}", command.Id, optKvp.Key);
                 }
 
                 // Check disabled
-                if (flags.HasFlag(ReservedFlags.Disabled))
+                if (flags.HasFlag(BehaviorFlags.Disabled))
                 {
                     throw new TerminalException(TerminalErrors.InvalidOption, "The option is disabled. command={0} option={1}", command.Id, optKvp.Key);
                 }

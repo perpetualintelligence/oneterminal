@@ -17,9 +17,9 @@ namespace OneImlx.Terminal.Tests.Shared.Extensions
         [Fact]
         public void HasFlag_Returns_True_When_Flag_Is_Set()
         {
-            int flags = ReservedFlags.Required | ReservedFlags.Disabled;
+            int flags = BehaviorFlags.Required | BehaviorFlags.Disabled;
 
-            bool result = flags.HasFlag(ReservedFlags.Required);
+            bool result = flags.HasFlag(BehaviorFlags.Required);
 
             result.Should().BeTrue();
         }
@@ -27,9 +27,9 @@ namespace OneImlx.Terminal.Tests.Shared.Extensions
         [Fact]
         public void HasFlag_Returns_False_When_Flag_Is_Not_Set()
         {
-            int flags = ReservedFlags.Required | ReservedFlags.Authorize;
+            int flags = BehaviorFlags.Required | BehaviorFlags.Authorize;
 
-            bool result = flags.HasFlag(ReservedFlags.Disabled);
+            bool result = flags.HasFlag(BehaviorFlags.Disabled);
 
             result.Should().BeFalse();
         }
@@ -37,57 +37,57 @@ namespace OneImlx.Terminal.Tests.Shared.Extensions
         [Fact]
         public void AddFlag_Adds_Flag()
         {
-            int flags = ReservedFlags.None;
+            int flags = BehaviorFlags.None;
 
-            flags = flags.AddFlag(ReservedFlags.Required);
-            flags.HasFlag(ReservedFlags.Required).Should().BeTrue();
+            flags = flags.AddFlag(BehaviorFlags.Required);
+            flags.HasFlag(BehaviorFlags.Required).Should().BeTrue();
 
-            flags = flags.AddFlag(ReservedFlags.Disabled);
-            flags.HasFlag(ReservedFlags.Disabled).Should().BeTrue();
+            flags = flags.AddFlag(BehaviorFlags.Disabled);
+            flags.HasFlag(BehaviorFlags.Disabled).Should().BeTrue();
         }
 
         [Fact]
         public void AddFlag_Preserves_Existing_Flags()
         {
-            int flags = ReservedFlags.Required;
+            int flags = BehaviorFlags.Required;
 
-            flags = flags.AddFlag(ReservedFlags.Authorize);
+            flags = flags.AddFlag(BehaviorFlags.Authorize);
 
-            flags.HasFlag(ReservedFlags.Required).Should().BeTrue();
-            flags.HasFlag(ReservedFlags.Authorize).Should().BeTrue();
+            flags.HasFlag(BehaviorFlags.Required).Should().BeTrue();
+            flags.HasFlag(BehaviorFlags.Authorize).Should().BeTrue();
         }
 
         [Fact]
         public void RemoveFlag_Removes_Flag()
         {
-            int flags = ReservedFlags.Required | ReservedFlags.Disabled;
+            int flags = BehaviorFlags.Required | BehaviorFlags.Disabled;
 
-            flags = flags.RemoveFlag(ReservedFlags.Required);
+            flags = flags.RemoveFlag(BehaviorFlags.Required);
 
-            flags.HasFlag(ReservedFlags.Required).Should().BeFalse();
-            flags.HasFlag(ReservedFlags.Disabled).Should().BeTrue();
+            flags.HasFlag(BehaviorFlags.Required).Should().BeFalse();
+            flags.HasFlag(BehaviorFlags.Disabled).Should().BeTrue();
         }
 
         [Fact]
         public void RemoveFlag_Does_Not_Remove_Other_Flags()
         {
-            int flags = ReservedFlags.Required | ReservedFlags.Authorize;
+            int flags = BehaviorFlags.Required | BehaviorFlags.Authorize;
 
-            flags = flags.RemoveFlag(ReservedFlags.Authorize);
+            flags = flags.RemoveFlag(BehaviorFlags.Authorize);
 
-            flags.HasFlag(ReservedFlags.Required).Should().BeTrue();
-            flags.HasFlag(ReservedFlags.Authorize).Should().BeFalse();
+            flags.HasFlag(BehaviorFlags.Required).Should().BeTrue();
+            flags.HasFlag(BehaviorFlags.Authorize).Should().BeFalse();
         }
 
         [Fact]
         public void RemoveFlag_On_Missing_Flag_Does_Nothing()
         {
-            int flags = ReservedFlags.Required;
+            int flags = BehaviorFlags.Required;
 
-            flags = flags.RemoveFlag(ReservedFlags.Disabled);
+            flags = flags.RemoveFlag(BehaviorFlags.Disabled);
 
-            flags.HasFlag(ReservedFlags.Required).Should().BeTrue();
-            flags.HasFlag(ReservedFlags.Disabled).Should().BeFalse();
+            flags.HasFlag(BehaviorFlags.Required).Should().BeTrue();
+            flags.HasFlag(BehaviorFlags.Disabled).Should().BeFalse();
         }
     }
 }
