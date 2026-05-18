@@ -15,7 +15,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The group <c>grp1</c> runner demonstrating CompositeGroup with run methods.
     /// </summary>
     [CommandOwners("test")]
-    [CommandDescriptor("grp1", "Group 1", "Group 1 as a composite group", CommandType.CompositeGroup)]
+    [CommandDescriptor("grp1", "Group 1", "Group 1 as a composite group", ReservedCommandTypes.CompositeGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "composite")]
     public class Grp1Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
@@ -44,7 +44,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             return new CommandRunnerResult();
         }
 
-        [CommandDescriptor("cmd1", "Command 1", "Command 1 in grp1.", CommandType.Leaf)]
+        [CommandDescriptor("cmd1", "Command 1", "Command 1 in grp1.", ReservedCommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
         [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", ReservedFlags.None)]
         [OptionDescriptor("opt1", nameof(String), "Option 1", ReservedFlags.None)]
@@ -57,7 +57,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             return new CommandRunnerResult();
         }
 
-        [CommandDescriptor("cmd2", "Command 2", "Command 2 in grp1.", CommandType.Leaf)]
+        [CommandDescriptor("cmd2", "Command 2", "Command 2 in grp1.", ReservedCommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
         [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", ReservedFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
@@ -71,7 +71,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             return new CommandRunnerResult();
         }
 
-        [CommandDescriptor("cmd3", "Command 3", "Command 3 in grp1.", CommandType.Leaf)]
+        [CommandDescriptor("cmd3", "Command 3", "Command 3 in grp1.", ReservedCommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
         [ArgumentDescriptor(1, "arg1", nameof(String), "String argument", ReservedFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]

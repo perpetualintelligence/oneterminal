@@ -11,7 +11,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer.Runners
     /// The group <c>grp1</c> runner for the <see cref="TestApiServer"/>.
     /// </summary>
     [CommandOwners("ts")]
-    [CommandDescriptor("grp1", "Group 1", "Group1 description.", CommandType.IsolatedGroup)]
+    [CommandDescriptor("grp1", "Group 1", "Group1 description.", ReservedCommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(CommandChecker))]
     public class Grp1Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

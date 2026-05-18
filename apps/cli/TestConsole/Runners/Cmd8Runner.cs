@@ -12,7 +12,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The sub-command <c>cmd8</c> runner under grp3.
     /// </summary>
     [CommandOwners("grp3")]
-    [CommandDescriptor("cmd8", "Command 8", "Command 8 under grp3.", CommandType.Leaf)]
+    [CommandDescriptor("cmd8", "Command 8", "Command 8 under grp3.", ReservedCommandTypes.Leaf)]
     public class Cmd8Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;

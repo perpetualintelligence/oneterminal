@@ -364,11 +364,10 @@ namespace OneImlx.Terminal.Extensions
         /// <param name="name">The command name.</param>
         /// <param name="description">The command description.</param>
         /// <param name="commandType">The command type.</param>
-        /// <param name="commandFlags">The command flags.</param>
         /// <typeparam name="TRunner">The command runner type.</typeparam>
         /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
         /// <returns>The configured <see cref="ICommandBuilder"/>.</returns>
-        public static ICommandBuilder DefineCommand<TRunner>(this ITerminalBuilder builder, string id, string name, string description, CommandType commandType) where TRunner : ICommandRunner<CommandRunnerResult>
+        public static ICommandBuilder DefineCommand<TRunner>(this ITerminalBuilder builder, string id, string name, string description, int commandType) where TRunner : ICommandRunner<CommandRunnerResult>
         {
             return DefineCommand(builder, id, name, description, typeof(CommandChecker), typeof(TRunner), commandType);
         }
@@ -387,7 +386,7 @@ namespace OneImlx.Terminal.Extensions
             ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType);
 
             // Command runner methods
-            if (cmdAttr.CommandType == CommandType.CompositeGroup)
+            if (cmdAttr.CommandType == ReservedCommandTypes.CompositeGroup)
             {
                 MethodInfo[] runnerMethods = declarativeRunner.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
@@ -428,7 +427,7 @@ namespace OneImlx.Terminal.Extensions
             return commandBuilder.Add();
         }
 
-        private static void ProcessCommandAttributes(object[] attrs, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
+        private static void ProcessCommandAttributes(object[] attrs, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, int? commandType = null, string? parentGroupId = null)
         {
             ProcessArgumentDescriptors(attrs, commandBuilder);
             ProcessOptionDescriptors(attrs, commandBuilder);
@@ -444,7 +443,7 @@ namespace OneImlx.Terminal.Extensions
             return cmdChecker?.Checker ?? defaultChecker;
         }
 
-        private static void ProcessOwners(object[] attrs, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, CommandType? commandType = null, string? parentGroupId = null)
+        private static void ProcessOwners(object[] attrs, ICommandBuilder commandBuilder, Type? fallbackAttributeProvider, int? commandType = null, string? parentGroupId = null)
         {
             ICommandOwnersAttribute? ownersAttr = GetDeclarativeInterface<ICommandOwnersAttribute>(attrs);
 
@@ -467,7 +466,7 @@ namespace OneImlx.Terminal.Extensions
                     commandBuilder.Owners(fallbackOwnersAttr.Owners);
                 }
             }
-            else if (commandType.HasValue && (commandType.Value == CommandType.IsolatedGroup || commandType.Value == CommandType.CompositeGroup || commandType.Value == CommandType.Leaf))
+            else if (commandType.HasValue && (commandType.Value == ReservedCommandTypes.IsolatedGroup || commandType.Value == ReservedCommandTypes.CompositeGroup || commandType.Value == ReservedCommandTypes.Leaf))
             {
                 throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command owner.");
             }
@@ -544,7 +543,7 @@ namespace OneImlx.Terminal.Extensions
             }
         }
 
-        private static ICommandBuilder DefineCommand(this ITerminalBuilder builder, string id, string name, string description, Type checker, Type runner, CommandType commandType)
+        private static ICommandBuilder DefineCommand(this ITerminalBuilder builder, string id, string name, string description, Type checker, Type runner, int commandType)
         {
             CommandDescriptor cmd = new(id, name, description, commandType)
             {

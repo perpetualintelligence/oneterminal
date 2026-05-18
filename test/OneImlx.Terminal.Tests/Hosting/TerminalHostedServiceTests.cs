@@ -156,17 +156,17 @@ namespace OneImlx.Terminal.Hosting
             .ConfigureServices(services =>
             {
                 services.AddTerminalConsole<TerminalInMemoryCommandStore>(new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode), options => { })
-                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.Leaf)
+                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", ReservedCommandTypes.Leaf)
                         .DefineOption("id1", nameof(Int32), "test opt1", ReservedFlags.None, "alias_id1").Add()
                     .Checker<MockCommandChecker>()
                     .Add()
-                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", CommandType.Leaf)
+                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", ReservedCommandTypes.Leaf)
                         .DefineOption("id1", nameof(Int32), "test opt1", ReservedFlags.None, "alias_id1").Add()
                         .DefineOption("id2", nameof(Int32), "test opt2", ReservedFlags.None, "alias_id2").Add()
                         .DefineOption("id3", nameof(Boolean), "test opt3", ReservedFlags.None).Add()
                     .Checker<MockCommandChecker>()
                     .Add()
-                    .DefineCommand<MockCommandRunner>("cmd3", "cmd3", "test1", CommandType.Leaf)
+                    .DefineCommand<MockCommandRunner>("cmd3", "cmd3", "test1", ReservedCommandTypes.Leaf)
                         .DefineOption("id1", nameof(Int32), "test opt1", ReservedFlags.None, "alias_id1").Add()
                     .Checker<MockCommandChecker>()
                     .Add();
@@ -203,10 +203,10 @@ namespace OneImlx.Terminal.Hosting
             .ConfigureServices(services =>
             {
                 services.AddTerminalConsole<TerminalInMemoryCommandStore>(textHandler, options => { })
-                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", CommandType.Leaf)
+                    .DefineCommand<MockCommandRunner>("cmd1", "cmd1", "test1", ReservedCommandTypes.Leaf)
                         .Checker<MockCommandChecker>()
                         .Add()
-                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", CommandType.Leaf)
+                    .DefineCommand<MockCommandRunner>("cmd2", "cmd2", "test2", ReservedCommandTypes.Leaf)
                         .DefineOption("id1", nameof(Int32), "test opt1", ReservedFlags.None, "alias_id1").Add()
                         .DefineOption("id2", nameof(Int32), "test opt2", ReservedFlags.None, "alias_id2").Add()
                         .DefineOption("id3", nameof(Boolean), "test opt3", ReservedFlags.None).Add()

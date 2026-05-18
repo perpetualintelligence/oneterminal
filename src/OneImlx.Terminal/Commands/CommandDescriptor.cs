@@ -2,9 +2,9 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Generic;
-using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Commands
 {
@@ -25,7 +25,6 @@ namespace OneImlx.Terminal.Commands
         /// <param name="name">The command name.</param>
         /// <param name="description">The command description.</param>
         /// <param name="type">The command type.</param>
-        /// <param name="flags">The command flags.</param>
         /// <param name="owners">The command owners.</param>
         /// <param name="argumentDescriptors">The argument descriptors.</param>
         /// <param name="optionDescriptors">The option descriptors.</param>
@@ -35,7 +34,7 @@ namespace OneImlx.Terminal.Commands
             string id,
             string name,
             string description,
-            CommandType type,
+            int type,
             OwnerIdCollection? owners = null,
             ArgumentDescriptors? argumentDescriptors = null,
             OptionDescriptors? optionDescriptors = null,
@@ -91,7 +90,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The command type.
         /// </summary>
-        public CommandType Type { get; }
+        public int Type { get; }
 
         /// <summary>
         /// The command owner identifiers.

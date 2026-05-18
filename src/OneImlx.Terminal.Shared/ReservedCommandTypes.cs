@@ -5,33 +5,33 @@
 namespace OneImlx.Terminal.Shared
 {
     /// <summary>
-    /// Defines the command type.
+    /// Defines the command types.
     /// </summary>
-    public enum CommandType
+    public static class ReservedCommandTypes
     {
         /// <summary>
         /// The command represents the root of the command hierarchy.
         /// </summary>
-        Root = 1,
+        public const int Root = 1;
 
         /// <summary>
         /// The command represents an isolated group that is independent of its nested groups or individual leaf commands.
         /// </summary>
-        IsolatedGroup = 2,
+        public const int IsolatedGroup = 2;
 
         /// <summary>
         /// The command represents a composite group that self-contains its nested groups or individual leaf commands.
         /// </summary>
-        CompositeGroup = 3,
+        public const int CompositeGroup = 3;
 
         /// <summary>
         /// The command represents a leaf or a sub-command that can belong to a group or root.
         /// </summary>
-        Leaf = 4,
+        public const int Leaf = 4;
 
         /// <summary>
         /// The command represents a native terminal command that does not follow the command hierarchy such as <c>cls</c> for clearing the terminal or <c>run</c> for executing OS commands.
         /// </summary>
-        Native = 5,
+        public const int Native = 5;
     }
 }

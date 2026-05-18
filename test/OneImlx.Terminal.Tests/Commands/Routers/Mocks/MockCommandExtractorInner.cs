@@ -45,7 +45,7 @@ namespace OneImlx.Terminal.Commands.Routers.Mocks
                 else
                 {
                     // all ok
-                    context.ParsedCommand = new ParsedCommand(new Command(new CommandDescriptor("test_id", "test_name", "desc", CommandType.Leaf)), null);
+                    context.ParsedCommand = new ParsedCommand(new Command(new CommandDescriptor("test_id", "test_name", "desc", ReservedCommandTypes.Leaf)), null);
                 }
             }
 

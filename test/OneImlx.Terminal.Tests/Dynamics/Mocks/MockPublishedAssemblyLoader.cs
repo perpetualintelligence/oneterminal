@@ -64,7 +64,7 @@ namespace OneImlx.Terminal.Dynamics.Mocks
             // Add custom attributes to the class Ensure the commandId is unique across multiple assemblies so we just
             // use className
             AddCustomAttribute(typeBuilder, typeof(CommandOwnersAttribute), [new string[] { "oid1", "oid2" }]);
-            AddCustomAttribute(typeBuilder, typeof(CommandDescriptorAttribute), [className, "name1", "description", CommandType.Leaf]);
+            AddCustomAttribute(typeBuilder, typeof(CommandDescriptorAttribute), [className, "name1", "description", ReservedCommandTypes.Leaf]);
             AddCustomAttribute(typeBuilder, typeof(CommandCheckerAttribute), [typeof(MockCommandChecker)]);
             AddCustomAttribute(typeBuilder, typeof(CommandTagsAttribute), [new string[] { "tag1", "tag2", "tag3" }]);
             AddCustomAttribute(typeBuilder, typeof(CommandCustomPropertyAttribute), ["key1", "value1"]);

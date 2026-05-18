@@ -19,7 +19,7 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <param name="name">The command name.</param>
         /// <param name="description">The command description.</param>
         /// <param name="commandType">The command type.</param>
-        public CommandDescriptorAttribute(string id, string name, string description, CommandType commandType)
+        public CommandDescriptorAttribute(string id, string name, string description, int commandType)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -50,7 +50,8 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <summary>
         /// The command type.
         /// </summary>
-        public CommandType CommandType { get; }
+        /// <seealso cref="ReservedCommandTypes"/>
+        public int CommandType { get; }
 
         /// <summary>
         /// The command id.

@@ -357,7 +357,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             terminalOptions = Microsoft.Extensions.Options.Options.Create(MockTerminalOptions.NewLegacyOptions());
             license = MockLicenses.TestLicense;
             licenseChecker = new MockLicenseCheckerInner();
-            command = MockCommands.NewCommandDefinition("id1", "name1", "desc1", CommandType.Leaf);
+            command = MockCommands.NewCommandDefinition("id1", "name1", "desc1", ReservedCommandTypes.Leaf);
             routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
             routerContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, null);
             commandRuntime = new MockCommandResolver();
@@ -371,7 +371,7 @@ namespace OneImlx.Terminal.Commands.Handlers
                 new(terminalOptions.Value.Help.OptionId, nameof(Boolean), "Help options", ReservedFlags.None)
             ]);
             Options helpIdOptions = new(unicodeHandler, [new(helpIdOptionDescriptors.First().Value, true)]);
-            helpIdCommand = MockCommands.NewCommandDefinition("helpId1", "helpIdName", "helpIdDesc", CommandType.Leaf,  helpIdOptionDescriptors, options: helpIdOptions);
+            helpIdCommand = MockCommands.NewCommandDefinition("helpId1", "helpIdName", "helpIdDesc", ReservedCommandTypes.Leaf,  helpIdOptionDescriptors, options: helpIdOptions);
 
             // This mocks the help alias request
             OptionDescriptors helpAliasOptionDescriptors = new(unicodeHandler,
@@ -379,7 +379,7 @@ namespace OneImlx.Terminal.Commands.Handlers
                 new(terminalOptions.Value.Help.OptionAlias, nameof(Boolean), "Help alias options", ReservedFlags.None)
             ]);
             Options helpAliasOptions = new(unicodeHandler, [new(helpAliasOptionDescriptors.First().Value, true)]);
-            helpAliasCommand = MockCommands.NewCommandDefinition("helpAlias", "helpAliasName", "helpAliasDesc", CommandType.Leaf,  helpAliasOptionDescriptors, options: helpAliasOptions);
+            helpAliasCommand = MockCommands.NewCommandDefinition("helpAlias", "helpAliasName", "helpAliasDesc", ReservedCommandTypes.Leaf,  helpAliasOptionDescriptors, options: helpAliasOptions);
 
             handler = new CommandHandler(commandRuntime, terminalOptions, terminalHelpProvider, new LoggerFactory().CreateLogger<CommandHandler>(), terminalEventHandler);
 

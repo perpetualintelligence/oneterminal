@@ -12,7 +12,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// <summary>
     /// Runs native OS commands.
     /// </summary>
-    [CommandDescriptor("run", "Run Command", "Runs a native OS command.", CommandType.Native)]
+    [CommandDescriptor("run", "Run Command", "Runs a native OS command.", ReservedCommandTypes.Native)]
     [ArgumentDescriptor(0, "os", nameof(String), "The full native command to execute, e.g., 'ls -all'", ReservedFlags.Required)]
     public class RunRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

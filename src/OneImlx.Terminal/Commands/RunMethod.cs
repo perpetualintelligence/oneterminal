@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Commands
 {
     /// <summary>
     /// Identifies <see cref="CommandRunner{TResult}.RunCommandAsync(CommandContext)"/> for commands in
-    /// a <see cref="CommandType.CompositeGroup"/>.
+    /// a <see cref="ReservedCommandTypes.CompositeGroup"/>.
     /// </summary>
     /// <remarks>
     /// Each <see cref="RunMethod"/> maps to one unique command as its execution logic.

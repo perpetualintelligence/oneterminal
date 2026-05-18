@@ -33,7 +33,7 @@ namespace OneImlx.Terminal.Commands.Runners
         public async Task DelegateHelpShouldCallHelpAsync()
         {
             CommandRequest request = new("id1", "test1");
-            Command command = new(new CommandDescriptor("id", "name", "desc", CommandType.Leaf));
+            Command command = new(new CommandDescriptor("id", "name", "desc", ReservedCommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
             routerContext.ParsedCommand = extractedCommand;
             routerContext.License = MockLicenses.TestLicense;
@@ -51,7 +51,7 @@ namespace OneImlx.Terminal.Commands.Runners
         public async Task DelegateRunShouldCallRunAsync()
         {
             CommandRequest request = new("id1", "test1");
-            Command command = new(new CommandDescriptor("id", "name", "desc", CommandType.Leaf));
+            Command command = new(new CommandDescriptor("id", "name", "desc", ReservedCommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
             routerContext.ParsedCommand = extractedCommand;
             routerContext.License = MockLicenses.TestLicense;
@@ -67,7 +67,7 @@ namespace OneImlx.Terminal.Commands.Runners
         public async Task HelpShouldThrowIfIHelpProviderIsNullAsync()
         {
             CommandRequest request = new("id1", "test1");
-            Command command = new(new CommandDescriptor("id", "name", "desc", CommandType.Leaf));
+            Command command = new(new CommandDescriptor("id", "name", "desc", ReservedCommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
             routerContext.ParsedCommand = extractedCommand;
             routerContext.License = MockLicenses.TestLicense;
