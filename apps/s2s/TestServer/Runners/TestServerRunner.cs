@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
     /// The root <c>test</c> runner for the TestServer.
     /// </summary>
     [CommandDescriptor("ts", "Test Server", "Test server description.", CommandType.Root)]
-    [OptionDescriptor("version", nameof(String), "Test server version description", OptionFlags.None, "v")]
+    [OptionDescriptor("version", nameof(String), "Test server version description", ReservedFlags.None, "v")]
     public class TestServerRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;

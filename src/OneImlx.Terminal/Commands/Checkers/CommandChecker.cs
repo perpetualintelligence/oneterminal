@@ -1,15 +1,13 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Extensions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Checkers
 {
@@ -67,7 +65,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                 if (!containsArg)
                 {
                     // Required argument is missing
-                    if (flags.HasFlag(ArgumentFlags.Required))
+                    if (flags.HasFlag(ReservedFlags.Required))
                     {
                         throw new TerminalException(TerminalErrors.MissingArgument, "The required argument is missing. command={0} argument={1}", command.Id, arg.Id);
                     }
@@ -76,13 +74,13 @@ namespace OneImlx.Terminal.Commands.Checkers
                 }
 
                 // Check obsolete
-                if (flags.HasFlag(ArgumentFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
+                if (flags.HasFlag(ReservedFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
                 {
                     throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is obsolete. command={0} argument={1}", command.Id, arg.Id);
                 }
 
                 // Check disabled
-                if (flags.HasFlag(ArgumentFlags.Disabled))
+                if (flags.HasFlag(ReservedFlags.Disabled))
                 {
                     throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is disabled. command={0} argument={1}", command.Id, arg.Id);
                 }
@@ -114,7 +112,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                 if (!containsOpt)
                 {
                     // Required option is missing
-                    if (flags.HasFlag(OptionFlags.Required))
+                    if (flags.HasFlag(ReservedFlags.Required))
                     {
                         throw new TerminalException(TerminalErrors.MissingOption, "The required option is missing. command={0} option={1}", command.Id, optKvp.Key);
                     }
@@ -123,13 +121,13 @@ namespace OneImlx.Terminal.Commands.Checkers
                 }
 
                 // Check obsolete
-                if (flags.HasFlag(OptionFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
+                if (flags.HasFlag(ReservedFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
                 {
                     throw new TerminalException(TerminalErrors.InvalidOption, "The option is obsolete. command={0} option={1}", command.Id, optKvp.Key);
                 }
 
                 // Check disabled
-                if (flags.HasFlag(OptionFlags.Disabled))
+                if (flags.HasFlag(ReservedFlags.Disabled))
                 {
                     throw new TerminalException(TerminalErrors.InvalidOption, "The option is disabled. command={0} option={1}", command.Id, optKvp.Key);
                 }

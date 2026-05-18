@@ -46,8 +46,8 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         [CommandDescriptor("cmd1", "Command 1", "Command 1 in grp1.", CommandType.Leaf)]
         [CommandTags("command", "leaf")]
-        [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", ArgumentFlags.None)]
-        [OptionDescriptor("opt1", nameof(String), "Option 1", OptionFlags.None)]
+        [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", ReservedFlags.None)]
+        [OptionDescriptor("opt1", nameof(String), "Option 1", ReservedFlags.None)]
         public async Task<CommandRunnerResult> Cmd1Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 cmd1");
@@ -59,9 +59,9 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         [CommandDescriptor("cmd2", "Command 2", "Command 2 in grp1.", CommandType.Leaf)]
         [CommandTags("command", "leaf")]
-        [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", ArgumentFlags.Required)]
+        [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", ReservedFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
-        [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", OptionFlags.None)]
+        [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", ReservedFlags.None)]
         public async Task<CommandRunnerResult> Cmd2Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 cmd2");
@@ -73,10 +73,10 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         [CommandDescriptor("cmd3", "Command 3", "Command 3 in grp1.", CommandType.Leaf)]
         [CommandTags("command", "leaf")]
-        [ArgumentDescriptor(1, "arg1", nameof(String), "String argument", ArgumentFlags.Required)]
+        [ArgumentDescriptor(1, "arg1", nameof(String), "String argument", ReservedFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
         [ArgumentValidation("arg1", typeof(StringLengthAttribute), 50)]
-        [OptionDescriptor("opt1", nameof(String), "String option", OptionFlags.None)]
+        [OptionDescriptor("opt1", nameof(String), "String option", ReservedFlags.None)]
         public async Task<CommandRunnerResult> Cmd3Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 cmd3");

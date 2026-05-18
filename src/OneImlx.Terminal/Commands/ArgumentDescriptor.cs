@@ -4,6 +4,7 @@
 
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Extensions;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace OneImlx.Terminal.Commands
         /// <param name="dataType">The argument data type.</param>
         /// <param name="description">The argument description.</param>
         /// <param name="flags">The argument flags.</param>
-        public ArgumentDescriptor(int order, string id, string dataType, string description, ArgumentFlags flags)
+        public ArgumentDescriptor(int order, string id, string dataType, string description, int flags)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -67,7 +68,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The argument flags.
         /// </summary>
-        public ArgumentFlags Flags { get; private set; }
+        public int Flags { get; private set; }
 
         /// <summary>
         /// The argument order.
@@ -100,7 +101,7 @@ namespace OneImlx.Terminal.Commands
             {
                 if (valueCheckers.Any(static e => e.GetRawType() == typeof(RequiredAttribute)))
                 {
-                    Flags |= ArgumentFlags.Required;
+                    Flags |= Flags.AddFlag(ReservedFlags.Required);
                 }
             }
         }

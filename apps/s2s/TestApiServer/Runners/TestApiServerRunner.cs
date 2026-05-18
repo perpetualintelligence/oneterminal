@@ -10,7 +10,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer.Runners
     /// The root <c>test</c> runner for the <see cref="TestApiServer"/>.
     /// </summary>
     [CommandDescriptor("ts", "Test Server", "Test server description.", CommandType.Root)]
-    [OptionDescriptor("version", nameof(String), "Test server version description", OptionFlags.None, "v")]
+    [OptionDescriptor("version", nameof(String), "Test server version description", ReservedFlags.None, "v")]
     public class TestApiServerRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;

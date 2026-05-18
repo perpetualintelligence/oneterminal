@@ -58,7 +58,7 @@ namespace OneImlx.Terminal.Extensions
         /// <param name="flags">The option flags.</param>
         /// <param name="alias">The option alias.</param>
         /// <returns>The configured <see cref="IOptionBuilder"/>.</returns>
-        public static IOptionBuilder DefineOption(this ICommandBuilder builder, string id, string dataType, string description, OptionFlags flags, string? alias = null)
+        public static IOptionBuilder DefineOption(this ICommandBuilder builder, string id, string dataType, string description, int flags, string? alias = null)
         {
             OptionDescriptor option = new(id, dataType, description, flags, alias);
             OptionBuilder argumentBuilder = new(builder);
@@ -104,7 +104,7 @@ namespace OneImlx.Terminal.Extensions
         /// <param name="description">The argument description.</param>
         /// <param name="flags">The argument flags.</param>
         /// <returns>The configured <see cref="IArgumentBuilder"/>.</returns>
-        public static IArgumentBuilder DefineArgument(this ICommandBuilder builder, int order, string id, string dataType, string description, ArgumentFlags flags)
+        public static IArgumentBuilder DefineArgument(this ICommandBuilder builder, int order, string id, string dataType, string description, int flags)
         {
             ArgumentDescriptor argument = new(order, id, dataType, description, flags);
             ArgumentBuilder argumentBuilder = new(builder);

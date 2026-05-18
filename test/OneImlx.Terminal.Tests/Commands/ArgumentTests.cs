@@ -23,8 +23,8 @@ namespace OneImlx.Terminal.Commands
         [Fact]
         public void OptionsWithDifferentIdAreNotEqual()
         {
-            Option opt1 = new(new OptionDescriptor("id1", nameof(String), "desc1", OptionFlags.None), "value1");
-            Option opt2 = new(new OptionDescriptor("id2", nameof(String), "desc1", OptionFlags.None), "value1");
+            Option opt1 = new(new OptionDescriptor("id1", nameof(String), "desc1", ReservedFlags.None), "value1");
+            Option opt2 = new(new OptionDescriptor("id2", nameof(String), "desc1", ReservedFlags.None), "value1");
 
             opt1.Should().NotBe(opt2);
         }
@@ -32,8 +32,8 @@ namespace OneImlx.Terminal.Commands
         [Fact]
         public void OptionsWithSameIdAreEqual()
         {
-            Option opt1 = new(new OptionDescriptor("id1", nameof(String), "desc1", OptionFlags.None), "value1");
-            Option opt2 = new(new OptionDescriptor("id1", "Custom", "desc1", OptionFlags.None), 25.64);
+            Option opt1 = new(new OptionDescriptor("id1", nameof(String), "desc1", ReservedFlags.None), "value1");
+            Option opt2 = new(new OptionDescriptor("id1", "Custom", "desc1", ReservedFlags.None), 25.64);
 
             opt1.Should().Be(opt2);
         }

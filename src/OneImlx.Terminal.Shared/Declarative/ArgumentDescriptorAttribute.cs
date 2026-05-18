@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Shared.Declarative
     /// <param name="description">The argument description.</param>
     /// <param name="flags">The argument flags.</param>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public sealed class ArgumentDescriptorAttribute(int order, string id, string dataType, string description, ArgumentFlags flags) : Attribute, IArgumentDescriptorAttribute
+    public sealed class ArgumentDescriptorAttribute(int order, string id, string dataType, string description, int flags) : Attribute, IArgumentDescriptorAttribute
     {
         /// <summary>
         /// The argument data type.
@@ -45,6 +45,6 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <summary>
         /// The argument flags.
         /// </summary>
-        public ArgumentFlags Flags { get; } = flags;
+        public int Flags { get; } = flags;
     }
 }

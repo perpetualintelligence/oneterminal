@@ -18,23 +18,23 @@ namespace OneImlx.Terminal.Commands.Parsers
         //public CommandRouteParserArgumentsOptionsTests()
         //{
         //    argumentDescriptors = new ArgumentDescriptors(new TerminalAsciiTextHandler(), [
-        //        new(1, "arg1", nameof(String), "Argument1", ArgumentFlags.None),
-        //        new(2, "arg2", nameof(Int32), "Argument2", ArgumentFlags.Required),
-        //        new(3, "arg3", nameof(Boolean), "Argument3", ArgumentFlags.None),
-        //        new(4, "arg4", nameof(Double), "Argument4", ArgumentFlags.None),
-        //        new(5, "arg5", nameof(Int64), "Argument5", ArgumentFlags.None),
-        //        new(6, "arg6", nameof(String), "Argument6", ArgumentFlags.None),
-        //        new(7, "arg7", nameof(DateTimeOffset), "Argument7", ArgumentFlags.None),
-        //        new(8, "arg8", nameof(DateTime), "Argument8", ArgumentFlags.None),
-        //        new(9, "arg9", nameof(String), "Argument9", ArgumentFlags.None),
+        //        new(1, "arg1", nameof(String), "Argument1", ReservedFlags.None),
+        //        new(2, "arg2", nameof(Int32), "Argument2", ReservedFlags.Required),
+        //        new(3, "arg3", nameof(Boolean), "Argument3", ReservedFlags.None),
+        //        new(4, "arg4", nameof(Double), "Argument4", ReservedFlags.None),
+        //        new(5, "arg5", nameof(Int64), "Argument5", ReservedFlags.None),
+        //        new(6, "arg6", nameof(String), "Argument6", ReservedFlags.None),
+        //        new(7, "arg7", nameof(DateTimeOffset), "Argument7", ReservedFlags.None),
+        //        new(8, "arg8", nameof(DateTime), "Argument8", ReservedFlags.None),
+        //        new(9, "arg9", nameof(String), "Argument9", ReservedFlags.None),
         //    ]);
 
         // optionDescriptors = new OptionDescriptors(new TerminalAsciiTextHandler(), [ new( "opt1", nameof(Int32),
-        // "Option1", OptionFlags.None), new( "opt2", nameof(String), "Option2", OptionFlags.Required), new( "opt3",
-        // nameof(String), "Option3", OptionFlags.Disabled), new( "opt4", nameof(String), "Option4",
-        // OptionFlags.Obsolete), new( "opt5", nameof(Double), "Option5", OptionFlags.None, alias:"opt5_a"), new(
-        // "opt6", nameof(DateTime), "Option6", OptionFlags.Required, alias:"opt6_a"), new( "opt7", nameof(Boolean),
-        // "Option7", OptionFlags.None, alias:"opt7_a"), new( "opt8", nameof(Boolean), "Option8", OptionFlags.Required,
+        // "Option1", ReservedFlags.None), new( "opt2", nameof(String), "Option2", ReservedFlags.Required), new( "opt3",
+        // nameof(String), "Option3", ReservedFlags.Disabled), new( "opt4", nameof(String), "Option4",
+        // ReservedFlags.Obsolete), new( "opt5", nameof(Double), "Option5", ReservedFlags.None, alias:"opt5_a"), new(
+        // "opt6", nameof(DateTime), "Option6", ReservedFlags.Required, alias:"opt6_a"), new( "opt7", nameof(Boolean),
+        // "Option7", ReservedFlags.None, alias:"opt7_a"), new( "opt8", nameof(Boolean), "Option8", ReservedFlags.Required,
         // alias:"opt8_a"), ]);
 
         // terminalOptions = MockTerminalOptions.NewAliasOptions(); textHandler = new TerminalAsciiTextHandler();

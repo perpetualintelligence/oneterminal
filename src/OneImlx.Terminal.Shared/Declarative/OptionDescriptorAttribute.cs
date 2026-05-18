@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Shared.Declarative
     /// <param name="flags">The option flags.</param>
     /// <param name="alias">The option alias.</param>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public sealed class OptionDescriptorAttribute(string id, string dataType, string description, OptionFlags flags, string? alias = null) : Attribute, IOptionDescriptorAttribute
+    public sealed class OptionDescriptorAttribute(string id, string dataType, string description, int flags, string? alias = null) : Attribute, IOptionDescriptorAttribute
     {
         /// <summary>
         /// The option alias.
@@ -51,6 +51,6 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <summary>
         /// The option flags.
         /// </summary>
-        public OptionFlags Flags { get; } = flags;
+        public int Flags { get; } = flags;
     }
 }

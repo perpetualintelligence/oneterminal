@@ -188,14 +188,14 @@ namespace OneImlx.Terminal.Commands.Declarative
             argDescs["arg1"].Order.Should().Be(1);
             argDescs["arg1"].DataType.Should().Be(nameof(String));
             argDescs["arg1"].Description.Should().Be("test arg desc1");
-            argDescs["arg1"].Flags.Should().Be(ArgumentFlags.None);
+            argDescs["arg1"].Flags.Should().Be(ReservedFlags.None);
             argDescs["arg1"].ValueCheckers.Should().BeNull();
 
             argDescs["arg2"].Id.Should().Be("arg2");
             argDescs["arg2"].Order.Should().Be(2);
             argDescs["arg2"].DataType.Should().Be(nameof(String));
             argDescs["arg2"].Description.Should().Be("test arg desc2");
-            argDescs["arg2"].Flags.Should().Be(ArgumentFlags.Required | ArgumentFlags.Disabled);
+            argDescs["arg2"].Flags.Should().Be(ReservedFlags.Required | ReservedFlags.Disabled);
             argDescs["arg2"].ValueCheckers.Should().NotBeNull();
             argDescs["arg2"].ValueCheckers.Should().HaveCount(2);
             argDescs["arg2"].ValueCheckers!.Cast<DataValidationValueChecker<Argument>>().First().ValidationAttribute.Should().BeOfType<RequiredAttribute>();
@@ -205,7 +205,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             argDescs["arg3"].Order.Should().Be(3);
             argDescs["arg3"].DataType.Should().Be(nameof(Double));
             argDescs["arg3"].Description.Should().Be("test arg desc3");
-            argDescs["arg3"].Flags.Should().Be(ArgumentFlags.Required | ArgumentFlags.Obsolete);
+            argDescs["arg3"].Flags.Should().Be(ReservedFlags.Required | ReservedFlags.Obsolete);
             argDescs["arg3"].ValueCheckers.Should().NotBeNull();
             argDescs["arg3"].ValueCheckers.Should().HaveCount(1);
             argDescs["arg3"].ValueCheckers!.Cast<DataValidationValueChecker<Argument>>().First().ValidationAttribute.Should().BeOfType<RangeAttribute>();
@@ -218,14 +218,14 @@ namespace OneImlx.Terminal.Commands.Declarative
             optDescs!["opt1"].Id.Should().Be("opt1");
             optDescs["opt1"].DataType.Should().Be(nameof(String));
             optDescs["opt1"].Description.Should().Be("test opt desc1");
-            optDescs["opt1"].Flags.Should().Be(OptionFlags.None);
+            optDescs["opt1"].Flags.Should().Be(ReservedFlags.None);
             optDescs["opt1"].Alias.Should().BeNull();
             optDescs["opt1"].ValueCheckers.Should().BeNull();
 
             optDescs["opt2"].Id.Should().Be("opt2");
             optDescs["opt2"].DataType.Should().Be(nameof(String));
             optDescs["opt2"].Description.Should().Be("test opt desc2");
-            optDescs["opt2"].Flags.Should().Be(OptionFlags.Required | OptionFlags.Disabled);
+            optDescs["opt2"].Flags.Should().Be(ReservedFlags.Required | ReservedFlags.Disabled);
             optDescs["opt2"].Alias.Should().Be("opt2_alias");
             optDescs["opt2"].ValueCheckers.Should().NotBeNull();
             optDescs["opt2"].ValueCheckers.Should().HaveCount(2);
@@ -235,7 +235,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             optDescs["opt2_alias"].Id.Should().Be("opt2");
             optDescs["opt2_alias"].DataType.Should().Be(nameof(String));
             optDescs["opt2_alias"].Description.Should().Be("test opt desc2");
-            optDescs["opt2_alias"].Flags.Should().Be(OptionFlags.Required | OptionFlags.Disabled);
+            optDescs["opt2_alias"].Flags.Should().Be(ReservedFlags.Required | ReservedFlags.Disabled);
             optDescs["opt2_alias"].Alias.Should().Be("opt2_alias");
             optDescs["opt2_alias"].ValueCheckers.Should().NotBeNull();
             optDescs["opt2_alias"].ValueCheckers.Should().HaveCount(2);
@@ -245,7 +245,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             optDescs["opt3"].Id.Should().Be("opt3");
             optDescs["opt3"].Description.Should().Be("test opt desc3");
             optDescs["opt3"].DataType.Should().Be(nameof(Double));
-            optDescs["opt3"].Flags.Should().Be(OptionFlags.Required | OptionFlags.Obsolete);
+            optDescs["opt3"].Flags.Should().Be(ReservedFlags.Required | ReservedFlags.Obsolete);
             optDescs["opt3"].Alias.Should().BeNull();
             optDescs["opt3"].ValueCheckers.Should().NotBeNull();
             optDescs["opt3"].ValueCheckers.Should().HaveCount(1);

@@ -14,7 +14,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
     /// The root <c>test</c> runner for the TestApp.
     /// </summary>
     [CommandDescriptor("test", "Test App", "Test application description.", CommandType.Root)]
-    [OptionDescriptor("version", nameof(String), "Test version description", OptionFlags.None, "v")]
+    [OptionDescriptor("version", nameof(String), "Test version description", ReservedFlags.None, "v")]
     [CommandChecker(typeof(CommandChecker))]
     public class TestRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {

@@ -28,10 +28,10 @@
 
 //            var options = new OptionDescriptors(new TerminalUnicodeTextHandler(),
 //            [
-//                new("एक", nameof(String), "पहला तर्क", OptionFlags.None, "एकहै" ),
-//                new("दो", nameof(Boolean), "दूसरा तर्क", OptionFlags.Required) { },
-//                new("तीन", nameof(String), "तीसरा तर्क", OptionFlags.None, "तीनहै" ),
-//                new("चार", nameof(Double), "चौथा तर्क", OptionFlags.None, "चारहै"),
+//                new("एक", nameof(String), "पहला तर्क", ReservedFlags.None, "एकहै" ),
+//                new("दो", nameof(Boolean), "दूसरा तर्क", ReservedFlags.Required) { },
+//                new("तीन", nameof(String), "तीसरा तर्क", ReservedFlags.None, "तीनहै" ),
+//                new("चार", nameof(Double), "चौथा तर्क", ReservedFlags.None, "चारहै"),
 //            ]);
 
 //            _commandDescriptors = new CommandDescriptors(_textHandler,

@@ -27,40 +27,40 @@ namespace OneImlx.Terminal.Mocks
 
             TestOptionDescriptors = new(unicodeTextHandler,
             [
-                new("key1", nameof(String), "Key1 value text", OptionFlags.None),
-                new("key2", nameof(String), "Key2 value text", OptionFlags.Required),
-                new("key3", nameof(Int64), "Key3 value phone", OptionFlags.None),
-                new("key4", nameof(String), "Key4 value email", OptionFlags.None),
-                new("key5", nameof(String), "Key5 value url", OptionFlags.None),
-                new("key6", nameof(Boolean), "Key6 no value", OptionFlags.None),
-                new("key7", nameof(Int64), "Key7 value currency", OptionFlags.Required) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("INR", "USD", "EUR"))] },
-                new("key8", nameof(Int32), "Key8 value custom int", OptionFlags.None),
-                new("key9", nameof(Double), "Key9 value custom double", OptionFlags.Required) {ValueCheckers = [new DataValidationValueChecker<Option>(new RequiredAttribute()), new DataValidationValueChecker<Option>(new OneOfAttribute(2.36, 25.36, 3669566.36, 26.36, -36985.25, 0, -5))] },
-                new("key10", nameof(String), "Key10 value custom string", OptionFlags.Required)
+                new("key1", nameof(String), "Key1 value text", ReservedFlags.None),
+                new("key2", nameof(String), "Key2 value text", ReservedFlags.Required),
+                new("key3", nameof(Int64), "Key3 value phone", ReservedFlags.None),
+                new("key4", nameof(String), "Key4 value email", ReservedFlags.None),
+                new("key5", nameof(String), "Key5 value url", ReservedFlags.None),
+                new("key6", nameof(Boolean), "Key6 no value", ReservedFlags.None),
+                new("key7", nameof(Int64), "Key7 value currency", ReservedFlags.Required) { ValueCheckers = [new DataValidationValueChecker<Option>(new OneOfAttribute("INR", "USD", "EUR"))] },
+                new("key8", nameof(Int32), "Key8 value custom int", ReservedFlags.None),
+                new("key9", nameof(Double), "Key9 value custom double", ReservedFlags.Required) {ValueCheckers = [new DataValidationValueChecker<Option>(new RequiredAttribute()), new DataValidationValueChecker<Option>(new OneOfAttribute(2.36, 25.36, 3669566.36, 26.36, -36985.25, 0, -5))] },
+                new("key10", nameof(String), "Key10 value custom string", ReservedFlags.Required)
             ]);
 
             TestOptionsDescriptors = new(unicodeTextHandler,
             [
-                new("key1", nameof(String), "Key1 value text", OptionFlags.None, "key1_alias"),
-                new("key2-er", nameof(String), "Key2 value text", OptionFlags.Required),
-                new("key3-a-z-d", nameof(Int64), "Key3 value phone", OptionFlags.None, "k3"),
-                new("key4", nameof(String), "Key4 value email", OptionFlags.None),
-                new("key5", nameof(String), "Key5 value url", OptionFlags.None),
-                new("key6-a-s-xx-s", nameof(Boolean), "Key6 no value", OptionFlags.None),
-                new("key7", nameof(Int64), "Key7 value currency", OptionFlags.Required) { ValueCheckers = [new DataValidationValueChecker<Option>( new OneOfAttribute("INR", "USD", "EUR") )] },
-                new("key8", nameof(Int32), "Key8 value int", OptionFlags.None),
-                new("key9", nameof(Double), "Key9 invalid default value", OptionFlags.Required) {ValueCheckers = [new DataValidationValueChecker<Option>( new OneOfAttribute(2.36, 25.36, 3669566.36, 26.36, -36985.25, 0, -5))] },
-                new("key10", nameof(String), "Key10 value custom string", OptionFlags.Required, "k10"),
-                new("key11", nameof(Boolean), "Key11 value boolean", OptionFlags.Required, "k11"),
-                new("key12", nameof(Boolean), "Key12 value default boolean", OptionFlags.Required, "k12")
+                new("key1", nameof(String), "Key1 value text", ReservedFlags.None, "key1_alias"),
+                new("key2-er", nameof(String), "Key2 value text", ReservedFlags.Required),
+                new("key3-a-z-d", nameof(Int64), "Key3 value phone", ReservedFlags.None, "k3"),
+                new("key4", nameof(String), "Key4 value email", ReservedFlags.None),
+                new("key5", nameof(String), "Key5 value url", ReservedFlags.None),
+                new("key6-a-s-xx-s", nameof(Boolean), "Key6 no value", ReservedFlags.None),
+                new("key7", nameof(Int64), "Key7 value currency", ReservedFlags.Required) { ValueCheckers = [new DataValidationValueChecker<Option>( new OneOfAttribute("INR", "USD", "EUR") )] },
+                new("key8", nameof(Int32), "Key8 value int", ReservedFlags.None),
+                new("key9", nameof(Double), "Key9 invalid default value", ReservedFlags.Required) {ValueCheckers = [new DataValidationValueChecker<Option>( new OneOfAttribute(2.36, 25.36, 3669566.36, 26.36, -36985.25, 0, -5))] },
+                new("key10", nameof(String), "Key10 value custom string", ReservedFlags.Required, "k10"),
+                new("key11", nameof(Boolean), "Key11 value boolean", ReservedFlags.Required, "k11"),
+                new("key12", nameof(Boolean), "Key12 value default boolean", ReservedFlags.Required, "k12")
             ]);
 
             TestHindiUnicodeOptionDescriptors = new(unicodeTextHandler,
             [
-                new("एक", nameof(String), "पहला तर्क", OptionFlags.None, "एकहै" ),
-                new("दो", nameof(Boolean), "दूसरा तर्क", OptionFlags.Required) { },
-                new("तीन", nameof(String), "तीसरा तर्क", OptionFlags.None, "तीनहै" ),
-                new("चार", nameof(Double), "चौथा तर्क", OptionFlags.None, "चारहै"),
+                new("एक", nameof(String), "पहला तर्क", ReservedFlags.None, "एकहै" ),
+                new("दो", nameof(Boolean), "दूसरा तर्क", ReservedFlags.Required) { },
+                new("तीन", nameof(String), "तीसरा तर्क", ReservedFlags.None, "तीनहै" ),
+                new("चार", nameof(Double), "चौथा तर्क", ReservedFlags.None, "चारहै"),
             ]);
 
             Commands = new(unicodeTextHandler,

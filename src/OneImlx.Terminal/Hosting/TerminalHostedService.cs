@@ -176,7 +176,7 @@ namespace OneImlx.Terminal.Hosting
             var commandDescriptors = await terminalCommandStore.AllAsync().ConfigureAwait(false);
             foreach (CommandDescriptor commandDescriptor in commandDescriptors.Values)
             {
-                OptionDescriptor helpDescriptor = new(helpOptions.OptionId, nameof(Boolean), helpOptions.OptionDescription, OptionFlags.None, helpOptions.OptionAlias);
+                OptionDescriptor helpDescriptor = new(helpOptions.OptionId, nameof(Boolean), helpOptions.OptionDescription, ReservedFlags.None, helpOptions.OptionAlias);
 
                 commandDescriptor.OptionDescriptors ??= new OptionDescriptors(ServiceProvider.GetRequiredService<ITerminalTextHandler>());
                 commandDescriptor.OptionDescriptors.RegisterHelp(helpDescriptor);
