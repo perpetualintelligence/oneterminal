@@ -6,6 +6,7 @@ using FluentAssertions;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners.Mocks;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
@@ -23,16 +24,15 @@ namespace OneImlx.Terminal.Commands.Runners
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
             routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            commandContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routerContext, null);
+            commandContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routerContext, []);
         }
 
         [Fact]
         public async Task DelegateHelpShouldCallHelpAsync()
         {
-            CommandRequest request = new("id1", "test1");
             Command command = new(new CommandDescriptor("id", "name", "desc", CommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             MockTerminalHelpProvider helpProvider = new();
             MockDefaultCommandRunner mockCommandRunner = new();
@@ -46,10 +46,9 @@ namespace OneImlx.Terminal.Commands.Runners
         [Fact]
         public async Task DelegateRunShouldCallRunAsync()
         {
-            CommandRequest request = new("id1", "test1");
             Command command = new(new CommandDescriptor("id", "name", "desc", CommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             MockDefaultCommandRunner mockCommandRunner = new();
             var result = await mockCommandRunner.DelegateRunAsync(commandContext);
@@ -61,10 +60,9 @@ namespace OneImlx.Terminal.Commands.Runners
         [Fact]
         public async Task HelpShouldThrowIfIHelpProviderIsNullAsync()
         {
-            CommandRequest request = new("id1", "test1");
             Command command = new(new CommandDescriptor("id", "name", "desc", CommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             MockDefaultCommandRunner mockCommandRunner = new();
             Func<Task> act = () => mockCommandRunner.RunHelpAsync(commandContext);

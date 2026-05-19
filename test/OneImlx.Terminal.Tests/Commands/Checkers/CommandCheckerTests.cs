@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
@@ -37,7 +38,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
             routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            commandContext = new CommandContext(request, routerContext, null);
+            commandContext = new CommandContext(request, routerContext, []);
         }
 
         [Fact]
@@ -50,7 +51,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(disabledArgsDescriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             Func<Task> func = () => checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option is disabled. command=id1 option=key1");
@@ -66,7 +67,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             await checker.CheckCommandAsync(commandContext);
         }
@@ -81,7 +82,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             terminalOptions.Checker.AllowObsolete = true;
             await checker.CheckCommandAsync(commandContext);
@@ -97,7 +98,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             terminalOptions.Checker.AllowObsolete = false;
             Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
@@ -115,7 +116,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.MissingOption).WithErrorDescription("The required option is missing. command=id1 option=key1");
@@ -131,7 +132,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             await checker.CheckCommandAsync(commandContext);
         }
@@ -148,7 +149,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             await checker.CheckCommandAsync(commandContext);
 
@@ -167,7 +168,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option value does not match the mapped type. option=key1 type=System.DateTime data_type=DateTime value_type=String value=non-date");
@@ -185,7 +186,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             object oldValue = options["key1"].Value;
             oldValue.Should().BeOfType<string>();
@@ -208,7 +209,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             var result = await checker.CheckCommandAsync(commandContext);
         }
@@ -223,7 +224,7 @@ namespace OneImlx.Terminal.Commands.Checkers
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            commandContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             await checker.CheckCommandAsync(commandContext);
         }

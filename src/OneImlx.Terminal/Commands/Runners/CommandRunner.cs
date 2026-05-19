@@ -3,6 +3,7 @@
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
 using Microsoft.Extensions.Logging;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using System.Threading.Tasks;
@@ -17,39 +18,42 @@ namespace OneImlx.Terminal.Commands.Runners
     public abstract class CommandRunner<TResult> : IDelegateCommandRunner, ICommandRunner<TResult> where TResult : CommandRunnerResult
     {
         /// <inheritdoc/>
-        public async Task<CommandRunnerResult> DelegateHelpAsync(CommandContext context, ITerminalHelpProvider helpProvider, ILogger? logger = null)
+        public async Task<CommandRunnerResult> DelegateHelpAsync(ICommandContext context, ITerminalHelpProvider helpProvider, ILogger? logger = null)
         {
             this.helpProvider = helpProvider;
-
             this.logger = logger;
-            logger?.LogDebug("Run help. command={0}", context.EnsureParsedCommand().Command.Id);
+
+            Command command = context.GetCommand();
+            logger?.LogDebug("Run help. command={0}", command.Id);
 
             await RunHelpAsync(context);
             return new CommandRunnerResult();
         }
 
         /// <inheritdoc/>
-        public async Task<CommandRunnerResult> DelegateRunAsync(CommandContext context, ILogger? logger = null)
+        public async Task<CommandRunnerResult> DelegateRunAsync(ICommandContext context, ILogger? logger = null)
         {
             this.logger = logger;
-            logger?.LogDebug("Run command. command={0}", context.EnsureParsedCommand().Command.Id);
+
+            Command command = context.GetCommand();
+            logger?.LogDebug("Run command. command={0}", command.Id);
 
             var result = await RunCommandAsync(context);
             return (CommandRunnerResult)(object)result;
         }
 
         /// <inheritdoc/>
-        public abstract Task<TResult> RunCommandAsync(CommandContext context);
+        public abstract Task<TResult> RunCommandAsync(ICommandContext context);
 
         /// <inheritdoc/>
-        public virtual Task RunHelpAsync(CommandContext context)
+        public virtual Task RunHelpAsync(ICommandContext context)
         {
             if (helpProvider == null)
             {
                 throw new TerminalException(TerminalErrors.InvalidConfiguration, "The help provider is missing in the configured services.");
             }
 
-            return helpProvider.ProvideHelpAsync(new TerminalHelpProviderContext(context.EnsureParsedCommand().Command));
+            return helpProvider.ProvideHelpAsync(new TerminalHelpProviderContext(context.GetCommand()));
         }
 
         private ITerminalHelpProvider? helpProvider;

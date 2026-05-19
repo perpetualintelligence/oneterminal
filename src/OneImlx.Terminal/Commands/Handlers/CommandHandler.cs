@@ -8,6 +8,7 @@ using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Events;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
 using System;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         }
 
         /// <inheritdoc/>
-        public async Task HandleCommandAsync(CommandContext context)
+        public async Task HandleCommandAsync(ICommandContext context)
         {
             logger.LogDebug("Handle request. request={0}", context.Request.Id);
 
@@ -40,12 +41,12 @@ namespace OneImlx.Terminal.Commands.Handlers
             (CommandCheckerResult checkerResult, CommandRunnerResult runnerResult) = await CheckAndRunCommandInnerAsync(context).ConfigureAwait(false);
 
             // Return the processed result
-            context.Result = new CommandResult(checkerResult, runnerResult);
+            context.SetCommandResult(new CommandResult(checkerResult, runnerResult));
         }
 
-        private async Task<(CommandCheckerResult, CommandRunnerResult)> CheckAndRunCommandInnerAsync(CommandContext context)
+        private async Task<(CommandCheckerResult, CommandRunnerResult)> CheckAndRunCommandInnerAsync(ICommandContext context)
         {
-            Command command = context.EnsureParsedCommand().Command;
+            Command command = context.GetCommand();
 
             // If we are executing a help command then we need to bypass all the checks.
             if (terminalOptions.Help.Enabled)
@@ -63,7 +64,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             return (checkerResult, runResult);
         }
 
-        private async Task<CommandCheckerResult> CheckCommandInnerAsync(CommandContext context, Command command)
+        private async Task<CommandCheckerResult> CheckCommandInnerAsync(ICommandContext context, Command command)
         {
             // Issue a before check event if configured
             if (terminalEventHandler != null)
@@ -86,7 +87,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             return result;
         }
 
-        private async Task<CommandRunnerResult> RunCommandInnerAsync(CommandContext context, Command command, bool runHelp)
+        private async Task<CommandRunnerResult> RunCommandInnerAsync(ICommandContext context, Command command, bool runHelp)
         {
             // Issue a before run event if configured
             if (terminalEventHandler != null)

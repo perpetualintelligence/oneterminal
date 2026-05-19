@@ -20,6 +20,6 @@ namespace OneImlx.Terminal.Commands
         /// <param name="context">The terminal routing context.</param>
         /// <param name="properties">The additional router properties.</param>
         /// <returns>A new instance of <see cref="CommandContext"/>.</returns>
-        public ICommandContext Create(CommandRequest request, TerminalRouterContext context, Dictionary<string, object>? properties);
+        public ICommandContext Create(CommandRequest request, TerminalRouterContext context, Dictionary<string, object> properties);
     }
 }

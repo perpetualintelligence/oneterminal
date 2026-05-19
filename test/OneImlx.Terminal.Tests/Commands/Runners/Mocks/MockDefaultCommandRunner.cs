@@ -16,13 +16,13 @@ namespace OneImlx.Terminal.Commands.Runners.Mocks
 
         public bool RunCalled { get; private set; }
 
-        public override Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             RunCalled = true;
             return Task.FromResult((CommandRunnerResult)new MockCommandRunnerInnerResult());
         }
 
-        public override async Task RunHelpAsync(CommandContext context)
+        public override async Task RunHelpAsync(ICommandContext context)
         {
             HelpCalled = true;
             await base.RunHelpAsync(context);

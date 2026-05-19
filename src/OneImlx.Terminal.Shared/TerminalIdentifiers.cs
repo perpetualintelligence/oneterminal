@@ -96,5 +96,15 @@ namespace OneImlx.Terminal.Shared
         /// The <c>explicit</c> descriptor definition style. In this style, the command descriptors are defined explicitly in code.
         /// </summary>
         public const string ExplicitDefinition = "explicit";
+
+        /// <summary>
+        /// The current running parsed command.
+        /// </summary>
+        public const string ParsedCommand = "oneimlx_parsed_command";
+
+        /// <summary>
+        /// The current running command result.
+        /// </summary>
+        public const string CommandResult = "oneimlx_command_result";
     }
 }

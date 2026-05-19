@@ -43,7 +43,7 @@ namespace OneImlx.Terminal.Commands.Declarative
         [ArgumentDescriptor(1, "m1_arg1", nameof(String), "method1 arg1 desc", BehaviorFlags.None)]
         [ArgumentDescriptor(2, "m1_arg2", nameof(Int32), "method1 arg2 desc", BehaviorFlags.Required)]
         [ArgumentValidation("m1_arg2", typeof(RangeAttribute), 10, 100)]
-        public Task<CommandRunnerResult> TestMethod1Async(CommandContext context)
+        public Task<CommandRunnerResult> TestMethod1Async(ICommandContext context)
         {
             Method1Called = true;
             LastMethodCalled = nameof(TestMethod1Async);
@@ -60,7 +60,7 @@ namespace OneImlx.Terminal.Commands.Declarative
         [ArgumentValidation("m2_arg1", typeof(RequiredAttribute))]
         [ArgumentValidation("m2_arg1", typeof(OneOfAttribute), "m2val1", "m2val2")]
         [ArgumentDescriptor(2, "m2_arg2", nameof(Boolean), "method2 arg2 desc", BehaviorFlags.None)]
-        public Task<CommandRunnerResult> TestMethod2Async(CommandContext context)
+        public Task<CommandRunnerResult> TestMethod2Async(ICommandContext context)
         {
             Method2Called = true;
             LastMethodCalled = nameof(TestMethod2Async);
@@ -80,7 +80,7 @@ namespace OneImlx.Terminal.Commands.Declarative
         [ArgumentDescriptor(2, "m3_arg2", nameof(String), "method3 arg2 desc", BehaviorFlags.None)]
         [ArgumentDescriptor(3, "m3_arg3", nameof(Int32), "method3 arg3 desc", BehaviorFlags.Required | BehaviorFlags.Disabled)]
         [ArgumentValidation("m3_arg3", typeof(RangeAttribute), 1, 10)]
-        public Task<CommandRunnerResult> TestMethod3Async(CommandContext context)
+        public Task<CommandRunnerResult> TestMethod3Async(ICommandContext context)
         {
             Method3Called = true;
             LastMethodCalled = nameof(TestMethod3Async);

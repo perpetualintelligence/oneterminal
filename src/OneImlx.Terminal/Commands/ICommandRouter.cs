@@ -16,6 +16,6 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="context">The router context.</param>
         /// <returns>The router result.</returns>
-        Task RouteCommandAsync(CommandContext context);
+        Task RouteCommandAsync(ICommandContext context);
     }
 }

@@ -255,7 +255,7 @@ namespace OneImlx.Terminal.Runtime
 
             // Mock command router with a simulated delay of 600ms (longer than timeout)
             commandRouterMock.Setup(c => c.RouteCommandAsync(It.IsAny<CommandContext>()))
-                             .Returns(async (CommandContext context) =>
+                             .Returns(async (ICommandContext context) =>
                              {
                                  await Task.Delay(600); // Delay longer than the timeout
                                  return new CommandResult();

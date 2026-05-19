@@ -15,7 +15,7 @@ namespace OneImlx.Terminal.Mocks
     {
         public bool Called { get; set; }
 
-        public Task HandleCommandAsync(CommandContext context)
+        public Task HandleCommandAsync(ICommandContext context)
         {
             Called = true;
             return Task.CompletedTask;

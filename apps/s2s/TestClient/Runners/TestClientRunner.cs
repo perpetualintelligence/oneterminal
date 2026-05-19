@@ -17,7 +17,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.logger = logger;
         }
 
-        public override Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             terminalConsole.WriteLineAsync("Test client");
             return Task.FromResult(new CommandRunnerResult());

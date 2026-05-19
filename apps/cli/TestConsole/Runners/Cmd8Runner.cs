@@ -24,7 +24,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             logger.LogInformation("Executing grp3 cmd8");
             await terminalConsole.WriteLineAsync("Executing: grp3 cmd8");

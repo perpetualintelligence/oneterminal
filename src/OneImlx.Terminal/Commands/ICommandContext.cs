@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using OneImlx.Terminal.Commands.Parsers;
-using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 
@@ -16,14 +15,9 @@ namespace OneImlx.Terminal.Commands
     public interface ICommandContext
     {
         /// <summary>
-        /// The parsed command.
-        /// </summary>
-        public ParsedCommand? ParsedCommand { get; }
-
-        /// <summary>
         /// The additional router properties.
         /// </summary>
-        public Dictionary<string, object>? Properties { get; }
+        public Dictionary<string, object> Properties { get; }
 
         /// <summary>
         /// The terminal request.
@@ -31,34 +25,8 @@ namespace OneImlx.Terminal.Commands
         public CommandRequest Request { get; }
 
         /// <summary>
-        /// The result of the command execution.
-        /// </summary>
-        public CommandResult? Result { get; }
-
-        /// <summary>
         /// The terminal router context.
         /// </summary>
         public TerminalRouterContext RouterContext { get; }
-
-        /// <summary>
-        /// Ensures the parsed command is available.
-        /// </summary>
-        /// <returns>The available parsed command.</returns>
-        /// <exception cref="TerminalException">Thrown when the parsed command is not available.</exception>
-        public ParsedCommand EnsureParsedCommand();
-
-        /// <summary>
-        /// Ensures the command is available.
-        /// </summary>
-        /// <returns>The available command.</returns>
-        /// <exception cref="TerminalException">Thrown when the parsed command is not available.</exception>
-        public Command EnsureCommand();
-
-        /// <summary>
-        /// Ensures the result is available.
-        /// </summary>
-        /// <returns>The available result.</returns>
-        /// <exception cref="TerminalException">Thrown when the result is not available.</exception>
-        public CommandResult EnsureResult();
     }
 }

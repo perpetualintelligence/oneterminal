@@ -4,6 +4,7 @@
 
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Extensions;
 using System.Collections.Generic;
@@ -32,9 +33,10 @@ namespace OneImlx.Terminal.Commands.Checkers
         }
 
         /// <inheritdoc/>
-        public async Task<CommandCheckerResult> CheckCommandAsync(CommandContext context)
+        public async Task<CommandCheckerResult> CheckCommandAsync(ICommandContext context)
         {
-            logger.LogDebug("Check command. command={0}", context.EnsureParsedCommand().Command.Id);
+            Command command = context.GetCommand();
+            logger.LogDebug("Check command. command={0}", command.Id);
 
             await CheckArgumentsAsync(context);
 
@@ -43,10 +45,10 @@ namespace OneImlx.Terminal.Commands.Checkers
             return new CommandCheckerResult();
         }
 
-        private async Task CheckArgumentsAsync(CommandContext context)
+        private async Task CheckArgumentsAsync(ICommandContext context)
         {
             // Cache commonly accessed properties
-            var command = context.EnsureParsedCommand().Command;
+            var command = context.GetCommand();
             ArgumentDescriptors? argumentDescriptors = command.Descriptor.ArgumentDescriptors;
 
             // If the command itself does not support any arguments then there's nothing to check. Parser will reject
@@ -90,10 +92,10 @@ namespace OneImlx.Terminal.Commands.Checkers
             }
         }
 
-        private async Task CheckOptionsAsync(CommandContext context)
+        private async Task CheckOptionsAsync(ICommandContext context)
         {
             // Cache commonly accessed properties
-            var command = context.EnsureParsedCommand().Command;
+            var command = context.GetCommand();
             OptionDescriptors? optionDescriptors = command.Descriptor.OptionDescriptors;
 
             // If the command itself does not support any options then there's nothing to check. Parser will reject any

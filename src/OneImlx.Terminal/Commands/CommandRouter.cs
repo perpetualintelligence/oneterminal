@@ -7,6 +7,7 @@ using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Events;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Shared;
 using System;
@@ -43,9 +44,10 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="context">The router context.</param>
         /// <returns>The <see cref="CommandResult"/> instance.</returns>
-        public async Task RouteCommandAsync(CommandContext context)
+        public async Task RouteCommandAsync(ICommandContext context)
         {
             ParsedCommand? parsedCommand = null;
+            CommandResult? commandResult = null!;
             CommandRequest request = context.Request;
             string requestId = request.Id;
 
@@ -70,10 +72,11 @@ namespace OneImlx.Terminal.Commands
 
                 // Parse the command
                 await commandParser.ParseCommandAsync(context).ConfigureAwait(false);
-                parsedCommand = context.ParsedCommand;
+                context.TryGetParsedCommand(out parsedCommand);
 
                 // Handle the command
                 await commandHandler.HandleCommandAsync(context).ConfigureAwait(false);
+                context.TryGetCommandResult(out commandResult);
             }
             finally
             {
@@ -81,7 +84,7 @@ namespace OneImlx.Terminal.Commands
                 if (asyncEventHandler != null)
                 {
                     logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.AfterCommandRouteAsync), requestId);
-                    await asyncEventHandler.AfterCommandRouteAsync(request, parsedCommand?.Command, context.Result).ConfigureAwait(false);
+                    await asyncEventHandler.AfterCommandRouteAsync(request, parsedCommand?.Command, commandResult).ConfigureAwait(false);
                 }
 
                 logger.LogDebug("End command router. request={0}", requestId);

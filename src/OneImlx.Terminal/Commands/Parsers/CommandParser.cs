@@ -5,6 +5,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
@@ -38,11 +39,11 @@ namespace OneImlx.Terminal.Commands.Parsers
         }
 
         /// <inheritdoc/>
-        public async Task ParseCommandAsync(CommandContext context)
+        public async Task ParseCommandAsync(ICommandContext context)
         {
             logger.LogDebug("Parse request. request={0} raw={1}", context.Request.Id, context.Request.Raw);
             TerminalParsedRequest parsedOutput = await terminalRequestParser.ParseRequestAsync(context.Request).ConfigureAwait(false);
-            context.ParsedCommand = await MapParsedRequestAsync(context.Request, parsedOutput).ConfigureAwait(false);
+            context.SetParsedCommand(await MapParsedRequestAsync(context.Request, parsedOutput).ConfigureAwait(false));
         }
 
         private async Task<(List<CommandDescriptor> parsedCommands, List<Argument> parsedArguments)> MapCommandAndArguments(TerminalParsedRequest parsedOutput)

@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Shared
         [Fact]
         public void TerminalIdentifiers_Defines_Identifiers()
         {
-            typeof(TerminalIdentifiers).Should().HaveConstantCount(17);
+            typeof(TerminalIdentifiers).Should().HaveConstantCount(19);
 
             TerminalIdentifiers.OfflineLicenseMode.Should().Be("offline");
             TerminalIdentifiers.StandardDeployment.Should().Be("standard");
@@ -32,6 +32,8 @@ namespace OneImlx.Terminal.Shared
             TerminalIdentifiers.Unknown.Should().Be("$unknown$");
             TerminalIdentifiers.DeclaritiveDefinition.Should().Be("declarative");
             TerminalIdentifiers.ExplicitDefinition.Should().Be("explicit");
+            TerminalIdentifiers.ParsedCommand.Should().Be("oneimlx_parsed_command");
+            TerminalIdentifiers.CommandResult.Should().Be("oneimlx_command_result");
         }
     }
 }

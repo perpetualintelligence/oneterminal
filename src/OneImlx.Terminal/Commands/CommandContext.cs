@@ -2,12 +2,10 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Collections.Generic;
-using OneImlx.Terminal.Commands.Parsers;
-using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Collections.Generic;
 
 namespace OneImlx.Terminal.Commands
 {
@@ -23,17 +21,12 @@ namespace OneImlx.Terminal.Commands
     public sealed class CommandContext(
         CommandRequest request,
         TerminalRouterContext context,
-        Dictionary<string, object>? properties) : ICommandContext
+        Dictionary<string, object> properties) : ICommandContext
     {
-        /// <summary>
-        /// The parsed command.
-        /// </summary>
-        public ParsedCommand? ParsedCommand { get; internal set; }
-
         /// <summary>
         /// The additional router properties.
         /// </summary>
-        public Dictionary<string, object>? Properties { get; } = properties;
+        public Dictionary<string, object> Properties { get; } = properties;
 
         /// <summary>
         /// The terminal request.
@@ -41,58 +34,8 @@ namespace OneImlx.Terminal.Commands
         public CommandRequest Request { get; } = request ?? throw new ArgumentNullException(nameof(request));
 
         /// <summary>
-        /// The result of the command execution.
-        /// </summary>
-        public CommandResult? Result { get; internal set; }
-
-        /// <summary>
         /// The terminal router context.
         /// </summary>
         public TerminalRouterContext RouterContext { get; } = context ?? throw new ArgumentNullException(nameof(context));
-
-        /// <summary>
-        /// Ensures the parsed command is available.
-        /// </summary>
-        /// <returns>The available parsed command.</returns>
-        /// <exception cref="TerminalException">Thrown when the parsed command is not available.</exception>
-        public ParsedCommand EnsureParsedCommand()
-        {
-            if (ParsedCommand is null)
-            {
-                throw new TerminalException(TerminalErrors.ServerError, "The parsed command is not available.");
-            }
-
-            return ParsedCommand;
-        }
-
-        /// <summary>
-        /// Ensures the command is available.
-        /// </summary>
-        /// <returns>The available command.</returns>
-        /// <exception cref="TerminalException">Thrown when the parsed command is not available.</exception>
-        public Command EnsureCommand()
-        {
-            if (ParsedCommand is null || ParsedCommand.Command is null)
-            {
-                throw new TerminalException(TerminalErrors.ServerError, "The command is not available.");
-            }
-
-            return ParsedCommand.Command;
-        }
-
-        /// <summary>
-        /// Ensures the result is available.
-        /// </summary>
-        /// <returns>The available result.</returns>
-        /// <exception cref="TerminalException">Thrown when the result is not available.</exception>
-        public CommandResult EnsureResult()
-        {
-            if (Result is null)
-            {
-                throw new TerminalException(TerminalErrors.ServerError, "The result is not available.");
-            }
-
-            return Result;
-        }
     }
 }
