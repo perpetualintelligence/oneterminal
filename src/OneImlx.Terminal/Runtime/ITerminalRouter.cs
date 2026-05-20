@@ -7,6 +7,7 @@
 
 using System.Threading.Tasks;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Runtime
 {

@@ -3,6 +3,7 @@
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Commands.Runners;
+using OneImlx.Terminal.Shared;
 using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands

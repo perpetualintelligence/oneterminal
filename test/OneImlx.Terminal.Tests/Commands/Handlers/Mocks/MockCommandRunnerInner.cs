@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Commands.Handlers.Mocks
 {

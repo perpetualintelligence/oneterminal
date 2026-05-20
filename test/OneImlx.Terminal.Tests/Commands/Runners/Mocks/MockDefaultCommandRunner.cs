@@ -7,6 +7,7 @@
 
 using System.Threading.Tasks;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Commands.Runners.Mocks
 {
