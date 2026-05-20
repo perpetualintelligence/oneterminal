@@ -29,11 +29,10 @@ namespace OneImlx.Terminal.Commands
         /// <param name="commandHandler">The command handler.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="asyncEventHandler">The event handler.</param>
-        public CommandRouter(TerminalOptions terminalOptions, ILicenseExtractor licenseExtractor, ICommandParser commandParser, ICommandHandler commandHandler, ILogger<CommandRouter> logger, ITerminalEventHandler? asyncEventHandler = null)
+        public CommandRouter(TerminalOptions terminalOptions, ICommandParser commandParser, ICommandHandler commandHandler, ILogger<CommandRouter> logger, ITerminalEventHandler? asyncEventHandler = null)
         {
             this.commandParser = commandParser ?? throw new ArgumentNullException(nameof(commandParser));
             this.terminalOptions = terminalOptions ?? throw new ArgumentNullException(nameof(terminalOptions));
-            this.licenseExtractor = licenseExtractor ?? throw new ArgumentNullException(nameof(licenseExtractor));
             this.commandHandler = commandHandler ?? throw new ArgumentNullException(nameof(commandHandler));
             this.logger = logger;
             this.asyncEventHandler = asyncEventHandler;
@@ -62,14 +61,6 @@ namespace OneImlx.Terminal.Commands
                     await asyncEventHandler.BeforeCommandRouteAsync(request).ConfigureAwait(false);
                 }
 
-                // Ensure we have the license extracted before routing
-                License license = await licenseExtractor.GetLicenseAsync().ConfigureAwait(false) ?? throw new TerminalException(TerminalErrors.InvalidLicense, "Failed to extract a valid license. Please configure the hosted service correctly.");
-                if (license.Failed != null)
-                {
-                    throw new TerminalException(license.Failed);
-                }
-                logger.LogDebug("Get license. id={0} tenant={1} plan={2}", license.Claims.Id, license.Claims.TenantId, license.Plan);
-
                 // Parse the command
                 await commandParser.ParseCommandAsync(context).ConfigureAwait(false);
                 context.TryGetParsedCommand(out parsedCommand);
@@ -94,7 +85,6 @@ namespace OneImlx.Terminal.Commands
         private readonly ITerminalEventHandler? asyncEventHandler;
         private readonly ICommandHandler commandHandler;
         private readonly ICommandParser commandParser;
-        private readonly ILicenseExtractor licenseExtractor;
         private readonly ILogger<CommandRouter> logger;
         private readonly TerminalOptions terminalOptions;
     }
