@@ -17,7 +17,7 @@ namespace OneImlx.Terminal.Commands.Handlers.Mocks
 
         public bool ThrowException { get; set; }
 
-        public override Task<MockGenericCommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override Task<MockGenericCommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             Called = true;
 

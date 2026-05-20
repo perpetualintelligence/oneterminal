@@ -93,7 +93,7 @@ namespace OneImlx.Terminal.Runtime.Tests
         {
             // Arrange
             var terminalInput = TerminalInputOutput.Single("id1", "command1");
-            var newRequest = new TerminalRequest("id2", "command2");
+            var newRequest = new CommandRequest("id2", "command2");
 
             // Act
             terminalInput[0] = newRequest;
@@ -127,8 +127,8 @@ namespace OneImlx.Terminal.Runtime.Tests
         {
             var terminalInput = TerminalInputOutput.Batch("batch1",
             [
-                new TerminalRequest("id1", "command1"),
-                new TerminalRequest("id2", "command2")
+                new CommandRequest("id1", "command1"),
+                new CommandRequest("id2", "command2")
             ]);
 
             var json = JsonSerializer.Serialize(terminalInput);

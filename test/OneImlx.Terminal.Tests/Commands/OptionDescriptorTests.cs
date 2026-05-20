@@ -15,31 +15,31 @@ namespace OneImlx.Terminal.Commands
         [Fact]
         public void CustomDataTypeShouldSetDataType()
         {
-            OptionDescriptor arg = new("name", "custom", "test desc", OptionFlags.Required);
+            OptionDescriptor arg = new("name", "custom", "test desc", BehaviorFlags.Required);
             arg.DataType.Should().Be("custom");
         }
 
         [Fact]
         public void MultipleFlagsShouldBeSet()
         {
-            OptionDescriptor arg = new("name", "custom", "test desc", OptionFlags.Required | OptionFlags.Obsolete | OptionFlags.Disabled);
-            arg.Flags.Should().Be(OptionFlags.Required | OptionFlags.Obsolete | OptionFlags.Disabled);
+            OptionDescriptor arg = new("name", "custom", "test desc", BehaviorFlags.Required | BehaviorFlags.Obsolete | BehaviorFlags.Disabled);
+            arg.Flags.Should().Be(BehaviorFlags.Required | BehaviorFlags.Obsolete | BehaviorFlags.Disabled);
         }
 
         [Fact]
         public void RequiredExplicitlySetShouldNotSetDataAnnotationRequiredAttribute()
         {
-            OptionDescriptor arg = new("name", "custom", "test desc", OptionFlags.Required);
+            OptionDescriptor arg = new("name", "custom", "test desc", BehaviorFlags.Required);
             arg.ValueCheckers.Should().BeNull();
-            arg.Flags.Should().Be(OptionFlags.Required);
+            arg.Flags.Should().Be(BehaviorFlags.Required);
         }
 
         [Fact]
         public void RequiredShouldBeSetWithDataAnnotationRequiredAttribute()
         {
-            OptionDescriptor arg = new("name", "custom", "test desc", OptionFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new RequiredAttribute())] };
+            OptionDescriptor arg = new("name", "custom", "test desc", BehaviorFlags.None) { ValueCheckers = [new DataValidationValueChecker<Option>(new RequiredAttribute())] };
             arg.ValueCheckers.Should().NotBeNull();
-            arg.Flags.Should().Be(OptionFlags.Required);
+            arg.Flags.Should().Be(BehaviorFlags.Required);
         }
     }
 }

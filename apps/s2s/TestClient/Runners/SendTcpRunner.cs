@@ -21,7 +21,7 @@ using OneImlx.Terminal.Shared.Declarative;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("tcp", "TCP test", "Send TCP commands to the terminal server.", CommandType.Leaf, CommandFlags.None)]
+    [CommandDescriptor("tcp", "TCP test", "Send TCP commands to the terminal server.", CommandTypes.Leaf)]
     public class SendTcpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendTcpRunner(IOptions<TerminalOptions> terminalOptions,
@@ -39,7 +39,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.terminalExceptionHandler = terminalExceptionHandler;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             string server = configuration["testclient:testserver:ip"] ?? throw new InvalidOperationException("Server IP address is missing.");
             int port = configuration.GetValue<int>("testclient:testserver:port");
@@ -55,7 +55,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 var clientTasks = new Task[maxClients];
                 for (int idx = 0; idx < clientTasks.Length; idx++)
                 {
-                    clientTasks[idx] = StartClientAsync(server, port, idx, context.TerminalContext.TerminalCancellationToken);
+                    clientTasks[idx] = StartClientAsync(server, port, idx, context.RouterContext.TerminalCancellationToken);
                 }
 
                 await Task.WhenAll(clientTasks);

@@ -4,6 +4,7 @@
 
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using System;
 using System.Reflection;
@@ -12,8 +13,8 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Commands
 {
     /// <summary>
-    /// Identifies <see cref="CommandRunner{TResult}.RunCommandAsync(CommandContext)"/> for commands in
-    /// a <see cref="CommandType.CompositeGroup"/>.
+    /// Identifies <see cref="CommandRunner{TResult}.RunCommandAsync(ICommandContext)"/> for commands in
+    /// a <see cref="CommandTypes.CompositeGroup"/>.
     /// </summary>
     /// <remarks>
     /// Each <see cref="RunMethod"/> maps to one unique command as its execution logic.
@@ -49,10 +50,10 @@ namespace OneImlx.Terminal.Commands
         /// <remarks>
         /// THIS METHOD IS PART OF INTERNAL INFRASTRUCTURE AND IS NOT INTENDED FOR DIRECT USE BY APPLICATION CODE.
         /// </remarks>
-        public async Task<TResult> DelegateRunAsync<TResult>(CommandRunner<TResult> commandRunner, CommandContext context) where TResult : CommandRunnerResult
+        public async Task<TResult> DelegateRunAsync<TResult>(CommandRunner<TResult> commandRunner, ICommandContext context) where TResult : CommandRunnerResult
         {
             // Ensure command matches the passed context
-            ParsedCommand? parsedCommand = context.ParsedCommand ?? throw new TerminalException(TerminalErrors.InvalidRequest, "The parsed command is missing in the context.");
+            ParsedCommand parsedCommand = context.GetParsedCommand();
             if (parsedCommand.Command.Id != Id)
             {
                 throw new TerminalException(TerminalErrors.InvalidCommand, "The method's command is invalid. command={0}", Id);

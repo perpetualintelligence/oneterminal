@@ -2,12 +2,11 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -20,19 +19,19 @@ namespace OneImlx.Terminal.Runtime
         /// Initialize a new <see cref="TerminalConsoleRouter"/> instance.
         /// </summary>
         /// <param name="terminalConsole">The terminal console.</param>
-        /// <param name="commandRouter">The command router.</param>
+        /// <param name="terminalProcessor">The terminal processor.</param>
         /// <param name="exceptionHandler">The exception handler.</param>
         /// <param name="options">The configuration options.</param>
         /// <param name="logger">The logger.</param>
         public TerminalConsoleRouter(
             ITerminalConsole terminalConsole,
-            ICommandRouter commandRouter,
+            ITerminalProcessor terminalProcessor,
             ITerminalExceptionHandler exceptionHandler,
             TerminalOptions options,
             ILogger<TerminalConsoleRouter> logger)
         {
             this.terminalConsole = terminalConsole;
-            this.commandRouter = commandRouter;
+            this.terminalProcessor = terminalProcessor;
             this.exceptionHandler = exceptionHandler;
             this.options = options;
             this.logger = logger;
@@ -61,16 +60,17 @@ namespace OneImlx.Terminal.Runtime
                 throw new TerminalException(TerminalErrors.InvalidConfiguration, "The requested start mode is not valid for console routing. start_mode={0}", context.StartMode);
             }
 
-            // Track the application lifetime so we can know whether cancellation is requested.
             try
             {
+                // Start the terminal processing
+                terminalProcessor.StartProcessing(context, background: false, responseHandler: null);
                 IsRunning = true;
                 bool routeOnce = context.RouteOnce.GetValueOrDefault();
                 bool routed = false;
 
                 while (true)
                 {
-                    TerminalRequest? request = null;
+                    TerminalInputOutput? terminalIO = null;
 
                     try
                     {
@@ -134,28 +134,20 @@ namespace OneImlx.Terminal.Runtime
                         }
 
                         // Execute the command asynchronously
-                        request = new(Guid.NewGuid().ToString(), raw!);
-                        CommandContext routerContext = new(request, context, properties: null);
-                        var routeTask = commandRouter.RouteCommandAsync(routerContext);
-                        if (await Task.WhenAny(routeTask, Task.Delay(options.Router.Timeout)).ConfigureAwait(false) != routeTask)
-                        {
-                            throw new TimeoutException($"The terminal console router timed out in {options.Router.Timeout} milliseconds.");
-                        }
-
-                        // Process the result. If this is a driver program then we terminate the loop.
-                        CommandResult result = await routeTask.ConfigureAwait(false);
+                        terminalIO = TerminalInputOutput.Single(Guid.NewGuid().ToString(), raw!);
+                        await terminalProcessor.ExecuteAsync(terminalIO);
                     }
                     catch (OperationCanceledException oex)
                     {
                         // Routing is canceled.
-                        TerminalExceptionHandlerContext exContext = new(oex, request);
+                        TerminalExceptionHandlerContext exContext = new(oex, terminalIO?.Requests[0]);
                         await exceptionHandler.HandleExceptionAsync(exContext).ConfigureAwait(false);
                         break;
                     }
                     catch (Exception ex)
                     {
                         // Task.Wait bundles up any exception into Exception.InnerException
-                        TerminalExceptionHandlerContext exContext = new(ex.InnerException ?? ex, request);
+                        TerminalExceptionHandlerContext exContext = new(ex.InnerException ?? ex, terminalIO?.Requests[0]);
                         await exceptionHandler.HandleExceptionAsync(exContext).ConfigureAwait(false);
                     }
                     finally
@@ -163,18 +155,19 @@ namespace OneImlx.Terminal.Runtime
                         routed = true;
                     }
                 }
-                ;
             }
             finally
             {
+                // Stop and wait for some time.
+                await terminalProcessor.StopProcessingAsync(2000);
                 IsRunning = false;
             }
         }
 
-        private readonly ICommandRouter commandRouter;
         private readonly ITerminalExceptionHandler exceptionHandler;
         private readonly ILogger<TerminalConsoleRouter> logger;
         private readonly TerminalOptions options;
         private readonly ITerminalConsole terminalConsole;
+        private readonly ITerminalProcessor terminalProcessor;
     }
 }

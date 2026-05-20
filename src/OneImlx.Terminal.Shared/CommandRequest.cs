@@ -1,28 +1,25 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using OneImlx.Shared.Infrastructure;
 using System;
 using System.Text.Json.Serialization;
-using OneImlx.Shared.Infrastructure;
 
 namespace OneImlx.Terminal.Shared
 {
     /// <summary>
     /// A terminal request with a unique identifier, raw input, result, and error status.
     /// </summary>
-    public sealed class TerminalRequest : IEquatable<TerminalRequest?>
+    public sealed class CommandRequest : IEquatable<CommandRequest?>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TerminalRequest"/> class.
+        /// Initializes a new instance of the <see cref="CommandRequest"/> class.
         /// </summary>
         /// <param name="id">The unique identifier for the command item.</param>
         /// <param name="raw">The raw command string to be processed.</param>
         [JsonConstructor]
-        public TerminalRequest(string id, string raw)
+        public CommandRequest(string id, string raw)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -58,13 +55,13 @@ namespace OneImlx.Terminal.Shared
         public object? Result { get; set; }
 
         /// <inheritdoc/>
-        public static bool operator !=(TerminalRequest? left, TerminalRequest? right)
+        public static bool operator !=(CommandRequest? left, CommandRequest? right)
         {
             return !(left == right);
         }
 
         /// <inheritdoc/>
-        public static bool operator ==(TerminalRequest? left, TerminalRequest? right)
+        public static bool operator ==(CommandRequest? left, CommandRequest? right)
         {
             if (left is null)
             {
@@ -77,11 +74,11 @@ namespace OneImlx.Terminal.Shared
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-            return Equals(obj as TerminalRequest);
+            return Equals(obj as CommandRequest);
         }
 
         /// <inheritdoc/>
-        public bool Equals(TerminalRequest? other)
+        public bool Equals(CommandRequest? other)
         {
             return other is not null &&
                    Id == other.Id;

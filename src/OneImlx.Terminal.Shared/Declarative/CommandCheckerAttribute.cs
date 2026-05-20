@@ -10,7 +10,7 @@ namespace OneImlx.Terminal.Shared.Declarative
     /// Declares a command checker.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public sealed class CommandCheckerAttribute : Attribute
+    public sealed class CommandCheckerAttribute : Attribute, ICommandCheckerAttribute
     {
         /// <summary>
         /// Initialize a new instance.

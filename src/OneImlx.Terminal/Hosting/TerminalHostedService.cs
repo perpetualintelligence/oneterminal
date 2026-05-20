@@ -2,9 +2,6 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,6 +14,9 @@ using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Hosting
 {
@@ -176,7 +176,7 @@ namespace OneImlx.Terminal.Hosting
             var commandDescriptors = await terminalCommandStore.AllAsync().ConfigureAwait(false);
             foreach (CommandDescriptor commandDescriptor in commandDescriptors.Values)
             {
-                OptionDescriptor helpDescriptor = new(helpOptions.OptionId, nameof(Boolean), helpOptions.OptionDescription, OptionFlags.None, helpOptions.OptionAlias);
+                OptionDescriptor helpDescriptor = new(helpOptions.OptionId, nameof(Boolean), helpOptions.OptionDescription, BehaviorFlags.None, helpOptions.OptionAlias);
 
                 commandDescriptor.OptionDescriptors ??= new OptionDescriptors(ServiceProvider.GetRequiredService<ITerminalTextHandler>());
                 commandDescriptor.OptionDescriptors.RegisterHelp(helpDescriptor);

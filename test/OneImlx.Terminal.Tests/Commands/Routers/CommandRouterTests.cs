@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Threading;
@@ -11,8 +8,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using FluentAssertions;
+using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Routers.Mocks;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
@@ -35,8 +34,8 @@ namespace OneImlx.Terminal.Commands.Routers
         {
             commandParser.SetExplicitError = true;
 
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            Func<Task> func = async () => await commandRouter.RouteCommandAsync(routerContext);
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
+            Func<Task> func = async () => await commandRouter.RouteCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode("test_parser_error").WithErrorDescription("test_parser_error_desc");
             commandParser.Called.Should().BeTrue();
             commandHandler.Called.Should().BeFalse();
@@ -47,23 +46,12 @@ namespace OneImlx.Terminal.Commands.Routers
         {
             commandParser.DoNotSetCommandDescriptor = true;
 
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
 
-            Func<Task> act = async () => await commandRouter.RouteCommandAsync(routerContext);
+            Func<Task> act = async () => await commandRouter.RouteCommandAsync(commandContext);
             await act.Should().ThrowAsync<ArgumentException>();
             commandParser.Called.Should().BeTrue();
             commandHandler.Called.Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task Failed_License_Blocks_Router()
-        {
-            licenseExtractor.TestLicense.SetFailed(new OneImlx.Shared.Infrastructure.Error("test_lic_error", "test_lic_error_desc"));
-
-            commandRouter = new CommandRouter(terminalOptions, licenseExtractor, commandParser, commandHandler, logger, asyncEventHandler: null);
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            Func<Task> func = async () => await commandRouter.RouteCommandAsync(routerContext);
-            await func.Should().ThrowAsync<TerminalException>().WithErrorCode("test_lic_error").WithErrorDescription("test_lic_error_desc");
         }
 
         [Fact]
@@ -71,8 +59,8 @@ namespace OneImlx.Terminal.Commands.Routers
         {
             commandHandler.IsExplicitError = true;
 
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            Func<Task> func = async () => await commandRouter.RouteCommandAsync(routerContext);
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
+            Func<Task> func = async () => await commandRouter.RouteCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode("test_handler_error").WithErrorDescription("test_handler_error_desc");
             commandHandler.Called.Should().BeTrue();
         }
@@ -84,16 +72,15 @@ namespace OneImlx.Terminal.Commands.Routers
 
             commandParser = new MockCommandParserInner();
             commandHandler = new MockCommandHandlerInner();
-            licenseExtractor = new MockLicenseExtractorInner();
             eventHandler = new MockTerminalEventHandler();
             terminalOptions = MockTerminalOptions.NewLegacyOptions();
             logger = new LoggerFactory().CreateLogger<CommandRouter>();
-            commandRouter = new CommandRouter(terminalOptions, licenseExtractor, commandParser, commandHandler, logger, eventHandler);
+            commandRouter = new CommandRouter(terminalOptions, commandParser, commandHandler, logger, eventHandler);
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
-            routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
+            routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
 
-            return  ValueTask.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         [Fact]
@@ -104,11 +91,12 @@ namespace OneImlx.Terminal.Commands.Routers
             commandParser.Called.Should().BeFalse();
             commandHandler.Called.Should().BeFalse();
 
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
 
-            routerContext.ParsedCommand.Should().BeNull();
-            var result = await commandRouter.RouteCommandAsync(routerContext);
-            routerContext.ParsedCommand.Should().BeNull();
+            commandContext.TryGetParsedCommand(out _).Should().BeFalse();
+            await commandRouter.RouteCommandAsync(commandContext);
+            commandContext.TryGetParsedCommand(out ParsedCommand? parsedCommand).Should().BeTrue();
+            parsedCommand.Should().BeNull();
 
             commandParser.Called.Should().BeTrue();
             commandHandler.Called.Should().BeTrue();
@@ -120,34 +108,14 @@ namespace OneImlx.Terminal.Commands.Routers
             commandParser.Called.Should().BeFalse();
             commandHandler.Called.Should().BeFalse();
 
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            await commandRouter.RouteCommandAsync(routerContext); ;
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
+            await commandRouter.RouteCommandAsync(commandContext); ;
 
             commandParser.Called.Should().BeTrue();
-            commandParser.PassedContext.Should().BeSameAs(routerContext);
+            commandParser.PassedContext.Should().BeSameAs(commandContext);
 
             commandHandler.Called.Should().BeTrue();
-            commandHandler.PassedContext.Should().BeSameAs(routerContext);
-        }
-
-        [Fact]
-        public async Task Router_Passed_License_To_Handler()
-        {
-            licenseExtractor.NoLicense = false;
-
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-
-            routerContext.License.Should().BeNull();
-            await commandRouter.RouteCommandAsync(routerContext);
-            routerContext.License.Should().NotBeNull();
-
-            licenseExtractor.TestLicense.Should().BeSameAs(commandHandler.PassedContext!.License);
-
-            commandHandler.PassedContext.Should().NotBeNull();
-            commandHandler.PassedContext.Should().BeSameAs(routerContext);
-
-            commandParser.Called.Should().BeTrue();
-            commandHandler.Called.Should().BeTrue();
+            commandHandler.PassedContext.Should().BeSameAs(commandContext);
         }
 
         [Fact]
@@ -155,28 +123,14 @@ namespace OneImlx.Terminal.Commands.Routers
         {
             commandHandler.PassedContext.Should().BeNull();
 
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            routerContext.ParsedCommand.Should().BeNull();
-            await commandRouter.RouteCommandAsync(routerContext);
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
+            commandContext.TryGetParsedCommand(out _).Should().BeFalse();
+            await commandRouter.RouteCommandAsync(commandContext);
 
             // These values coming from mock
             commandHandler.PassedContext.Should().NotBeNull();
-            commandHandler.PassedContext!.ParsedCommand.Should().NotBeNull();
-            commandHandler.PassedContext.ParsedCommand!.Command.Descriptor.Id.Should().Be("test_id");
-            commandHandler.PassedContext.ParsedCommand.Command.Descriptor.Name.Should().Be("test_name");
-        }
-
-        [Fact]
-        public async Task RouterShouldErrorOnNoLicense()
-        {
-            licenseExtractor.NoLicense = true;
-
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            Func<Task> func = async () => await commandRouter.RouteCommandAsync(routerContext);
-            await func.Should().ThrowAsync<TerminalException>().WithErrorCode("invalid_license").WithErrorDescription("Failed to extract a valid license. Please configure the hosted service correctly.");
-
-            commandParser.Called.Should().BeFalse();
-            commandHandler.Called.Should().BeFalse();
+            commandHandler.PassedContext.GetParsedCommand().Command.Descriptor.Id.Should().Be("test_id");
+            commandHandler.PassedContext.GetParsedCommand().Command.Descriptor.Name.Should().Be("test_name");
         }
 
         [Fact]
@@ -184,16 +138,13 @@ namespace OneImlx.Terminal.Commands.Routers
         {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable CA1806 // Do not ignore method results
-            Action act = () => new CommandRouter(null, licenseExtractor, commandParser, commandHandler, logger);
+            Action act = () => new CommandRouter(null, commandParser, commandHandler, logger);
             act.Should().Throw<ArgumentNullException>();
 
-            act = () => new CommandRouter(terminalOptions, null, commandParser, commandHandler, logger);
+            act = () => new CommandRouter(terminalOptions, null, commandHandler, logger);
             act.Should().Throw<ArgumentNullException>();
 
-            act = () => new CommandRouter(terminalOptions, licenseExtractor, null, commandHandler, logger);
-            act.Should().Throw<ArgumentNullException>();
-
-            act = () => new CommandRouter(terminalOptions, licenseExtractor, commandParser, null, logger);
+            act = () => new CommandRouter(terminalOptions, commandParser, null, logger);
             act.Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type
 #pragma warning restore CA1806 // Do not ignore method results
@@ -205,8 +156,8 @@ namespace OneImlx.Terminal.Commands.Routers
             eventHandler.BeforeRouteCalled.Should().BeFalse();
             eventHandler.AfterRouteCalled.Should().BeFalse();
 
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            await commandRouter.RouteCommandAsync(routerContext);
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
+            await commandRouter.RouteCommandAsync(commandContext);
 
             eventHandler.BeforeRouteCalled.Should().BeTrue();
             eventHandler.AfterRouteCalled.Should().BeTrue();
@@ -228,8 +179,8 @@ namespace OneImlx.Terminal.Commands.Routers
 
             try
             {
-                CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-                var result = await commandRouter.RouteCommandAsync(routerContext);
+                CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
+                await commandRouter.RouteCommandAsync(commandContext);
             }
             catch (TerminalException eex)
             {
@@ -254,9 +205,9 @@ namespace OneImlx.Terminal.Commands.Routers
             eventHandler.BeforeRouteCalled.Should().BeFalse();
             eventHandler.AfterRouteCalled.Should().BeFalse();
 
-            commandRouter = new CommandRouter(terminalOptions, licenseExtractor, commandParser, commandHandler, logger, asyncEventHandler: null);
-            CommandContext routerContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routingContext, null);
-            await commandRouter.RouteCommandAsync(routerContext);
+            commandRouter = new CommandRouter(terminalOptions, commandParser, commandHandler, logger, asyncEventHandler: null);
+            CommandContext commandContext = new(new(Guid.NewGuid().ToString(), "test_command_string"), routerContext, []);
+            await commandRouter.RouteCommandAsync(commandContext);
 
             eventHandler.BeforeRouteCalled.Should().BeFalse();
             eventHandler.AfterRouteCalled.Should().BeFalse();
@@ -272,9 +223,8 @@ namespace OneImlx.Terminal.Commands.Routers
         private CancellationTokenSource commandTokenSource = null!;
         private MockTerminalEventHandler eventHandler = null!;
         private IHost host = null!;
-        private MockLicenseExtractorInner licenseExtractor = null!;
         private ILogger<CommandRouter> logger = null!;
-        private MockTerminalRouterContext routingContext = null!;
+        private MockTerminalRouterContext routerContext = null!;
         private TerminalOptions terminalOptions = null!;
         private CancellationTokenSource terminalTokenSource = null!;
     }

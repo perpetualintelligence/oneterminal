@@ -4,6 +4,7 @@
 
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +17,7 @@ namespace OneImlx.Terminal.Commands
     /// behavior. We also refer to options as command options or command flags.
     /// </summary>
     /// <seealso cref="Option"/>
-    /// <seealso cref="TerminalRequest"/>
+    /// <seealso cref="CommandRequest"/>
     /// <seealso cref="CommandDescriptor"/>
     public sealed class OptionDescriptor
     {
@@ -28,7 +29,7 @@ namespace OneImlx.Terminal.Commands
         /// <param name="description">The option description.</param>
         /// <param name="flags">The option flags.</param>
         /// <param name="alias">The option alias.</param>
-        public OptionDescriptor(string id, string dataType, string description, OptionFlags flags, string? alias = null)
+        public OptionDescriptor(string id, string dataType, string description, int flags, string? alias = null)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -67,7 +68,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The option flags.
         /// </summary>
-        public OptionFlags Flags { get; private set; }
+        public int Flags { get; private set; }
 
         /// <summary>
         /// The option id.
@@ -101,7 +102,7 @@ namespace OneImlx.Terminal.Commands
             {
                 if (valueCheckers.Any(static e => e.GetRawType() == typeof(RequiredAttribute)))
                 {
-                    Flags |= OptionFlags.Required;
+                    Flags = Flags.AddFlag(BehaviorFlags.Required);
                 }
             }
         }

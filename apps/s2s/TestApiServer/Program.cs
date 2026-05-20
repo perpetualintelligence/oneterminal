@@ -1,5 +1,6 @@
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Apps.TestApiServer.Runners;
+using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
@@ -40,6 +41,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer
                     options.Router.Caret = "> "; // Caret for the terminal.
                 });
 
+            terminalBuilder.AddCommandContextFactory<CommandContextFactory>();
             terminalBuilder.AddTerminalRouter<TerminalHttpRouter, TerminalHttpRouterContext>();
             terminalBuilder.AddDeclarativeAssembly<TestApiServerRunner>();
 

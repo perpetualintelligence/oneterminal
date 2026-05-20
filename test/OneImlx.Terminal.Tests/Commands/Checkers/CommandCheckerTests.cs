@@ -1,14 +1,12 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
@@ -28,7 +26,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             LoggerFactory loggerFactory = new();
 
-            request = new TerminalRequest(Guid.NewGuid().ToString(), "test_raw");
+            request = new CommandRequest(Guid.NewGuid().ToString(), "test_raw");
             terminalOptions = MockTerminalOptions.NewLegacyOptions();
             textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII);
             optionMapper = new DataTypeMapper<Option>(terminalOptions, loggerFactory.CreateLogger<DataTypeMapper<Option>>());
@@ -39,110 +37,104 @@ namespace OneImlx.Terminal.Commands.Checkers
             commands = new TerminalInMemoryCommandStore(textHandler, MockCommands.Commands.Values);
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
-            routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            routerContext = new CommandContext(request, routingContext, null);
+            routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
+            commandContext = new CommandContext(request, routerContext, []);
         }
 
         [Fact]
         public async Task DisabledOptionShouldErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", OptionFlags.Disabled);
-            CommandDescriptor disabledArgsDescriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", BehaviorFlags.Disabled);
+            CommandDescriptor disabledArgsDescriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
             Command argsCommand = new(disabledArgsDescriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            Func<Task> func = () => checker.CheckCommandAsync(routerContext);
+            Func<Task> func = () => checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option is disabled. command=id1 option=key1");
         }
 
         [Fact]
         public async Task EnabledOptionShouldNotErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", OptionFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", BehaviorFlags.None);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
         public async Task ObsoleteOptionAndObsoleteAllowedShouldNotErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", OptionFlags.Obsolete);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", BehaviorFlags.Obsolete);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             terminalOptions.Checker.AllowObsolete = true;
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
         public async Task ObsoleteOptionAndObsoleteNotAllowedShouldErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", OptionFlags.Obsolete);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", BehaviorFlags.Obsolete);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             terminalOptions.Checker.AllowObsolete = false;
-            Func<Task> func = async () => await checker.CheckCommandAsync(routerContext);
+            Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option is obsolete. command=id1 option=key1");
         }
 
         [Fact]
         public async Task RequiredOptionMissingShouldErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", OptionFlags.Required);
-            OptionDescriptor optionDescriptor2 = new("key2", nameof(String), "desc1", OptionFlags.Required);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", BehaviorFlags.Required);
+            OptionDescriptor optionDescriptor2 = new("key2", nameof(String), "desc1", BehaviorFlags.Required);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor2, "value2")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            Func<Task> func = async () => await checker.CheckCommandAsync(routerContext);
+            Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.MissingOption).WithErrorDescription("The required option is missing. command=id1 option=key1");
         }
 
         [Fact]
         public async Task RequiredOptionPassedShouldNotErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", OptionFlags.Required);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(String), "desc1", BehaviorFlags.Required);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "value1")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
@@ -150,17 +142,16 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             terminalOptions.Checker.ValueDataType = false;
 
-            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", OptionFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", BehaviorFlags.None);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "non-date")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
 
             options["key1"].Value.Should().Be("non-date");
         }
@@ -170,17 +161,16 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             terminalOptions.Checker.ValueDataType = true;
 
-            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", OptionFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", BehaviorFlags.None);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "non-date")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            Func<Task> func = async () => await checker.CheckCommandAsync(routerContext);
+            Func<Task> func = async () => await checker.CheckCommandAsync(commandContext);
             await func.Should().ThrowAsync<TerminalException>().WithErrorCode(TerminalErrors.InvalidOption).WithErrorDescription("The option value does not match the mapped type. option=key1 type=System.DateTime data_type=DateTime value_type=String value=non-date");
         }
 
@@ -189,21 +179,20 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             terminalOptions.Checker.ValueDataType = true;
 
-            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", OptionFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", BehaviorFlags.None);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, "25-Mar-2021")]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
             object oldValue = options["key1"].Value;
             oldValue.Should().BeOfType<string>();
 
             // Value should pass and converted to date
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
 
             object newValue = options["key1"].Value;
             newValue.Should().BeOfType<DateTime>();
@@ -213,33 +202,31 @@ namespace OneImlx.Terminal.Commands.Checkers
         [Fact]
         public async Task ValueValidCustomDataTypeShouldNotErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(Double), "test desc", OptionFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(Double), "test desc", BehaviorFlags.None);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, 25.36)]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            var result = await checker.CheckCommandAsync(routerContext);
+            var result = await checker.CheckCommandAsync(commandContext);
         }
 
         [Fact]
         public async Task ValueValidShouldNotErrorAsync()
         {
-            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", OptionFlags.None);
-            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandType.Leaf, CommandFlags.None, optionDescriptors: new(textHandler, [optionDescriptor]));
+            OptionDescriptor optionDescriptor = new("key1", nameof(DateTime), "desc1", BehaviorFlags.None);
+            CommandDescriptor descriptor = new("id1", "name1", "desc1", CommandTypes.Leaf, optionDescriptors: new(textHandler, [optionDescriptor]));
 
             Options options = new(textHandler, [new(optionDescriptor, DateTime.Now)]);
 
             Command argsCommand = new(descriptor, arguments: null, options);
             ParsedCommand extractedCommand = new(argsCommand, null);
-            routerContext.License = MockLicenses.TestLicense;
-            routerContext.ParsedCommand = extractedCommand;
+            commandContext.SetParsedCommand(extractedCommand);
 
-            await checker.CheckCommandAsync(routerContext);
+            await checker.CheckCommandAsync(commandContext);
         }
 
         private readonly IArgumentChecker argumentChecker = null!;
@@ -248,9 +235,9 @@ namespace OneImlx.Terminal.Commands.Checkers
         private readonly ITerminalCommandStore commands = null!;
         private readonly CancellationTokenSource commandTokenSource = null!;
         private readonly IDataTypeMapper<Option> optionMapper = null!;
-        private readonly TerminalRequest request = null!;
-        private readonly CommandContext routerContext = null!;
-        private readonly TerminalRouterContext routingContext = null!;
+        private readonly CommandRequest request = null!;
+        private readonly CommandContext commandContext = null!;
+        private readonly TerminalRouterContext routerContext = null!;
         private readonly TerminalOptions terminalOptions = null!;
         private readonly CancellationTokenSource terminalTokenSource = null!;
         private readonly ITerminalTextHandler textHandler = null!;

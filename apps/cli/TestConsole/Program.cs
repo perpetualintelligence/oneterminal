@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Apps.Test.Runners;
+using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
@@ -61,19 +62,13 @@ namespace OneImlx.Terminal.Apps.Test
                     options.Licensing.Deployment = TerminalIdentifiers.AirGappedDeployment;
 
                     options.Router.Caret = "> ";
-                }
-                                                                                                                                                                                               );
+                });
 
-            // You can use declarative or explicit syntax. Here we are using declarative syntax.
-            {
-                // Add commands using declarative syntax.
-                terminalBuilder.AddDeclarativeAssembly<TestRunner>();
+            // Default command context
+            terminalBuilder.AddCommandContextFactory<CommandContextFactory>();
 
-                // OR
-
-                // Add commands using explicit syntax.
-                //RegisterCommands(terminalBuilder);
-            }
+            // Add commands using declarative syntax.
+            terminalBuilder.AddDeclarativeAssembly<TestRunner>();
         }
 
         private static void ConfigureServicesDelegate(HostBuilderContext context, IServiceCollection services)

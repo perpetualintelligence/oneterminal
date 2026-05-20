@@ -20,14 +20,14 @@ namespace OneImlx.Terminal.Configuration.Options
         /// Gets or sets a value indicating whether custom declarative attributes are used fo command definitions.
         /// </summary>
         /// <remarks>
-        /// Once this is enabled you cannot use default declarative attributes defined in <see cref="OneImlx.Terminal.Commands.Declarative"/> namespace.
+        /// Once this is enabled you cannot use default declarative attributes defined in <see cref="OneImlx.Terminal.Shared.Declarative"/> namespace.
         /// </remarks>
         public bool CustomDeclarations { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether composite groups are enabled.
         /// </summary>
-        /// <seealso cref="CommandType.CompositeGroup"/>
+        /// <seealso cref="CommandTypes.CompositeGroup"/>
         public bool CompositeGroups { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace OneImlx.Terminal.Server.Grpc
         {
             // Real command queue used for testing the behavior of queuing items
             var mockCommandQueue = new TerminalProcessor(
-                Mock.Of<ICommandRouter>(), Mock.Of<ITerminalExceptionHandler>(),
+                Mock.Of<ICommandRouter>(), Mock.Of<ICommandContextFactory>(), Mock.Of<ITerminalExceptionHandler>(),
                 Microsoft.Extensions.Options.Options.Create(new TerminalOptions()),
                 new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII),
                 new TerminalBytesParser(),

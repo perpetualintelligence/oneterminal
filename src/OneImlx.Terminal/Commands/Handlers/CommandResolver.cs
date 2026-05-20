@@ -85,7 +85,7 @@ namespace OneImlx.Terminal.Commands.Handlers
         /// <exception cref="NotImplementedException"></exception>
         public RunMethod ResolveCommandRunMethod(CommandDescriptor commandDescriptor)
         {
-            if (commandDescriptor.Type != CommandType.Leaf)
+            if (commandDescriptor.Type != CommandTypes.Leaf)
             {
                 throw new TerminalException(TerminalErrors.ServerError, "The command runner method is only supported for leaf commands. command={0} type={1}", commandDescriptor.Id, commandDescriptor.Type);
             }

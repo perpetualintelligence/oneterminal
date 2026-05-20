@@ -2,15 +2,16 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Events;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Licensing;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands
 {
@@ -28,17 +29,10 @@ namespace OneImlx.Terminal.Commands
         /// <param name="commandHandler">The command handler.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="asyncEventHandler">The event handler.</param>
-        public CommandRouter(
-            TerminalOptions terminalOptions,
-            ILicenseExtractor licenseExtractor,
-            ICommandParser commandParser,
-            ICommandHandler commandHandler,
-            ILogger<CommandRouter> logger,
-            ITerminalEventHandler? asyncEventHandler = null)
+        public CommandRouter(TerminalOptions terminalOptions, ICommandParser commandParser, ICommandHandler commandHandler, ILogger<CommandRouter> logger, ITerminalEventHandler? asyncEventHandler = null)
         {
             this.commandParser = commandParser ?? throw new ArgumentNullException(nameof(commandParser));
             this.terminalOptions = terminalOptions ?? throw new ArgumentNullException(nameof(terminalOptions));
-            this.licenseExtractor = licenseExtractor ?? throw new ArgumentNullException(nameof(licenseExtractor));
             this.commandHandler = commandHandler ?? throw new ArgumentNullException(nameof(commandHandler));
             this.logger = logger;
             this.asyncEventHandler = asyncEventHandler;
@@ -49,59 +43,48 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="context">The router context.</param>
         /// <returns>The <see cref="CommandResult"/> instance.</returns>
-        public async Task<CommandResult> RouteCommandAsync(CommandContext context)
+        public async Task RouteCommandAsync(ICommandContext context)
         {
-            CommandResult? result = null;
             ParsedCommand? parsedCommand = null;
+            CommandResult? commandResult = null!;
+            CommandRequest request = context.Request;
+            string requestId = request.Id;
+
             try
             {
-                logger.LogDebug("Start command router. type={0} request={1}", GetType().Name, context.Request.Id);
+                logger.LogDebug("Start command router. type={0} request={1}", GetType().Name, requestId);
 
                 // Issue a before request event if configured
                 if (asyncEventHandler != null)
                 {
-                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.BeforeCommandRouteAsync), context.Request.Id);
-                    await asyncEventHandler.BeforeCommandRouteAsync(context.Request).ConfigureAwait(false);
+                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.BeforeCommandRouteAsync), requestId);
+                    await asyncEventHandler.BeforeCommandRouteAsync(request).ConfigureAwait(false);
                 }
-
-                // Ensure we have the license extracted before routing
-                License license = await licenseExtractor.GetLicenseAsync().ConfigureAwait(false) ?? throw new TerminalException(TerminalErrors.InvalidLicense, "Failed to extract a valid license. Please configure the hosted service correctly.");
-                if (license.Failed != null)
-                {
-                    throw new TerminalException(license.Failed);
-                }
-                context.License = license;
-                logger.LogDebug("Get license. id={0} tenant={1} plan={2}", license.Claims.Id, license.Claims.TenantId, license.Plan);
 
                 // Parse the command
                 await commandParser.ParseCommandAsync(context).ConfigureAwait(false);
-                parsedCommand = context.ParsedCommand;
+                context.TryGetParsedCommand(out parsedCommand);
 
                 // Handle the command
                 await commandHandler.HandleCommandAsync(context).ConfigureAwait(false);
-
-                // Ensure we have result.
-                result = context.EnsureResult();
+                context.TryGetCommandResult(out commandResult);
             }
             finally
             {
                 // Issue a after request event if configured
                 if (asyncEventHandler != null)
                 {
-                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.AfterCommandRouteAsync), context.Request.Id);
-                    await asyncEventHandler.AfterCommandRouteAsync(context.Request, parsedCommand?.Command, result).ConfigureAwait(false);
+                    logger.LogDebug("Fire event. event={0} request={1}", nameof(asyncEventHandler.AfterCommandRouteAsync), requestId);
+                    await asyncEventHandler.AfterCommandRouteAsync(request, parsedCommand?.Command, commandResult).ConfigureAwait(false);
                 }
 
-                logger.LogDebug("End command router. request={0}", context.Request.Id);
+                logger.LogDebug("End command router. request={0}", requestId);
             }
-
-            return result;
         }
 
         private readonly ITerminalEventHandler? asyncEventHandler;
         private readonly ICommandHandler commandHandler;
         private readonly ICommandParser commandParser;
-        private readonly ILicenseExtractor licenseExtractor;
         private readonly ILogger<CommandRouter> logger;
         private readonly TerminalOptions terminalOptions;
     }

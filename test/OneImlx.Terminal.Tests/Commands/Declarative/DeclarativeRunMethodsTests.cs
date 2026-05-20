@@ -67,8 +67,8 @@ namespace OneImlx.Terminal.Commands.Declarative
         public void Creates_Descriptors_For_Group_And_Methods()
         {
             cmdDescs.Should().HaveCount(4);
-            cmdDescs.Where(c => c.Type == CommandType.Leaf).Should().HaveCount(3);
-            cmdDescs.Where(c => c.Type == CommandType.CompositeGroup).Should().HaveCount(1);
+            cmdDescs.Where(c => c.Type == CommandTypes.Leaf).Should().HaveCount(3);
+            cmdDescs.Where(c => c.Type == CommandTypes.CompositeGroup).Should().HaveCount(1);
         }
 
         [Fact]
@@ -77,12 +77,9 @@ namespace OneImlx.Terminal.Commands.Declarative
             var method1 = cmdDescs.First(c => c.Id == "method1");
             method1.Name.Should().Be("method1_name");
             method1.Description.Should().Be("method1 description");
-            method1.Type.Should().Be(CommandType.Leaf);
-            method1.Flags.Should().Be(CommandFlags.None);
+            method1.Type.Should().Be(CommandTypes.Leaf);
             var method2 = cmdDescs.First(c => c.Id == "method2");
-            method2.Flags.Should().Be(CommandFlags.Obsolete);
             var method3 = cmdDescs.First(c => c.Id == "method3");
-            method3.Flags.Should().Be(CommandFlags.Authorize);
         }
 
         [Fact]
@@ -111,24 +108,24 @@ namespace OneImlx.Terminal.Commands.Declarative
             argDescs["m1_arg1"].Order.Should().Be(1);
             argDescs["m1_arg1"].DataType.Should().Be(nameof(String));
             argDescs["m1_arg1"].Description.Should().Be("method1 arg1 desc");
-            argDescs["m1_arg1"].Flags.Should().Be(ArgumentFlags.None);
+            argDescs["m1_arg1"].Flags.Should().Be(BehaviorFlags.None);
             argDescs["m1_arg2"].Id.Should().Be("m1_arg2");
             argDescs["m1_arg2"].Order.Should().Be(2);
             argDescs["m1_arg2"].DataType.Should().Be(nameof(Int32));
             argDescs["m1_arg2"].Description.Should().Be("method1 arg2 desc");
-            argDescs["m1_arg2"].Flags.Should().Be(ArgumentFlags.Required);
+            argDescs["m1_arg2"].Flags.Should().Be(BehaviorFlags.Required);
 
             method1.OptionDescriptors.Should().HaveCount(3);
             var optDescs = method1.OptionDescriptors!;
             optDescs["m1_opt1"].Id.Should().Be("m1_opt1");
             optDescs["m1_opt1"].DataType.Should().Be(nameof(String));
             optDescs["m1_opt1"].Description.Should().Be("method1 option1 desc");
-            optDescs["m1_opt1"].Flags.Should().Be(OptionFlags.None);
+            optDescs["m1_opt1"].Flags.Should().Be(BehaviorFlags.None);
             optDescs["m1_opt1"].Alias.Should().BeNull();
             optDescs["m1_opt2"].Id.Should().Be("m1_opt2");
             optDescs["m1_opt2"].DataType.Should().Be(nameof(String));
             optDescs["m1_opt2"].Description.Should().Be("method1 option2 desc");
-            optDescs["m1_opt2"].Flags.Should().Be(OptionFlags.Required);
+            optDescs["m1_opt2"].Flags.Should().Be(BehaviorFlags.Required);
             optDescs["m1_opt2"].Alias.Should().Be("m1_opt2_alias");
             optDescs["m1_opt2_alias"].Id.Should().Be("m1_opt2");
             optDescs["m1_opt2_alias"].Alias.Should().Be("m1_opt2_alias");
@@ -140,12 +137,12 @@ namespace OneImlx.Terminal.Commands.Declarative
             var method2 = cmdDescs.First(c => c.Id == "method2");
             method2.ArgumentDescriptors.Should().HaveCount(2);
             method2.ArgumentDescriptors!["m2_arg1"].Id.Should().Be("m2_arg1");
-            method2.ArgumentDescriptors["m2_arg1"].Flags.Should().Be(ArgumentFlags.Required | ArgumentFlags.Obsolete);
+            method2.ArgumentDescriptors["m2_arg1"].Flags.Should().Be(BehaviorFlags.Required | BehaviorFlags.Obsolete);
             method2.ArgumentDescriptors["m2_arg2"].Id.Should().Be("m2_arg2");
-            method2.ArgumentDescriptors["m2_arg2"].Flags.Should().Be(ArgumentFlags.None);
+            method2.ArgumentDescriptors["m2_arg2"].Flags.Should().Be(BehaviorFlags.None);
             method2.OptionDescriptors.Should().HaveCount(1);
             method2.OptionDescriptors!["m2_opt1"].Id.Should().Be("m2_opt1");
-            method2.OptionDescriptors["m2_opt1"].Flags.Should().Be(OptionFlags.Disabled);
+            method2.OptionDescriptors["m2_opt1"].Flags.Should().Be(BehaviorFlags.Disabled);
         }
 
         [Fact]
@@ -156,11 +153,11 @@ namespace OneImlx.Terminal.Commands.Declarative
             method3.ArgumentDescriptors!["m3_arg1"].Id.Should().Be("m3_arg1");
             method3.ArgumentDescriptors["m3_arg2"].Id.Should().Be("m3_arg2");
             method3.ArgumentDescriptors["m3_arg3"].Id.Should().Be("m3_arg3");
-            method3.ArgumentDescriptors["m3_arg3"].Flags.Should().Be(ArgumentFlags.Required | ArgumentFlags.Disabled);
+            method3.ArgumentDescriptors["m3_arg3"].Flags.Should().Be(BehaviorFlags.Required | BehaviorFlags.Disabled);
             method3.OptionDescriptors.Should().HaveCount(3);
             method3.OptionDescriptors!["m3_opt1"].Id.Should().Be("m3_opt1");
             method3.OptionDescriptors["m3_opt2"].Id.Should().Be("m3_opt2");
-            method3.OptionDescriptors["m3_opt2"].Flags.Should().Be(OptionFlags.Required | OptionFlags.Obsolete);
+            method3.OptionDescriptors["m3_opt2"].Flags.Should().Be(BehaviorFlags.Required | BehaviorFlags.Obsolete);
             method3.OptionDescriptors["m3_opt1_alias"].Id.Should().Be("m3_opt1");
         }
 

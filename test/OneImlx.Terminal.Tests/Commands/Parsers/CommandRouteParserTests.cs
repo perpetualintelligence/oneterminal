@@ -28,14 +28,14 @@
 //            textHandler = new TerminalAsciiTextHandler();
 //            commandDescriptors = new(textHandler,
 //            [
-//               new("root1", "root1_name", "root1_desc", CommandType.Root, CommandFlags.None),
-//               new("grp1", "grp1_name", "grp1_desc", CommandType.Group, CommandFlags.None, new OwnerIdCollection("root1")),
-//               new("grp2", "grp2_name", "grp2_desc", CommandType.Group, CommandFlags.None, new OwnerIdCollection("grp1")),
-//               new("grp3", "grp3_name", "grp3_desc", CommandType.Group, CommandFlags.None, new OwnerIdCollection("grp2")),
-//               new("cmd1", "cmd1_name", "cmd1_desc", CommandType.SubCommand, CommandFlags.None, new OwnerIdCollection("grp3")),
-//               new("cmd2", "cmd2_name", "cmd2_desc", CommandType.SubCommand, CommandFlags.None, new OwnerIdCollection("grp3")),
-//               new("cmd_nr1", "cmd_nr1_name", "cmd_nr1_desc", CommandType.SubCommand, CommandFlags.None),
-//               new("cmd_nr2", "cmd_nr2_name", "cmd_nr2_desc", CommandType.SubCommand, CommandFlags.None)
+//               new("root1", "root1_name", "root1_desc", CommandType.Root),
+//               new("grp1", "grp1_name", "grp1_desc", CommandType.Group,  new OwnerIdCollection("root1")),
+//               new("grp2", "grp2_name", "grp2_desc", CommandType.Group,  new OwnerIdCollection("grp1")),
+//               new("grp3", "grp3_name", "grp3_desc", CommandType.Group,  new OwnerIdCollection("grp2")),
+//               new("cmd1", "cmd1_name", "cmd1_desc", CommandType.SubCommand,  new OwnerIdCollection("grp3")),
+//               new("cmd2", "cmd2_name", "cmd2_desc", CommandType.SubCommand,  new OwnerIdCollection("grp3")),
+//               new("cmd_nr1", "cmd_nr1_name", "cmd_nr1_desc", CommandType.SubCommand),
+//               new("cmd_nr2", "cmd_nr2_name", "cmd_nr2_desc", CommandType.SubCommand)
 //            ]);
 //            commandStore = new TerminalInMemoryCommandStore(textHandler, commandDescriptors.Values);
 //            logger = new NullLogger<TerminalRequestQueueParser>();

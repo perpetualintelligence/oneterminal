@@ -1,14 +1,12 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners.Mocks;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
@@ -25,22 +23,20 @@ namespace OneImlx.Terminal.Commands.Runners
         {
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
-            routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            routerContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, null);
+            routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
+            commandContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routerContext, []);
         }
 
         [Fact]
         public async Task DelegateHelpShouldCallHelpAsync()
         {
-            TerminalRequest request = new("id1", "test1");
-            Command command = new(new CommandDescriptor("id", "name", "desc", CommandType.Leaf, CommandFlags.None));
+            Command command = new(new CommandDescriptor("id", "name", "desc", CommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
-            routerContext.ParsedCommand = extractedCommand;
-            routerContext.License = MockLicenses.TestLicense;
+            commandContext.SetParsedCommand(extractedCommand);
 
             MockTerminalHelpProvider helpProvider = new();
             MockDefaultCommandRunner mockCommandRunner = new();
-            var result = await mockCommandRunner.DelegateHelpAsync(routerContext, helpProvider);
+            var result = await mockCommandRunner.DelegateHelpAsync(commandContext, helpProvider);
             mockCommandRunner.HelpCalled.Should().BeTrue();
             helpProvider.HelpCalled.Should().BeTrue();
             mockCommandRunner.RunCalled.Should().BeFalse();
@@ -50,14 +46,12 @@ namespace OneImlx.Terminal.Commands.Runners
         [Fact]
         public async Task DelegateRunShouldCallRunAsync()
         {
-            TerminalRequest request = new("id1", "test1");
-            Command command = new(new CommandDescriptor("id", "name", "desc", CommandType.Leaf, CommandFlags.None));
+            Command command = new(new CommandDescriptor("id", "name", "desc", CommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
-            routerContext.ParsedCommand = extractedCommand;
-            routerContext.License = MockLicenses.TestLicense;
+            commandContext.SetParsedCommand(extractedCommand);
 
             MockDefaultCommandRunner mockCommandRunner = new();
-            var result = await mockCommandRunner.DelegateRunAsync(routerContext);
+            var result = await mockCommandRunner.DelegateRunAsync(commandContext);
             mockCommandRunner.RunCalled.Should().BeTrue();
             mockCommandRunner.HelpCalled.Should().BeFalse();
             result.Should().BeOfType<MockCommandRunnerInnerResult>();
@@ -66,20 +60,18 @@ namespace OneImlx.Terminal.Commands.Runners
         [Fact]
         public async Task HelpShouldThrowIfIHelpProviderIsNullAsync()
         {
-            TerminalRequest request = new("id1", "test1");
-            Command command = new(new CommandDescriptor("id", "name", "desc", CommandType.Leaf, CommandFlags.None));
+            Command command = new(new CommandDescriptor("id", "name", "desc", CommandTypes.Leaf));
             ParsedCommand extractedCommand = new(command, null);
-            routerContext.ParsedCommand = extractedCommand;
-            routerContext.License = MockLicenses.TestLicense;
+            commandContext.SetParsedCommand(extractedCommand);
 
             MockDefaultCommandRunner mockCommandRunner = new();
-            Func<Task> act = () => mockCommandRunner.RunHelpAsync(routerContext);
+            Func<Task> act = () => mockCommandRunner.RunHelpAsync(commandContext);
             await act.Should().ThrowAsync<TerminalException>().WithMessage("The help provider is missing in the configured services.");
         }
 
         private readonly CancellationTokenSource commandTokenSource = null!;
-        private readonly CommandContext routerContext = null!;
-        private readonly TerminalRouterContext routingContext = null!;
+        private readonly CommandContext commandContext = null!;
+        private readonly TerminalRouterContext routerContext = null!;
         private readonly CancellationTokenSource terminalTokenSource = null!;
     }
 }

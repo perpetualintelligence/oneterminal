@@ -7,12 +7,11 @@ using System;
 namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
-    /// Declares a <see cref="CommandDescriptor"/> custom property.
+    /// Declares a command's custom property.
     /// </summary>
     /// <remarks>Each custom property must have a unique key within a command.</remarks>
-    /// <seealso cref="CommandDescriptor.CustomProperties"/>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public sealed class CommandCustomPropertyAttribute : Attribute
+    public sealed class CommandCustomPropertyAttribute : Attribute, ICommandCustomPropertyAttribute
     {
         /// <summary>
         /// Initialize a new instance.

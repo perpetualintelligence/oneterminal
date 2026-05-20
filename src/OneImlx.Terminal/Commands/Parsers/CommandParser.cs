@@ -2,16 +2,16 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Parsers
 {
@@ -29,26 +29,21 @@ namespace OneImlx.Terminal.Commands.Parsers
         /// <param name="commandStore"></param>
         /// <param name="terminalOptions"></param>
         /// <param name="logger">The logger.</param>
-        public CommandParser(
-            ITerminalRequestParser terminalRequestParser,
-            ITerminalTextHandler textHandler,
-            ITerminalCommandStore commandStore,
-            IOptions<TerminalOptions> terminalOptions,
-            ILogger<CommandParser> logger)
+        public CommandParser(ITerminalRequestParser terminalRequestParser, ITerminalTextHandler textHandler, ITerminalCommandStore commandStore, IOptions<TerminalOptions> terminalOptions, ILogger<CommandParser> logger)
         {
             this.terminalRequestParser = terminalRequestParser;
             this.textHandler = textHandler;
             this.commandStore = commandStore;
-            this.terminalOptions = terminalOptions;
+            this.terminalOptions = terminalOptions.Value;
             this.logger = logger;
         }
 
         /// <inheritdoc/>
-        public async Task ParseCommandAsync(CommandContext context)
+        public async Task ParseCommandAsync(ICommandContext context)
         {
             logger.LogDebug("Parse request. request={0} raw={1}", context.Request.Id, context.Request.Raw);
             TerminalParsedRequest parsedOutput = await terminalRequestParser.ParseRequestAsync(context.Request).ConfigureAwait(false);
-            context.ParsedCommand = await MapParsedRequestAsync(context.Request, parsedOutput).ConfigureAwait(false);
+            context.SetParsedCommand(await MapParsedRequestAsync(context.Request, parsedOutput).ConfigureAwait(false));
         }
 
         private async Task<(List<CommandDescriptor> parsedCommands, List<Argument> parsedArguments)> MapCommandAndArguments(TerminalParsedRequest parsedOutput)
@@ -56,6 +51,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             List<CommandDescriptor> parsedCommands = [];
             List<Argument> parsedArguments = [];
             CommandDescriptor? parsedCommand = null;
+            CommandDescriptor? lastCommand = null;
 
             // Process tokens
             int argId = 0;
@@ -74,7 +70,6 @@ namespace OneImlx.Terminal.Commands.Parsers
                     }
 
                     // Make sure the current command belongs to the right owner
-                    CommandDescriptor? lastCommand = parsedCommands.LastOrDefault();
                     if (lastCommand != null)
                     {
                         if (currentCommand.OwnerIds == null)
@@ -98,6 +93,7 @@ namespace OneImlx.Terminal.Commands.Parsers
                     // The parsedCommand is used to keep track of the last command that is used as the basis for parsing
                     // and validating the arguments.
                     parsedCommand = currentCommand;
+                    lastCommand = currentCommand;
                     parsedCommands.Add(currentCommand);
                 }
                 else
@@ -107,20 +103,19 @@ namespace OneImlx.Terminal.Commands.Parsers
                         throw new TerminalException(TerminalErrors.MissingCommand, "The arguments were provided, but no command was found or specified.");
                     }
 
-                    if (parsedCommand.ArgumentDescriptors == null)
+                    ArgumentDescriptors? argumentDescriptors = parsedCommand.ArgumentDescriptors;
+                    if (argumentDescriptors == null)
                     {
                         throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support arguments. command={0}", parsedCommand.Id);
                     }
 
-                    int nextCount = parsedArguments.Count + 1;
-                    if (parsedCommand.ArgumentDescriptors.Count < nextCount)
+                    int currentArgCount = parsedArguments.Count;
+                    if (argumentDescriptors.Count <= currentArgCount)
                     {
-                        throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support {0} arguments. command={1}", nextCount, parsedCommand.Id);
+                        throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support {0} arguments. command={1}", currentArgCount + 1, parsedCommand.Id);
                     }
 
-                    ArgumentDescriptor argumentDescriptor = parsedCommand.ArgumentDescriptors[argId];
-                    Argument argument = new(argumentDescriptor, token);
-                    parsedArguments.Add(argument);
+                    parsedArguments.Add(new Argument(argumentDescriptors[argId], token));
                     argId++;
                 }
             }
@@ -130,12 +125,14 @@ namespace OneImlx.Terminal.Commands.Parsers
 
         private Options? MapOptions(CommandDescriptor commandDescriptor, Dictionary<string, ValueTuple<string, bool>> parsedOptions)
         {
-            if (parsedOptions.Count == 0)
+            int optionsCount = parsedOptions.Count;
+            if (optionsCount == 0)
             {
                 return null;
             }
 
-            if (commandDescriptor.OptionDescriptors == null)
+            OptionDescriptors? optionDescriptors = commandDescriptor.OptionDescriptors;
+            if (optionDescriptors == null)
             {
                 throw new TerminalException(TerminalErrors.UnsupportedOption, "The command does not support options. command={0}", commandDescriptor.Id);
             }
@@ -143,11 +140,11 @@ namespace OneImlx.Terminal.Commands.Parsers
             // 1. An input can be either an option or an alias, but not both.
             // 2. If a segment is identified as an option, it must match the option ID.
             // 3. If identified as an alias, it must match the alias.
-            List<Option> options = new(parsedOptions.Count);
+            List<Option> options = new(optionsCount);
             foreach (var optKvp in parsedOptions)
             {
                 string optionOrAliasKey = optKvp.Key;
-                if (!commandDescriptor.OptionDescriptors.TryGetValue(optionOrAliasKey, out var optionDescriptor))
+                if (!optionDescriptors.TryGetValue(optionOrAliasKey, out var optionDescriptor))
                 {
                     throw new TerminalException(TerminalErrors.UnsupportedOption, "The command does not support option or its alias. command={0} option={1}", commandDescriptor.Id, optionOrAliasKey);
                 }
@@ -177,13 +174,14 @@ namespace OneImlx.Terminal.Commands.Parsers
             return new Options(textHandler, options);
         }
 
-        private async Task<ParsedCommand> MapParsedRequestAsync(TerminalRequest request, TerminalParsedRequest parsedOutput)
+        private async Task<ParsedCommand> MapParsedRequestAsync(CommandRequest request, TerminalParsedRequest parsedOutput)
         {
             // Map to command and arguments
             var (commandDescriptors, parsedArguments) = await MapCommandAndArguments(parsedOutput).ConfigureAwait(false);
 
             // Process Options
-            CommandDescriptor commandDescriptor = commandDescriptors.Last();
+            int commandDescriptorsCount = commandDescriptors.Count;
+            CommandDescriptor commandDescriptor = commandDescriptors[commandDescriptorsCount - 1];
             Options? parsedOptions = MapOptions(commandDescriptor, parsedOutput.Options);
 
             // Final result.
@@ -194,13 +192,18 @@ namespace OneImlx.Terminal.Commands.Parsers
             }
 
             // Hierarchy is all expect the current command.
-            Command command = new(commandDescriptor, arguments, parsedOptions);
-            return new ParsedCommand(command, commandDescriptors.Count > 1 ? commandDescriptors.Take(commandDescriptors.Count - 1) : null);
+            IEnumerable<CommandDescriptor>? hierarchy = null;
+            if (commandDescriptorsCount > 1)
+            {
+                hierarchy = commandDescriptors.GetRange(0, commandDescriptorsCount - 1);
+            }
+
+            return new ParsedCommand(new(commandDescriptor, arguments, parsedOptions), hierarchy);
         }
 
         private readonly ITerminalCommandStore commandStore;
         private readonly ILogger<CommandParser> logger;
-        private readonly IOptions<TerminalOptions> terminalOptions;
+        private readonly TerminalOptions terminalOptions;
         private readonly ITerminalRequestParser terminalRequestParser;
         private readonly ITerminalTextHandler textHandler;
     }

@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
     /// The group <c>grp1</c> runner for the TestServer.
     /// </summary>
     [CommandOwners("grp1")]
-    [CommandDescriptor("grp2", "Group 2", "Group2 description.", CommandType.IsolatedGroup, CommandFlags.None)]
+    [CommandDescriptor("grp2", "Group 2", "Group2 description.", CommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(CommandChecker))]
     public class Grp2Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
@@ -26,7 +26,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             await terminalConsole.WriteLineAsync("Group2 command called.");
             return new CommandRunnerResult("Response from grp2");

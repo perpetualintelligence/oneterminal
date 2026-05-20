@@ -1,8 +1,12 @@
-﻿using System;
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Runners;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Declarative;
@@ -12,8 +16,8 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// <summary>
     /// Runs native OS commands.
     /// </summary>
-    [CommandDescriptor("run", "Run Command", "Runs a native OS command.", CommandType.Native, CommandFlags.None)]
-    [ArgumentDescriptor(0, "cmd", nameof(String), "The full native command to execute, e.g., 'ls -all'", ArgumentFlags.Required)]
+    [CommandDescriptor("run", "Run Command", "Runs a native OS command.", CommandTypes.Native)]
+    [ArgumentDescriptor(0, "cmd", nameof(String), "The full native command to execute, e.g., 'ls -all'", BehaviorFlags.Required)]
     public class RunRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
@@ -25,9 +29,9 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
-            var command = context.EnsureParsedCommand().Command;
+            var command = context.GetParsedCommand().Command;
             var osCommand = command.GetRequiredArgumentValue<string>("cmd");
 
             await terminalConsole.WriteLineColorAsync(ConsoleColor.Magenta, $"Running OS command: {osCommand}");

@@ -34,6 +34,7 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <summary>
         /// The argument flags.
         /// </summary>
-        public ArgumentFlags Flags { get; }
+        /// <seealso cref="BehaviorFlags"/>
+        public int Flags { get; }
     }
 }

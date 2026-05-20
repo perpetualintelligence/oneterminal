@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System.Threading.Tasks;
 
@@ -19,13 +16,13 @@ namespace OneImlx.Terminal.Commands.Runners
         /// </summary>
         /// <param name="context">The runner context.</param>
         /// <returns>The runner result.</returns>
-        Task<TResult> RunCommandAsync(CommandContext context);
+        Task<TResult> RunCommandAsync(ICommandContext context);
 
         /// <summary>
         /// Runs a command help asynchronously.
         /// </summary>
         /// <param name="context">The runner context.</param>
         /// <returns>The runner result.</returns>
-        Task RunHelpAsync(CommandContext context);
+        Task RunHelpAsync(ICommandContext context);
     }
 }

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("udp", "UDP test", "Send UDP commands to the terminal server.", CommandType.Leaf, CommandFlags.None)]
+    [CommandDescriptor("udp", "UDP test", "Send UDP commands to the terminal server.", CommandTypes.Leaf)]
     public class SendUdpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendUdpRunner(
@@ -40,7 +40,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.terminalExceptionHandler = terminalExceptionHandler;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             string server = configuration.GetValue<string>("testclient:testserver:ip")
                             ?? throw new InvalidOperationException("Server IP address is missing.");
@@ -58,7 +58,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 var clientTasks = new Task[maxClients];
                 for (int idx = 0; idx < clientTasks.Length; idx++)
                 {
-                    clientTasks[idx] = StartClientAsync(server, port, idx, context.TerminalContext.TerminalCancellationToken);
+                    clientTasks[idx] = StartClientAsync(server, port, idx, context.RouterContext.TerminalCancellationToken);
                 }
 
                 await Task.WhenAll(clientTasks);

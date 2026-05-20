@@ -1,9 +1,6 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Shared;
@@ -13,15 +10,15 @@ using System;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("oid1, oid2")]
-    [CommandDescriptor("id4", "name4", "description", CommandType.Leaf, CommandFlags.None)]
+    [CommandDescriptor("id4", "name4", "description", CommandTypes.Leaf)]
     [CommandChecker(typeof(MockCommandChecker))]
     [CommandTags("tag1", "tag2", "tag3")]
-    [OptionDescriptor("opt1", nameof(String), "test arg desc1", OptionFlags.None)]
-    [OptionDescriptor("opt2", nameof(String), "test arg desc2", OptionFlags.None)]
-    [OptionDescriptor("opt3", nameof(String), "test arg desc3", OptionFlags.None)]
-    [ArgumentDescriptor(1, "arg1", nameof(String), "test arg desc1", ArgumentFlags.None)]
-    [ArgumentDescriptor(2, "arg2", nameof(String), "test arg desc2", ArgumentFlags.None)]
-    [ArgumentDescriptor(3, "arg3", nameof(Double), "test arg desc3", ArgumentFlags.None)]
+    [OptionDescriptor("opt1", nameof(String), "test arg desc1", BehaviorFlags.None)]
+    [OptionDescriptor("opt2", nameof(String), "test arg desc2", BehaviorFlags.None)]
+    [OptionDescriptor("opt3", nameof(String), "test arg desc3", BehaviorFlags.None)]
+    [ArgumentDescriptor(1, "arg1", nameof(String), "test arg desc1", BehaviorFlags.None)]
+    [ArgumentDescriptor(2, "arg2", nameof(String), "test arg desc2", BehaviorFlags.None)]
+    [ArgumentDescriptor(3, "arg3", nameof(Double), "test arg desc3", BehaviorFlags.None)]
     public class MockDeclarativeRunner4 : IDeclarativeRunner
     {
     }

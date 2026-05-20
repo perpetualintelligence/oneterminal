@@ -1,16 +1,16 @@
-﻿using System.Threading.Tasks;
-using OneImlx.Terminal.Commands;
+﻿using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Declarative;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     /// <summary>
     /// Clears the console.
     /// </summary>
-    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandType.Native, CommandFlags.None)]
+    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandTypes.Native)]
     public class ClsRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
@@ -23,7 +23,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             await terminalConsole.ClearAsync();
             return await CommandRunnerResult.EmptyAsync();

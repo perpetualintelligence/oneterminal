@@ -10,7 +10,7 @@ namespace OneImlx.Terminal.Shared.Declarative
     /// Declares the command tags.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public sealed class CommandTagsAttribute : Attribute
+    public sealed class CommandTagsAttribute : Attribute, ICommandTagsAttribute
     {
         /// <summary>
         /// Initializes a new instance.

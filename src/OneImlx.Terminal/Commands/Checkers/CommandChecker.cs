@@ -1,15 +1,14 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Shared.Extensions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Checkers
 {
@@ -34,9 +33,10 @@ namespace OneImlx.Terminal.Commands.Checkers
         }
 
         /// <inheritdoc/>
-        public async Task<CommandCheckerResult> CheckCommandAsync(CommandContext context)
+        public async Task<CommandCheckerResult> CheckCommandAsync(ICommandContext context)
         {
-            logger.LogDebug("Check command. command={0}", context.EnsureParsedCommand().Command.Id);
+            Command command = context.GetCommand();
+            logger.LogDebug("Check command. command={0}", command.Id);
 
             await CheckArgumentsAsync(context);
 
@@ -45,10 +45,10 @@ namespace OneImlx.Terminal.Commands.Checkers
             return new CommandCheckerResult();
         }
 
-        private async Task CheckArgumentsAsync(CommandContext context)
+        private async Task CheckArgumentsAsync(ICommandContext context)
         {
             // Cache commonly accessed properties
-            var command = context.EnsureParsedCommand().Command;
+            var command = context.GetCommand();
             ArgumentDescriptors? argumentDescriptors = command.Descriptor.ArgumentDescriptors;
 
             // If the command itself does not support any arguments then there's nothing to check. Parser will reject
@@ -67,7 +67,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                 if (!containsArg)
                 {
                     // Required argument is missing
-                    if (flags.HasFlag(ArgumentFlags.Required))
+                    if (flags.HasFlag(BehaviorFlags.Required))
                     {
                         throw new TerminalException(TerminalErrors.MissingArgument, "The required argument is missing. command={0} argument={1}", command.Id, arg.Id);
                     }
@@ -76,13 +76,13 @@ namespace OneImlx.Terminal.Commands.Checkers
                 }
 
                 // Check obsolete
-                if (flags.HasFlag(ArgumentFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
+                if (flags.HasFlag(BehaviorFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
                 {
                     throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is obsolete. command={0} argument={1}", command.Id, arg.Id);
                 }
 
                 // Check disabled
-                if (flags.HasFlag(ArgumentFlags.Disabled))
+                if (flags.HasFlag(BehaviorFlags.Disabled))
                 {
                     throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is disabled. command={0} argument={1}", command.Id, arg.Id);
                 }
@@ -92,10 +92,10 @@ namespace OneImlx.Terminal.Commands.Checkers
             }
         }
 
-        private async Task CheckOptionsAsync(CommandContext context)
+        private async Task CheckOptionsAsync(ICommandContext context)
         {
             // Cache commonly accessed properties
-            var command = context.EnsureParsedCommand().Command;
+            var command = context.GetCommand();
             OptionDescriptors? optionDescriptors = command.Descriptor.OptionDescriptors;
 
             // If the command itself does not support any options then there's nothing to check. Parser will reject any
@@ -114,7 +114,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                 if (!containsOpt)
                 {
                     // Required option is missing
-                    if (flags.HasFlag(OptionFlags.Required))
+                    if (flags.HasFlag(BehaviorFlags.Required))
                     {
                         throw new TerminalException(TerminalErrors.MissingOption, "The required option is missing. command={0} option={1}", command.Id, optKvp.Key);
                     }
@@ -123,13 +123,13 @@ namespace OneImlx.Terminal.Commands.Checkers
                 }
 
                 // Check obsolete
-                if (flags.HasFlag(OptionFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
+                if (flags.HasFlag(BehaviorFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
                 {
                     throw new TerminalException(TerminalErrors.InvalidOption, "The option is obsolete. command={0} option={1}", command.Id, optKvp.Key);
                 }
 
                 // Check disabled
-                if (flags.HasFlag(OptionFlags.Disabled))
+                if (flags.HasFlag(BehaviorFlags.Disabled))
                 {
                     throw new TerminalException(TerminalErrors.InvalidOption, "The option is disabled. command={0} option={1}", command.Id, optKvp.Key);
                 }

@@ -17,13 +17,13 @@ namespace OneImlx.Terminal.Mocks
 
         public bool RunCalled { get; set; }
 
-        public Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             RunCalled = true;
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        public Task RunHelpAsync(CommandContext context)
+        public Task RunHelpAsync(ICommandContext context)
         {
             HelpCalled = true;
             return Task.FromResult(new CommandRunnerResult());

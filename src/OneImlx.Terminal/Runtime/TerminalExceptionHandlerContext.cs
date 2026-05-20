@@ -20,7 +20,7 @@ namespace OneImlx.Terminal.Runtime
         /// </summary>
         /// <param name="exception">The exception.</param>
         /// <param name="request">The command request.</param>
-        public TerminalExceptionHandlerContext(Exception exception, TerminalRequest? request = null)
+        public TerminalExceptionHandlerContext(Exception exception, CommandRequest? request = null)
         {
             Exception = exception ?? throw new ArgumentNullException(nameof(exception));
             Request = request;
@@ -34,6 +34,6 @@ namespace OneImlx.Terminal.Runtime
         /// <summary>
         /// The command request.
         /// </summary>
-        public TerminalRequest? Request { get; }
+        public CommandRequest? Request { get; }
     }
 }

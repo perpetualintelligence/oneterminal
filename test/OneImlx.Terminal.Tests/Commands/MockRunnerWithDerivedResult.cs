@@ -11,13 +11,13 @@ namespace OneImlx.Terminal.Commands
     {
         public bool MethodCalled { get; private set; }
 
-        public override Task<MockRunnerDerviedResult> RunCommandAsync(CommandContext context)
+        public override Task<MockRunnerDerviedResult> RunCommandAsync(ICommandContext context)
         {
             MethodCalled = false;
             return Task.FromResult(new MockRunnerDerviedResult());
         }
 
-        public Task<MockRunnerDerviedResult> TestMethodDerived(CommandContext context)
+        public Task<MockRunnerDerviedResult> TestMethodDerived(ICommandContext context)
         {
             MethodCalled = true;
             return Task.FromResult(new MockRunnerDerviedResult());

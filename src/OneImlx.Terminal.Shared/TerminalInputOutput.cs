@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Text.Json;
@@ -12,21 +9,18 @@ using System.Text.Json.Serialization;
 namespace OneImlx.Terminal.Shared
 {
     /// <summary>
-    /// Represents the terminal IO class that is sent to the terminal server as an ordered collection of <see cref="TerminalRequest"/>.
+    /// Represents the terminal IO class that is sent to the terminal server as a collection of <see cref="CommandRequest"/>.
     /// </summary>
-    /// <remarks>
-    /// The requests in the <see cref="TerminalInputOutput"/> are executed by the router in the order they are added.
-    /// </remarks>
     public sealed class TerminalInputOutput
     {
         /// <summary>
         /// THIS METHOD IS RESERVED FOR OUR INTERNAL INFRASTRUCTURE USE ONLY. DO NOT USE IT IN YOUR APPLICATION. To
         /// create a new instance of <see cref="TerminalInputOutput"/>, use the
         /// <see cref="Single(string, string, string?, string?)"/> or
-        /// <see cref="Batch(string, TerminalRequest[], string?, string?)"/> method.
+        /// <see cref="Batch(string, CommandRequest[], string?, string?)"/> method.
         /// </summary>
         /// <seealso cref="Single(string, string, string?, string?)"/>
-        /// <seealso cref="Batch(string, TerminalRequest[], string?, string?)"/>
+        /// <seealso cref="Batch(string, CommandRequest[], string?, string?)"/>
         /// <seealso cref="Batch(string, string[], string[], string?, string?)"/>
         public TerminalInputOutput()
         {
@@ -57,7 +51,7 @@ namespace OneImlx.Terminal.Shared
         /// </summary>
         [JsonPropertyName("requests")]
         [JsonInclude]
-        public TerminalRequest[] Requests { get; private set; }
+        public CommandRequest[] Requests { get; private set; }
 
         /// <summary>
         /// The sender endpoint if known. This is typically set automatically by the router.
@@ -88,10 +82,10 @@ namespace OneImlx.Terminal.Shared
                 throw new ArgumentException("The number of command IDs must match the number of raw commands.");
             }
 
-            var requests = new TerminalRequest[ids.Length];
+            var requests = new CommandRequest[ids.Length];
             for (int i = 0; i < ids.Length; i++)
             {
-                requests[i] = new TerminalRequest(ids[i], raws[i]);
+                requests[i] = new CommandRequest(ids[i], raws[i]);
             }
 
             return new TerminalInputOutput()
@@ -107,12 +101,12 @@ namespace OneImlx.Terminal.Shared
         /// Creates a new <see cref="TerminalInputOutput"/> for a batch of requests.
         /// </summary>
         /// <param name="batchId">The batch identifier.</param>
-        /// <param name="requests">The array of <see cref="TerminalRequest"/> objects.</param>
+        /// <param name="requests">The array of <see cref="CommandRequest"/> objects.</param>
         /// <param name="senderId">The sender id.</param>
         /// <param name="senderEndpoint">The sender endpoint.</param>
         /// <returns>A new <see cref="TerminalInputOutput"/> instance.</returns>
         /// <exception cref="ArgumentException">Thrown if the number of requests is zero.</exception>
-        public static TerminalInputOutput Batch(string batchId, TerminalRequest[] requests, string? senderId = null, string? senderEndpoint = null)
+        public static TerminalInputOutput Batch(string batchId, CommandRequest[] requests, string? senderId = null, string? senderEndpoint = null)
         {
             if (requests.Length == 0)
             {
@@ -138,7 +132,7 @@ namespace OneImlx.Terminal.Shared
         /// <returns>A new <see cref="TerminalInputOutput"/> instance.</returns>
         public static TerminalInputOutput Single(string id, string raw, string? senderId = null, string? senderEndpoint = null)
         {
-            var request = new TerminalRequest(id, raw);
+            var request = new CommandRequest(id, raw);
             return new TerminalInputOutput()
             {
                 Requests = [request],
@@ -170,10 +164,10 @@ namespace OneImlx.Terminal.Shared
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="TerminalRequest"/> at the specified index.
+        /// Gets or sets the <see cref="CommandRequest"/> at the specified index.
         /// </summary>
         /// <param name="index">The index.</param>
-        public TerminalRequest this[int index]
+        public CommandRequest this[int index]
         {
             get => Requests[index];
             set => Requests[index] = value;

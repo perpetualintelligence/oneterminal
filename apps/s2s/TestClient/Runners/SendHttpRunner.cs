@@ -16,7 +16,7 @@ using OneImlx.Terminal.Shared.Declarative;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
-    [CommandDescriptor("http", "HTTP test", "Send HTTP commands to the terminal server.", CommandType.Leaf, CommandFlags.None)]
+    [CommandDescriptor("http", "HTTP test", "Send HTTP commands to the terminal server.", CommandTypes.Leaf)]
     public class SendHttpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendHttpRunner(IConfiguration configuration, ITerminalConsole terminalConsole, IHttpClientFactory httpClientFactory)
@@ -26,7 +26,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             string ip = configuration["testclient:testserver:ip"] ?? throw new InvalidOperationException("Server IP address is missing.");
             string port = configuration.GetValue<string>("testclient:testserver:port") ?? throw new InvalidOperationException("Server port is missing.");
@@ -43,7 +43,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 var clientTasks = new Task[maxClients];
                 for (int idx = 0; idx < clientTasks.Length; idx++)
                 {
-                    clientTasks[idx] = StartHttpClientAsync(serverAddress, idx, context.TerminalContext.TerminalCancellationToken);
+                    clientTasks[idx] = StartHttpClientAsync(serverAddress, idx, context.RouterContext.TerminalCancellationToken);
                 }
 
                 await Task.WhenAll(clientTasks);

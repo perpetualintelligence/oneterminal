@@ -1,12 +1,10 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Shared.Infrastructure;
 using OneImlx.Terminal.Commands;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Generic;
@@ -36,7 +34,7 @@ namespace OneImlx.Terminal.Mocks
         //This is used in the context of singleton Router
         public int RouteCounter { get; set; }
 
-        public async Task<CommandResult> RouteCommandAsync(CommandContext context)
+        public async Task RouteCommandAsync(ICommandContext context)
         {
             // Stats
             RouteCalled = true;
@@ -67,7 +65,7 @@ namespace OneImlx.Terminal.Mocks
                 throw new TerminalException(explicitError);
             }
 
-            return new CommandResult();
+            context.SetCommandResult(new CommandResult());
         }
 
         private readonly CancellationTokenSource? cancelOnRouteCalled;

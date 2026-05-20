@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The group <c>grp3</c> runner - INDEPENDENT IsolatedGroup under test.
     /// </summary>
     [CommandOwners("test")]
-    [CommandDescriptor("grp3", "Group 3", "Group 3 IsolatedGroup (independent) with cmd7, cmd8, cmd9.", CommandType.IsolatedGroup, CommandFlags.None)]
+    [CommandDescriptor("grp3", "Group 3", "Group 3 IsolatedGroup (independent) with cmd7, cmd8, cmd9.", CommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "isolated", "independent")]
     public class Grp3Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
@@ -27,7 +27,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             logger.LogInformation("Executing grp3 command");
             await terminalConsole.WriteLineAsync("Group 3 (IsolatedGroup - independent)");

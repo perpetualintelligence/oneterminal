@@ -64,23 +64,23 @@ namespace OneImlx.Terminal.Dynamics.Mocks
             // Add custom attributes to the class Ensure the commandId is unique across multiple assemblies so we just
             // use className
             AddCustomAttribute(typeBuilder, typeof(CommandOwnersAttribute), [new string[] { "oid1", "oid2" }]);
-            AddCustomAttribute(typeBuilder, typeof(CommandDescriptorAttribute), [className, "name1", "description", CommandType.Leaf, CommandFlags.None]);
+            AddCustomAttribute(typeBuilder, typeof(CommandDescriptorAttribute), [className, "name1", "description", CommandTypes.Leaf]);
             AddCustomAttribute(typeBuilder, typeof(CommandCheckerAttribute), [typeof(MockCommandChecker)]);
             AddCustomAttribute(typeBuilder, typeof(CommandTagsAttribute), [new string[] { "tag1", "tag2", "tag3" }]);
             AddCustomAttribute(typeBuilder, typeof(CommandCustomPropertyAttribute), ["key1", "value1"]);
             AddCustomAttribute(typeBuilder, typeof(CommandCustomPropertyAttribute), ["key2", "value2"]);
             AddCustomAttribute(typeBuilder, typeof(CommandCustomPropertyAttribute), ["key3", "value3"]);
-            AddCustomAttribute(typeBuilder, typeof(OptionDescriptorAttribute), ["opt1", nameof(String), "test opt desc1", OptionFlags.None, null!]);
-            AddCustomAttribute(typeBuilder, typeof(OptionDescriptorAttribute), ["opt2", nameof(String), "test opt desc2", OptionFlags.Disabled, "opt2_alias"]);
+            AddCustomAttribute(typeBuilder, typeof(OptionDescriptorAttribute), ["opt1", nameof(String), "test opt desc1", BehaviorFlags.None, null!]);
+            AddCustomAttribute(typeBuilder, typeof(OptionDescriptorAttribute), ["opt2", nameof(String), "test opt desc2", BehaviorFlags.Disabled, "opt2_alias"]);
             AddCustomAttribute(typeBuilder, typeof(OptionValidationAttribute), ["opt2", typeof(RequiredAttribute), Array.Empty<object>()]);
             AddCustomAttribute(typeBuilder, typeof(OptionValidationAttribute), ["opt2", typeof(OneOfAttribute), new object[] { "test1", "test2", "test3" }]);
-            AddCustomAttribute(typeBuilder, typeof(OptionDescriptorAttribute), ["opt3", nameof(Double), "test opt desc3", OptionFlags.Required | OptionFlags.Obsolete, null!]);
+            AddCustomAttribute(typeBuilder, typeof(OptionDescriptorAttribute), ["opt3", nameof(Double), "test opt desc3", BehaviorFlags.Required | BehaviorFlags.Obsolete, null!]);
             AddCustomAttribute(typeBuilder, typeof(OptionValidationAttribute), ["opt3", typeof(RangeAttribute), new object[] { 25.34, 40.56 }]);
-            AddCustomAttribute(typeBuilder, typeof(ArgumentDescriptorAttribute), [1, "arg1", nameof(String), "test arg desc1", ArgumentFlags.None]);
-            AddCustomAttribute(typeBuilder, typeof(ArgumentDescriptorAttribute), [2, "arg2", nameof(String), "test arg desc2", ArgumentFlags.Disabled]);
+            AddCustomAttribute(typeBuilder, typeof(ArgumentDescriptorAttribute), [1, "arg1", nameof(String), "test arg desc1", BehaviorFlags.None]);
+            AddCustomAttribute(typeBuilder, typeof(ArgumentDescriptorAttribute), [2, "arg2", nameof(String), "test arg desc2", BehaviorFlags.Disabled]);
             AddCustomAttribute(typeBuilder, typeof(ArgumentValidationAttribute), ["arg2", typeof(RequiredAttribute), Array.Empty<object>()]);
             AddCustomAttribute(typeBuilder, typeof(ArgumentValidationAttribute), ["arg2", typeof(OneOfAttribute), new object[] { "test1", "test2", "test3" }]);
-            AddCustomAttribute(typeBuilder, typeof(ArgumentDescriptorAttribute), [3, "arg3", nameof(Double), "test arg desc3", ArgumentFlags.Required | ArgumentFlags.Obsolete]);
+            AddCustomAttribute(typeBuilder, typeof(ArgumentDescriptorAttribute), [3, "arg3", nameof(Double), "test arg desc3", BehaviorFlags.Required | BehaviorFlags.Obsolete]);
             AddCustomAttribute(typeBuilder, typeof(ArgumentValidationAttribute), ["arg3", typeof(RangeAttribute), new object[] { 25.34, 40.56 }]);
 
             // Create the type

@@ -7,38 +7,30 @@ using System;
 namespace OneImlx.Terminal.Shared.Declarative
 {
     /// <summary>
-    /// Declares an <see cref="ArgumentDescriptor"/> validation attribute.
+    /// Declares an argument validation attribute.
     /// </summary>
-    /// <seealso cref="ArgumentDescriptor.ValueCheckers"/>
+    /// <remarks>
+    /// Initialize a new instance.
+    /// </remarks>
+    /// <param name="argumentId">The argument identifier.</param>
+    /// <param name="validationAttribute">The argument validation attribute.</param>
+    /// <param name="validationParams">The validation attribute parameters.</param>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public sealed class ArgumentValidationAttribute : Attribute
+    public sealed class ArgumentValidationAttribute(string argumentId, Type validationAttribute, params object[] validationParams) : Attribute, IArgumentValidationAttribute
     {
-        /// <summary>
-        /// Initialize a new instance.
-        /// </summary>
-        /// <param name="argumentId">The argument identifier.</param>
-        /// <param name="validationAttribute">The argument validation attribute.</param>
-        /// <param name="validationParams">The validation attribute parameters.</param>
-        public ArgumentValidationAttribute(string argumentId, Type validationAttribute, params object[] validationParams)
-        {
-            ArgumentId = argumentId;
-            ValidationAttribute = validationAttribute;
-            ValidationParams = validationParams;
-        }
-
         /// <summary>
         /// The argument identifier.
         /// </summary>
-        public string ArgumentId { get; }
+        public string ArgumentId { get; } = argumentId;
 
         /// <summary>
         /// The <see cref="ValidationAttribute"/> parameters.
         /// </summary>
-        public object[]? ValidationParams { get; }
+        public object[]? ValidationParams { get; } = validationParams;
 
         /// <summary>
         /// The attribute validation attribute.
         /// </summary>
-        public Type ValidationAttribute { get; }
+        public Type ValidationAttribute { get; } = validationAttribute;
     }
 }

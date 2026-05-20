@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("tc")]
-    [CommandDescriptor("send", "Send", "Send group.", CommandType.IsolatedGroup, CommandFlags.None)]
+    [CommandDescriptor("send", "Send", "Send group.", CommandTypes.IsolatedGroup)]
     public class SendRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         public SendRunner(ITerminalConsole terminalConsole)
@@ -16,7 +16,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.terminalConsole = terminalConsole;
         }
 
-        public override Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             terminalConsole.WriteLineAsync("Sends messages to the test server.");
             return Task.FromResult(new CommandRunnerResult());

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Runtime
 {
     /// <summary>
-    /// An abstraction to parse a <see cref="TerminalRequest"/>.
+    /// An abstraction to parse a <see cref="CommandRequest"/>.
     /// </summary>
     public interface ITerminalRequestParser
     {
@@ -20,6 +20,6 @@ namespace OneImlx.Terminal.Runtime
         /// </summary>
         /// <param name="request">The terminal request to parse.</param>
         /// <returns></returns>
-        Task<TerminalParsedRequest> ParseRequestAsync(TerminalRequest request);
+        Task<TerminalParsedRequest> ParseRequestAsync(CommandRequest request);
     }
 }

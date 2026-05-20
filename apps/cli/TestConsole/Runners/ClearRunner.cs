@@ -10,7 +10,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// <summary>
     /// Clears the console.
     /// </summary>
-    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandType.Native, CommandFlags.None)]
+    [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandTypes.Native)]
     public class ClearRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
@@ -23,7 +23,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             await terminalConsole.ClearAsync();
             return await CommandRunnerResult.EmptyAsync();

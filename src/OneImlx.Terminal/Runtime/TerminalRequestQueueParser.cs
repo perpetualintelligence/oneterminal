@@ -90,7 +90,7 @@ namespace OneImlx.Terminal.Runtime
         /// optimal memory usage.
         /// </para>
         /// </remarks>
-        public Task<TerminalParsedRequest> ParseRequestAsync(TerminalRequest request)
+        public Task<TerminalParsedRequest> ParseRequestAsync(CommandRequest request)
         {
             TerminalOptions options = terminalOptions.Value;
 
@@ -243,7 +243,7 @@ namespace OneImlx.Terminal.Runtime
         /// after delimiter-aware separator replacement.
         /// </para>
         /// </remarks>
-        private Queue<string> ExtractQueue(TerminalRequest request, TerminalOptions options)
+        private Queue<string> ExtractQueue(CommandRequest request, TerminalOptions options)
         {
             string raw = request.Raw;
             char valueDelimiter = options.Parser.ValueDelimiter;

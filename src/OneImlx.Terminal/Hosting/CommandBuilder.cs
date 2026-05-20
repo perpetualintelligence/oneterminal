@@ -70,7 +70,7 @@ namespace OneImlx.Terminal.Hosting
             // Owners
             // - Root command or native commands cannot have an owner
             OwnerIdCollection? owners = lsp.GetService<OwnerIdCollection>();
-            if ((commandDescriptor.Type == CommandType.Root || commandDescriptor.Type == CommandType.Native))
+            if ((commandDescriptor.Type == CommandTypes.Root || commandDescriptor.Type == CommandTypes.Native))
             {
                 if (owners != null && owners.Count > 0)
                 {

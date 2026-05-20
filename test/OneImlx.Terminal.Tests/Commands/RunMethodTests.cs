@@ -5,6 +5,7 @@
 using FluentAssertions;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Commands.Runners;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
@@ -19,11 +20,12 @@ namespace OneImlx.Terminal.Commands
     {
         public RunMethodTests()
         {
-            Command command = new(new CommandDescriptor("cmd-id", "cmd-name", "cmd-desc", CommandType.Leaf, CommandFlags.None));
+            Command command = new(new CommandDescriptor("cmd-id", "cmd-name", "cmd-desc", CommandTypes.Leaf));
             parsedCommand = new ParsedCommand(command);
             commandTokenSource = new CancellationTokenSource();
             routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            routerContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, null) { ParsedCommand = parsedCommand };
+            routerContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, []);
+            routerContext.SetParsedCommand(parsedCommand);
         }
 
         [Fact]
@@ -121,7 +123,7 @@ namespace OneImlx.Terminal.Commands
         {
             MockRunnerWithBaseResult runner = new();
             var runMethod = new RunMethod("cmd-id", nameof(MockRunnerWithBaseResult.TestMethodBase));
-            var contextWithoutParsedCommand = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, null);
+            var contextWithoutParsedCommand = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, []);
             Func<Task> act = async () => await runMethod.DelegateRunAsync(runner, contextWithoutParsedCommand);
             await act.Should().ThrowAsync<TerminalException>().WithMessage("The parsed command is missing in the context.");
         }

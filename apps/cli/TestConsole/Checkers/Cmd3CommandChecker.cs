@@ -12,7 +12,7 @@ namespace OneImlx.Terminal.Apps.Test.Checkers
             this.terminalConsole = terminalConsole;
         }
 
-        public Task<CommandCheckerResult> CheckCommandAsync(CommandContext context)
+        public Task<CommandCheckerResult> CheckCommandAsync(ICommandContext context)
         {
             terminalConsole.WriteLineAsync("Cmd3 custom checker called.");
             return Task.FromResult(new CommandCheckerResult());

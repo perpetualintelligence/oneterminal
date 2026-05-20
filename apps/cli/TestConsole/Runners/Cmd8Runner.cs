@@ -12,7 +12,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// The sub-command <c>cmd8</c> runner under grp3.
     /// </summary>
     [CommandOwners("grp3")]
-    [CommandDescriptor("cmd8", "Command 8", "Command 8 under grp3.", CommandType.Leaf, CommandFlags.None)]
+    [CommandDescriptor("cmd8", "Command 8", "Command 8 under grp3.", CommandTypes.Leaf)]
     public class Cmd8Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
@@ -24,7 +24,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             logger.LogInformation("Executing grp3 cmd8");
             await terminalConsole.WriteLineAsync("Executing: grp3 cmd8");

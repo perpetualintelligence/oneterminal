@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using OneImlx.Shared.Infrastructure;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Concurrent;
@@ -32,6 +33,7 @@ namespace OneImlx.Terminal.Runtime
         /// Initializes a new instance of the <see cref="TerminalProcessor"/> class.
         /// </summary>
         /// <param name="commandRouter">The command router to process commands.</param>
+        /// <param name="commandContextFactory">The command context factory.</param>
         /// <param name="terminalExceptionHandler">The handler for exceptions thrown during command processing.</param>
         /// <param name="terminalOptions">Configuration options for the terminal.</param>
         /// <param name="textHandler">The terminal text handler.</param>
@@ -39,6 +41,7 @@ namespace OneImlx.Terminal.Runtime
         /// <param name="logger">Logger for logging operations within the queue.</param>
         public TerminalProcessor(
             ICommandRouter commandRouter,
+            ICommandContextFactory commandContextFactory,
             ITerminalExceptionHandler terminalExceptionHandler,
             IOptions<TerminalOptions> terminalOptions,
             ITerminalTextHandler textHandler,
@@ -46,6 +49,7 @@ namespace OneImlx.Terminal.Runtime
             ILogger<TerminalProcessor> logger)
         {
             this.commandRouter = commandRouter;
+            this.commandContextFactory = commandContextFactory;
             this.terminalExceptionHandler = terminalExceptionHandler;
             this.terminalOptions = terminalOptions;
             this.textHandler = textHandler;
@@ -131,15 +135,15 @@ namespace OneImlx.Terminal.Runtime
         {
             // IMPORTANT: We don't await so both request and response processing happens in the background.
             requestProcessing = StartRequestProcessingAsync(terminalRouterContext, background);
-            responseProcessing = StartResponseProcessingAsync(terminalRouterContext);
-
-            IsProcessing = true;
-            IsBackground = background;
 
             if (responseHandler != null)
             {
+                responseProcessing = StartResponseProcessingAsync(terminalRouterContext);
                 RegisterResponseHandler(responseHandler);
             }
+
+            IsProcessing = true;
+            IsBackground = background;
         }
 
         /// <inheritdoc/>
@@ -262,7 +266,7 @@ namespace OneImlx.Terminal.Runtime
 
             for (int idx = 0; idx < terminalOutput.Count; ++idx)
             {
-                TerminalRequest request = terminalOutput[idx];
+                CommandRequest request = terminalOutput[idx];
 
                 // If cancellation is requested then stop routing the requests.
                 if (cancellationToken.IsCancellationRequested)
@@ -278,12 +282,12 @@ namespace OneImlx.Terminal.Runtime
                     }
 
                     logger.LogDebug("Routing the command. raw={0} sender={1}", request.Raw, senderId);
-                    var context = new CommandContext(request, terminalRouterContext, properties);
-
+                    ICommandContext context = commandContextFactory.Create(request, terminalRouterContext, properties);
                     var routeTask = commandRouter.RouteCommandAsync(context);
-                    if (await Task.WhenAny(routeTask, Task.Delay(timeout, cancellationToken)).ConfigureAwait(false) == routeTask)
+                    if (await Task.WhenAny(routeTask, Task.Delay(timeout)).ConfigureAwait(false) == routeTask)
                     {
-                        CommandResult result = await routeTask.ConfigureAwait(false);
+                        await routeTask.ConfigureAwait(false);
+                        CommandResult result = context.GetCommandResult();
                         object? value = null;
                         if (result.RunnerResult != null)
                         {
@@ -347,7 +351,7 @@ namespace OneImlx.Terminal.Runtime
                 }
                 catch (OperationCanceledException)
                 {
-                    logger.LogDebug("Processing canceled due to cancellation token.");
+                    logger.LogDebug("Request queue processing canceled due to cancellation token.");
                     break;
                 }
                 catch (Exception ex)
@@ -390,10 +394,10 @@ namespace OneImlx.Terminal.Runtime
                         _ = handler.Invoke(processedRequests.Pop());
                     }
                 }
-                catch (OperationCanceledException oex)
+                catch (OperationCanceledException)
                 {
                     // If canceled, break the while loop and exit the processing.
-                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(oex, null)).ConfigureAwait(false);
+                    logger.LogDebug("Response queue processing canceled due to cancellation token.");
                     break;
                 }
                 catch (Exception ex)
@@ -404,6 +408,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         private readonly ICommandRouter commandRouter;
+        private readonly ICommandContextFactory commandContextFactory;
         private readonly ILogger logger;
         private readonly Stack<TerminalInputOutput> processedRequests;
         private readonly SemaphoreSlim requestSignal;

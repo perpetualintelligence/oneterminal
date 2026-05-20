@@ -11,7 +11,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// <summary>
     /// Runs native OS commands.
     /// </summary>
-    [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandType.Native, CommandFlags.None)]
+    [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandTypes.Native)]
     public class ExitRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
@@ -24,7 +24,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
         {
             string answer = await terminalConsole.ReadAnswerAsync("Are you sure you want to exit ?", "y", "Y");
             if (answer == "y" || answer == "Y")

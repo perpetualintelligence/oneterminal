@@ -17,12 +17,8 @@ namespace OneImlx.Terminal.Shared.Declarative
         /// <summary>
         /// The command type.
         /// </summary>
-        public CommandType CommandType { get; }
-
-        /// <summary>
-        /// The command flags.
-        /// </summary>
-        public CommandFlags CommandFlags { get; }
+        /// <seealso cref="CommandTypes"/>
+        public int CommandType { get; }
 
         /// <summary>
         /// The command id.
