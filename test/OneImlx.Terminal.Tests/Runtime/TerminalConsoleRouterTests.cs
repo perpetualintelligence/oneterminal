@@ -1,20 +1,17 @@
-/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using FluentAssertions;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using FluentAssertions;
 using Moq;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Shared;
 using OneImlx.Test.FluentAssertions;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace OneImlx.Terminal.Runtime
@@ -25,7 +22,7 @@ namespace OneImlx.Terminal.Runtime
         {
             tcs = new CancellationTokenSource();
             terminalConsoleMock = new Mock<ITerminalConsole>();
-            commandRouterMock = new Mock<ICommandRouter>();
+            terminalProcessorMock = new Mock<ITerminalProcessor>();
             exceptionHandlerMock = new Mock<ITerminalExceptionHandler>();
             loggerMock = new Mock<ILogger<TerminalConsoleRouter>>();
             options = new TerminalOptions
@@ -38,8 +35,7 @@ namespace OneImlx.Terminal.Runtime
             };
             router = new TerminalConsoleRouter(
                 terminalConsoleMock.Object,
-                commandRouterMock.Object,
-                new CommandContextFactory(),
+                terminalProcessorMock.Object,
                 exceptionHandlerMock.Object,
                 options,
                 loggerMock.Object);
@@ -66,7 +62,7 @@ namespace OneImlx.Terminal.Runtime
 
             // Verify command is routed. Normally in 2 secs the RouteCommandAsync will be invoked multiple times due but
             // here it will call once.
-            commandRouterMock.Verify(c => c.RouteCommandAsync(It.Is<CommandContext>(ctx => ctx.Request.Raw == "test_root")), Times.Once);
+            terminalProcessorMock.Verify(c => c.ExecuteAsync(It.Is<TerminalInputOutput>(ctx => ctx.Requests[0].Raw == "test_root")), Times.Once);
 
             // Verify IsRunning is set to false
             router.IsRunning.Should().BeFalse();
@@ -109,7 +105,7 @@ namespace OneImlx.Terminal.Runtime
                 TerminalCancellationToken = tcs.Token
             };
             await router.RunAsync(context);
-            commandRouterMock.Verify(c => c.RouteCommandAsync(It.IsAny<CommandContext>()), Times.Never);
+            terminalProcessorMock.Verify(c => c.ExecuteAsync(It.IsAny<TerminalInputOutput>()), Times.Never);
         }
 
         [Fact]
@@ -126,7 +122,7 @@ namespace OneImlx.Terminal.Runtime
             await router.RunAsync(context);
 
             // Verify command is routed. This may be invoked multiple times due to the cancellation token.
-            commandRouterMock.Verify(c => c.RouteCommandAsync(It.Is<CommandContext>(ctx => ctx.Request.Raw == "test_command")), Times.AtLeastOnce);
+            terminalProcessorMock.Verify(c => c.ExecuteAsync(It.Is<TerminalInputOutput>(ctx => ctx.Requests[0].Raw == "test_command")), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -138,11 +134,11 @@ namespace OneImlx.Terminal.Runtime
             };
 
             var runTask = router.RunAsync(context);
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
             router.IsRunning.Should().BeTrue();
 
             tcs.CancelAfter(100);
-            await Task.Delay(300);
+            await Task.Delay(300, TestContext.Current.CancellationToken);
             router.IsRunning.Should().BeFalse();
         }
 
@@ -161,7 +157,7 @@ namespace OneImlx.Terminal.Runtime
             options.Parser.Separator = '+';
             await router.RunAsync(context);
 
-            commandRouterMock.Verify(c => c.RouteCommandAsync(It.Is<CommandContext>(ctx => ctx.Request.Raw == "test_root+test_arg1 blah")), Times.Once);
+            terminalProcessorMock.Verify(c => c.ExecuteAsync(It.Is<TerminalInputOutput>(ctx => ctx.Requests[0].Raw == "test_root+test_arg1 blah")), Times.Once);
 
             // Verify IsRunning is set to false
             router.IsRunning.Should().BeFalse();
@@ -182,7 +178,7 @@ namespace OneImlx.Terminal.Runtime
 
             // Verify command is routed. This may be invoked multiple times due to the cancellation token. We are
             // verifying at least 5 times to ensure the router is running for a while.
-            commandRouterMock.Verify(c => c.RouteCommandAsync(It.Is<CommandContext>(ctx => ctx.Request.Raw == "test_command")), Times.AtLeast(5));
+            terminalProcessorMock.Verify(c => c.ExecuteAsync(It.Is<TerminalInputOutput>(ctx => ctx.Requests[0].Raw == "test_command")), Times.AtLeast(5));
 
             // Verify Canceled exception is handled
             exceptionHandlerMock.Verify(e => e.HandleExceptionAsync(It.Is<TerminalExceptionHandlerContext>(context =>
@@ -207,7 +203,7 @@ namespace OneImlx.Terminal.Runtime
 
             // Verify command is routed. Normally in 2 secs the RouteCommandAsync will be invoked multiple times due but
             // here it will call once.
-            commandRouterMock.Verify(c => c.RouteCommandAsync(It.Is<CommandContext>(ctx => ctx.Request.Raw == "test_root")), Times.Once);
+            terminalProcessorMock.Verify(c => c.ExecuteAsync(It.Is<TerminalInputOutput>(ctx => ctx.Requests[0].Raw == "test_root")), Times.Once);
 
             // Verify IsRunning is set to false
             router.IsRunning.Should().BeFalse();
@@ -237,39 +233,13 @@ namespace OneImlx.Terminal.Runtime
             await router.RunAsync(context);
 
             // Driver disabled for never called
-            commandRouterMock.Verify(c => c.RouteCommandAsync(It.IsAny<CommandContext>()), Times.Never);
+            terminalProcessorMock.Verify(c => c.ExecuteAsync(It.IsAny<TerminalInputOutput>()), Times.Never);
 
             exceptionHandlerMock.Verify(e => e.HandleExceptionAsync(It.Is<TerminalExceptionHandlerContext>(context =>
                 context.Exception is TerminalException && context.Exception.Message == "The route once is only valid for driver programs.")), Times.AtLeastOnce());
 
             // Verify IsRunning is set to false
             router.IsRunning.Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task RunAsync_TimesOut_If_Router_Takes_Too_Long()
-        {
-            options.Router.Timeout = 500;
-
-            tcs.CancelAfter(1000);
-            terminalConsoleMock.Setup(t => t.ReadLineAsync()).ReturnsAsync("test_command");
-
-            // Mock command router with a simulated delay of 600ms (longer than timeout)
-            commandRouterMock.Setup(c => c.RouteCommandAsync(It.IsAny<CommandContext>()))
-                             .Returns(async (ICommandContext context) =>
-                             {
-                                 await Task.Delay(600); // Delay longer than the timeout
-                                 return new CommandResult();
-                             });
-
-            TerminalConsoleRouterContext context = new(TerminalStartMode.Console)
-            {
-                TerminalCancellationToken = tcs.Token
-            };
-            await router.RunAsync(context);
-
-            exceptionHandlerMock.Verify(e => e.HandleExceptionAsync(It.Is<TerminalExceptionHandlerContext>(context =>
-                context.Exception is TimeoutException && context.Exception.Message == "The terminal console router timed out in 500 milliseconds.")), Times.AtLeastOnce());
         }
 
         [Fact]
@@ -286,12 +256,12 @@ namespace OneImlx.Terminal.Runtime
             terminalConsoleMock.Verify(t => t.WriteAsync(It.Is<string>(s => s == options.Router.Caret)), Times.AtLeastOnce);
         }
 
-        private readonly Mock<ICommandRouter> commandRouterMock;
         private readonly Mock<ITerminalExceptionHandler> exceptionHandlerMock;
         private readonly Mock<ILogger<TerminalConsoleRouter>> loggerMock;
         private readonly TerminalOptions options;
         private readonly TerminalConsoleRouter router;
         private readonly CancellationTokenSource tcs;
         private readonly Mock<ITerminalConsole> terminalConsoleMock;
+        private readonly Mock<ITerminalProcessor> terminalProcessorMock;
     }
 }

@@ -144,6 +144,10 @@ namespace OneImlx.Terminal.Apps.TestServer
 
             // Wait for the host to shut down
             await host!.WaitForShutdownAsync();
+
+            // Wait for user to acknowledge the shutdown
+            Console.WriteLine("Press any key to close the terminal window...");
+            Console.ReadLine();
         }
 
         // Handles the execution of the console router for the terminal.

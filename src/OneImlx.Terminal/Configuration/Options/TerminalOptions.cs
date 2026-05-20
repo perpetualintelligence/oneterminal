@@ -20,7 +20,7 @@ namespace OneImlx.Terminal.Configuration.Options
         public CheckerOptions Checker { get; set; } = new CheckerOptions();
 
         /// <summary>
-        /// The driver configuration options. Reserved for future versions.
+        /// The driver configuration options.
         /// </summary>
         public DriverOptions Driver { get; set; } = new DriverOptions();
 

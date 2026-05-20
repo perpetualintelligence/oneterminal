@@ -135,15 +135,15 @@ namespace OneImlx.Terminal.Runtime
         {
             // IMPORTANT: We don't await so both request and response processing happens in the background.
             requestProcessing = StartRequestProcessingAsync(terminalRouterContext, background);
-            responseProcessing = StartResponseProcessingAsync(terminalRouterContext);
-
-            IsProcessing = true;
-            IsBackground = background;
 
             if (responseHandler != null)
             {
+                responseProcessing = StartResponseProcessingAsync(terminalRouterContext);
                 RegisterResponseHandler(responseHandler);
             }
+
+            IsProcessing = true;
+            IsBackground = background;
         }
 
         /// <inheritdoc/>
@@ -284,7 +284,7 @@ namespace OneImlx.Terminal.Runtime
                     logger.LogDebug("Routing the command. raw={0} sender={1}", request.Raw, senderId);
                     ICommandContext context = commandContextFactory.Create(request, terminalRouterContext, properties);
                     var routeTask = commandRouter.RouteCommandAsync(context);
-                    if (await Task.WhenAny(routeTask, Task.Delay(timeout, cancellationToken)).ConfigureAwait(false) == routeTask)
+                    if (await Task.WhenAny(routeTask, Task.Delay(timeout)).ConfigureAwait(false) == routeTask)
                     {
                         await routeTask.ConfigureAwait(false);
                         CommandResult result = context.GetCommandResult();
@@ -351,7 +351,7 @@ namespace OneImlx.Terminal.Runtime
                 }
                 catch (OperationCanceledException)
                 {
-                    logger.LogDebug("Processing canceled due to cancellation token.");
+                    logger.LogDebug("Request queue processing canceled due to cancellation token.");
                     break;
                 }
                 catch (Exception ex)
@@ -394,10 +394,10 @@ namespace OneImlx.Terminal.Runtime
                         _ = handler.Invoke(processedRequests.Pop());
                     }
                 }
-                catch (OperationCanceledException oex)
+                catch (OperationCanceledException)
                 {
                     // If canceled, break the while loop and exit the processing.
-                    await terminalExceptionHandler.HandleExceptionAsync(new TerminalExceptionHandlerContext(oex, null)).ConfigureAwait(false);
+                    logger.LogDebug("Response queue processing canceled due to cancellation token.");
                     break;
                 }
                 catch (Exception ex)
