@@ -32,10 +32,22 @@ namespace OneImlx.Terminal.Extensions
     public static class ITerminalBuilderExtensions
     {
         /// <summary>
+        /// Adds the <see cref="ICommandContextFactory"/> to the service collection.
+        /// </summary>
+        /// <typeparam name="TFactory">The <see cref="ICommandContextFactory"/> type.</typeparam>
+        /// <param name="builder">The terminal builder.</param>
+        /// <returns></returns>
+        public static ITerminalBuilder AddCommandContextFactory<TFactory>(this ITerminalBuilder builder) where TFactory : class, ICommandContextFactory
+        {
+            builder.Services.AddSingleton<ICommandContextFactory, TFactory>();
+            return builder;
+        }
+
+        /// <summary>
         /// Adds the <see cref="ITerminalBytesParser"/> to the service collection.
         /// </summary>
-        /// <typeparam name="TBytesParser"></typeparam>
-        /// <param name="builder"></param>
+        /// <typeparam name="TBytesParser">The <see cref="ITerminalBytesParser"/> type.</typeparam>
+        /// <param name="builder">The terminal builder.</param>
         /// <returns></returns>
         public static ITerminalBuilder AddBytesParser<TBytesParser>(this ITerminalBuilder builder) where TBytesParser : class, ITerminalBytesParser
         {

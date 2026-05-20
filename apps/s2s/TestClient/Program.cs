@@ -1,19 +1,20 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Apps.TestClient.Runners;
+using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
 using Serilog;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.TestClient
 {
@@ -46,10 +47,8 @@ namespace OneImlx.Terminal.Apps.TestClient
                     options.Router.Caret = "> ";
                 });
 
-            // Add console router for this client
+            terminalBuilder.AddCommandContextFactory<CommandContextFactory>();
             terminalBuilder.AddTerminalRouter<TerminalConsoleRouter, TerminalConsoleRouterContext>();
-
-            // Add commands using declarative syntax.
             terminalBuilder.AddDeclarativeAssembly<TestClientRunner>();
         }
 

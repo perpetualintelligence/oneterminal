@@ -215,7 +215,7 @@ namespace OneImlx.Terminal.Commands.Parsers
         [Fact]
         public async Task Throws_If_Alias_Is_Unsupported()
         {
-            var context = new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 Val1 -invalid_alias 25 --opt3 --opt4 \"val2\" --opt5"), terminalContext, null);
+            var context = new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 Val1 -invalid_alias 25 --opt3 --opt4 \"val2\" --opt5"), terminalContext, []);
             Func<Task> act = async () => await parser.ParseCommandAsync(context);
             await act.Should().ThrowAsync<TerminalException>()
                 .WithErrorCode("unsupported_option")
@@ -228,7 +228,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             terminalOptions.Parser.OptionPrefix = '-';
             terminalOptions.Parser.OptionValueSeparator = TerminalIdentifiers.SpaceSeparator;
 
-            var context = new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 val1 --opt2 23 -opt3 --opt4 36.69"), terminalContext, null);
+            var context = new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 val1 --opt2 23 -opt3 --opt4 36.69"), terminalContext, []);
             Func<Task> act = async () => await parser.ParseCommandAsync(context);
             await act.Should().ThrowAsync<TerminalException>()
                 .WithErrorCode("invalid_option")
@@ -329,7 +329,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             terminalOptions.Parser.OptionPrefix = '-';
             terminalOptions.Parser.OptionValueSeparator = TerminalIdentifiers.SpaceSeparator;
 
-            var context = new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 val1 --invalid_opt1 23 --opt3 --opt4 36.69"), terminalContext, null);
+            var context = new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 val1 --invalid_opt1 23 --opt3 --opt4 36.69"), terminalContext, []);
             Func<Task> act = async () => await parser.ParseCommandAsync(context);
             await act.Should().ThrowAsync<TerminalException>()
                 .WithErrorCode("unsupported_option")
@@ -342,7 +342,7 @@ namespace OneImlx.Terminal.Commands.Parsers
             terminalOptions.Parser.OptionPrefix = '-';
             terminalOptions.Parser.OptionValueSeparator = TerminalIdentifiers.SpaceSeparator;
 
-            Func<Task> act = async () => await parser.ParseCommandAsync(new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 val1 --opt2 23 --o3 --opt4 36.69"), terminalContext, null));
+            Func<Task> act = async () => await parser.ParseCommandAsync(new CommandContext(new CommandRequest("id1", "root2 grp2 cmd2 --opt1 val1 --opt2 23 --o3 --opt4 36.69"), terminalContext, []));
             await act.Should().ThrowAsync<TerminalException>()
                 .WithErrorCode("invalid_option")
                 .WithErrorDescription("The option prefix is not valid for an alias. option=opt3 alias=o3");

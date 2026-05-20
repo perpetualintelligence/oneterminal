@@ -30,11 +30,8 @@ namespace OneImlx.Terminal.Extensions
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
 
-            services.AddTerminalConsole<TerminalInMemoryCommandStore>(
-                textHandler,
-                static options => { }
-            );
-
+            var builder = services.AddTerminalConsole<TerminalInMemoryCommandStore>(textHandler, static options => { });
+            builder.AddCommandContextFactory<CommandContextFactory>();
             var provider = services.BuildServiceProvider();
 
             // Text handler is special
@@ -85,11 +82,10 @@ namespace OneImlx.Terminal.Extensions
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
 
-            services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
+            var builder = services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
                 textHandler,
-                static options => { }
-            );
-
+                static options => { });
+            builder.AddCommandContextFactory<CommandContextFactory>();
             var provider = services.BuildServiceProvider();
 
             // Text handler
@@ -131,7 +127,7 @@ namespace OneImlx.Terminal.Extensions
             services.AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
                 static options => { }
-            );
+                                                                                                                                                         );
 
             var provider = services.BuildServiceProvider();
 
@@ -174,7 +170,7 @@ namespace OneImlx.Terminal.Extensions
             services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
                 static options => { }
-            );
+                                                                                                                                                         );
 
             var provider = services.BuildServiceProvider();
 
@@ -247,7 +243,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => ((IServiceCollection)null!).AddTerminalConsole<TerminalInMemoryCommandStore>(
                 textHandler,
                 static options => { }
-            );
+                                                                                                        );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("services");
         }
@@ -260,7 +256,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalConsole<TerminalInMemoryCommandStore>(
                 null!,
                 static options => { }
-            );
+                                                                                     );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
         }
@@ -274,7 +270,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalConsole<TerminalInMemoryCommandStore>(
                 textHandler,
                 null!
-            );
+                                                                                     );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
         }
@@ -287,7 +283,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => ((IServiceCollection)null!).AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
                 textHandler,
                 static options => { }
-            );
+                                                                                                                                                                                                                                              );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("services");
         }
@@ -300,7 +296,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
                 null!,
                 static options => { }
-            );
+                                                                                                                                                                                                                           );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
         }
@@ -314,7 +310,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
                 textHandler,
                 null!
-            );
+                                                                                                                                                                                                                           );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
         }
@@ -327,7 +323,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => ((IServiceCollection)null!).AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
                 static options => { }
-            );
+                                                                                                                                                                                            );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("services");
         }
@@ -340,7 +336,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 null!,
                 static options => { }
-            );
+                                                                                                                                                                         );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
         }
@@ -354,7 +350,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
                 null!
-            );
+                                                                                                                                                                         );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
         }
@@ -367,7 +363,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => ((IServiceCollection)null!).AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
                 static options => { }
-            );
+                                                                                                                                                                                            );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("services");
         }
@@ -380,7 +376,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 null!,
                 static options => { }
-            );
+                                                                                                                                                                         );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("textHandler");
         }
@@ -394,7 +390,7 @@ namespace OneImlx.Terminal.Extensions
             var act = () => services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
                 null!
-            );
+                                                                                                                                                                         );
 
             act.Should().Throw<ArgumentNullException>().WithParameterName("setupAction");
         }

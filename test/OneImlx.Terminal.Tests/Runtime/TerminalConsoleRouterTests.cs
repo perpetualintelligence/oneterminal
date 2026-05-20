@@ -39,6 +39,7 @@ namespace OneImlx.Terminal.Runtime
             router = new TerminalConsoleRouter(
                 terminalConsoleMock.Object,
                 commandRouterMock.Object,
+                new CommandContextFactory(),
                 exceptionHandlerMock.Object,
                 options,
                 loggerMock.Object);

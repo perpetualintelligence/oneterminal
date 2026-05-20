@@ -15,27 +15,37 @@ namespace OneImlx.Terminal.Commands
     /// <remarks>
     /// The command string.
     /// </remarks>
-    /// <param name="request">The request to process.</param>
-    /// <param name="context">The terminal routing context.</param>
-    /// <param name="properties">The additional router properties.</param>
-    public sealed class CommandContext(
-        CommandRequest request,
-        TerminalRouterContext context,
-        Dictionary<string, object> properties) : ICommandContext
+    public sealed class CommandContext : ICommandContext
     {
         /// <summary>
         /// The additional router properties.
         /// </summary>
-        public Dictionary<string, object> Properties { get; } = properties;
+        public Dictionary<string, object> Properties { get; }
 
         /// <summary>
         /// The terminal request.
         /// </summary>
-        public CommandRequest Request { get; } = request ?? throw new ArgumentNullException(nameof(request));
+        public CommandRequest Request { get; }
 
         /// <summary>
         /// The terminal router context.
         /// </summary>
-        public TerminalRouterContext RouterContext { get; } = context ?? throw new ArgumentNullException(nameof(context));
+        public TerminalRouterContext RouterContext { get; }
+
+        /// <summary>
+        /// Initialize a new instance of <see cref="CommandContext"/>.
+        /// </summary>
+        /// <param name="request">The request to process.</param>
+        /// <param name="context">The terminal routing context.</param>
+        /// <param name="properties">The additional router properties.</param>
+        internal CommandContext(
+            CommandRequest request,
+            TerminalRouterContext context,
+            Dictionary<string, object> properties)
+        {
+            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+            Request = request ?? throw new ArgumentNullException(nameof(request));
+            RouterContext = context ?? throw new ArgumentNullException(nameof(context));
+        }
     }
 }

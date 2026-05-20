@@ -10,6 +10,7 @@ using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Apps.TestAuth.Runners;
 using OneImlx.Terminal.Authentication.Extensions;
 using OneImlx.Terminal.Authentication.Msal;
+using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
@@ -71,14 +72,14 @@ namespace OneImlx.Terminal.Apps.TestAuth
                     options.Router.Caret = "> ";
                 });
 
+            // Default command context
+            terminalBuilder.AddCommandContextFactory<CommandContextFactory>();
+
             // Add terminal authentication
             terminalBuilder.AddMsalAuthentication<MsalKiotaAuthProvider, MsalKiotaAuthProvider, TestAuthDelegatingHandler>(publicClientApplication);
 
-            // You can use declarative or explicit syntax. Here we are using declarative syntax.
-            {
-                // Add commands using declarative syntax.
-                terminalBuilder.AddDeclarativeAssembly<TestRunner>();
-            }
+            // Add commands using declarative syntax.
+            terminalBuilder.AddDeclarativeAssembly<TestRunner>();
         }
 
         private static void ConfigureServicesDelegate(HostBuilderContext context, IServiceCollection services)

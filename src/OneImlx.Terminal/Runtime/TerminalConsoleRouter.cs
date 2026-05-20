@@ -21,17 +21,20 @@ namespace OneImlx.Terminal.Runtime
         /// </summary>
         /// <param name="terminalConsole">The terminal console.</param>
         /// <param name="commandRouter">The command router.</param>
+        /// <param name="commandContextFactory">The command context factory.</param>
         /// <param name="exceptionHandler">The exception handler.</param>
         /// <param name="options">The configuration options.</param>
         /// <param name="logger">The logger.</param>
         public TerminalConsoleRouter(
             ITerminalConsole terminalConsole,
             ICommandRouter commandRouter,
+            ICommandContextFactory commandContextFactory,
             ITerminalExceptionHandler exceptionHandler,
             TerminalOptions options,
             ILogger<TerminalConsoleRouter> logger)
         {
             this.terminalConsole = terminalConsole;
+            this.commandContextFactory = commandContextFactory;
             this.commandRouter = commandRouter;
             this.exceptionHandler = exceptionHandler;
             this.options = options;
@@ -135,7 +138,7 @@ namespace OneImlx.Terminal.Runtime
 
                         // Execute the command asynchronously
                         request = new(Guid.NewGuid().ToString(), raw!);
-                        CommandContext routerContext = new(request, context, properties: null);
+                        ICommandContext routerContext = commandContextFactory.Create(request, context, []);
                         var routeTask = commandRouter.RouteCommandAsync(routerContext);
                         if (await Task.WhenAny(routeTask, Task.Delay(options.Router.Timeout)).ConfigureAwait(false) != routeTask)
                         {
@@ -176,5 +179,6 @@ namespace OneImlx.Terminal.Runtime
         private readonly ILogger<TerminalConsoleRouter> logger;
         private readonly TerminalOptions options;
         private readonly ITerminalConsole terminalConsole;
+        private readonly ICommandContextFactory commandContextFactory;
     }
 }

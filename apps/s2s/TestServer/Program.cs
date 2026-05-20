@@ -10,12 +10,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Apps.TestServer.Runners;
+using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Server;
-using OneImlx.Terminal.Server.Grpc;
 using OneImlx.Terminal.Server.Extensions;
+using OneImlx.Terminal.Server.Grpc;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
 using Serilog;
@@ -68,6 +69,9 @@ namespace OneImlx.Terminal.Apps.TestServer
                     options.Router.Caret = "> "; // Caret for the terminal.
                     options.Router.DisableResponse = Convert.ToBoolean(configuration["testserver:disable_response"]); // Disable response for the terminal.
                 });
+
+            // Default command context
+            terminalBuilder.AddCommandContextFactory<CommandContextFactory>();
 
             // Read the mode (protocol) from the configuration file.
             string? mode = configuration.GetValue<string>("testserver:mode");

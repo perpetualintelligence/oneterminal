@@ -2,9 +2,12 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using FluentAssertions;
+using System;
+using System.Linq;
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using FluentAssertions;
 using Moq;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
@@ -18,9 +21,6 @@ using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
-using System;
-using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace OneImlx.Terminal.Extensions
@@ -44,7 +44,7 @@ namespace OneImlx.Terminal.Extensions
         }
 
         [Fact]
-        public void AddBytesParserShouldCorrectlyInitiaize()
+        public void AddBytesParserShouldCorrectlyInitialize()
         {
             terminalBuilder.AddBytesParser<TerminalBytesParser>();
 
@@ -52,6 +52,17 @@ namespace OneImlx.Terminal.Extensions
             arg.Should().NotBeNull();
             arg.Lifetime.Should().Be(ServiceLifetime.Singleton);
             arg.ImplementationType.Should().Be<TerminalBytesParser>();
+        }
+
+        [Fact]
+        public void AddCommandContextFactoryShouldCorrectlyInitialize()
+        {
+            terminalBuilder.AddCommandContextFactory<CommandContextFactory>();
+
+            var arg = terminalBuilder.Services.FirstOrDefault(e => e.ServiceType.Equals(typeof(ICommandContextFactory)));
+            arg.Should().NotBeNull();
+            arg.Lifetime.Should().Be(ServiceLifetime.Singleton);
+            arg.ImplementationType.Should().Be<CommandContextFactory>();
         }
 
         [Fact]
