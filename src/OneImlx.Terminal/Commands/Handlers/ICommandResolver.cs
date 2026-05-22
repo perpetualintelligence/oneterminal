@@ -27,12 +27,5 @@ namespace OneImlx.Terminal.Commands.Handlers
         /// <param name="commandDescriptor">The descriptor of the command for which to resolve the runner.</param>
         /// <returns>The resolved command runner instance.</returns>
         IDelegateCommandRunner ResolveCommandRunner(CommandDescriptor commandDescriptor);
-
-        /// <summary>
-        /// Resolves the command run method associated with the specified command descriptor.
-        /// </summary>
-        /// <param name="commandDescriptor">The descriptor of the command for which to resolve the run method.</param>
-        /// <returns>The resolved command run method instance.</returns>
-        RunMethod ResolveCommandRunMethod(CommandDescriptor commandDescriptor);
     }
 }

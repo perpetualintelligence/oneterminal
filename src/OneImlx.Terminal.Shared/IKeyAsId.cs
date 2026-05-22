@@ -12,6 +12,6 @@ namespace OneImlx.Terminal.Shared
         /// <summary>
         /// The identifier.
         /// </summary>
-        public string Id { get; }
+        public string CommandId { get; }
     }
 }

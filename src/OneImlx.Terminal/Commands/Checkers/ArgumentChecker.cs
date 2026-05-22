@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -38,7 +35,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             // Check for null argument value
             if (argument.Value == null)
             {
-                throw new TerminalException(TerminalErrors.InvalidOption, "The argument value cannot be null. argument={0}", argument.Id);
+                throw new TerminalException(TerminalErrors.InvalidOption, "The argument value cannot be null. argument={0}", argument.CommandId);
             }
 
             // Check argument data type and value type
@@ -62,7 +59,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                     }
                     catch (Exception ex)
                     {
-                        throw new TerminalException(TerminalErrors.InvalidOption, "The argument value is not valid. argument={0} value={1} info={2}", argument.Id, argument.Value, ex.Message);
+                        throw new TerminalException(TerminalErrors.InvalidOption, "The argument value is not valid. argument={0} value={1} info={2}", argument.CommandId, argument.Value, ex.Message);
                     }
                 }
             }
@@ -86,7 +83,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             catch
             {
                 // Meaningful error instead of format exception
-                throw new TerminalException(TerminalErrors.InvalidArgument, "The argument value does not match the mapped type. argument={0} type={1} data_type={2} value_type={3} value={4}", argument.Id, mapperResult.MappedType, argument.DataType, argument.Value.GetType().Name, argument.Value);
+                throw new TerminalException(TerminalErrors.InvalidArgument, "The argument value does not match the mapped type. argument={0} type={1} data_type={2} value_type={3} value={4}", argument.CommandId, mapperResult.MappedType, argument.DataType, argument.Value.GetType().Name, argument.Value);
             }
 
             return Task.FromResult(new OptionCheckerResult(mapperResult.MappedType));

@@ -1,13 +1,10 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Generic;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Commands
 {
@@ -18,7 +15,7 @@ namespace OneImlx.Terminal.Commands
     /// <remarks>
     /// <para>
     /// An argument id is always unique within a command. By design <see cref="Argument"/> implements the default
-    /// equality <see cref="IEquatable{T}"/> and <see cref="GetHashCode()"/> using <see cref="Id"/> property. Thus, two
+    /// equality <see cref="IEquatable{T}"/> and <see cref="GetHashCode()"/> using <see cref="CommandId"/> property. Thus, two
     /// arguments with the same id are equal irrespective of other property values. This is done to improve performance
     /// during lookup and avoid multiple arguments with same identifiers.
     /// </para>
@@ -55,7 +52,7 @@ namespace OneImlx.Terminal.Commands
         /// The argument id.
         /// </summary>
         /// <remarks>The argument id is unique with in a command.</remarks>
-        public string Id => Descriptor.Id;
+        public string CommandId => Descriptor.CommandId;
 
         /// <summary>
         /// The argument value.
@@ -111,7 +108,7 @@ namespace OneImlx.Terminal.Commands
         public bool Equals(Argument? other)
         {
             return other != null &&
-                   Id == other.Id;
+                   CommandId == other.CommandId;
         }
 
         /// <summary>
@@ -120,7 +117,7 @@ namespace OneImlx.Terminal.Commands
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return CommandId.GetHashCode();
         }
     }
 }

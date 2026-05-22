@@ -2,12 +2,12 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using System.Reflection;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Handlers;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
 using OneImlx.Terminal.Commands.Runners;
-using System.Reflection;
 
 namespace OneImlx.Terminal.Mocks
 {
@@ -25,13 +25,9 @@ namespace OneImlx.Terminal.Mocks
 
         public IDelegateCommandRunner? ReturnedRunner { get; private set; }
 
-        public RunMethod? ReturnedRunMethod { get; private set; }
-
         public ICommandChecker? ReturnThisChecker { get; set; }
 
         public IDelegateCommandRunner? ReturnThisRunner { get; set; }
-
-        public RunMethod? ReturnThisRunMethod { get; set; } = null;
 
         public ICommandChecker ResolveCommandChecker(CommandDescriptor commandDescriptor)
         {
@@ -62,23 +58,6 @@ namespace OneImlx.Terminal.Mocks
             }
 
             return ReturnedRunner;
-        }
-
-        public RunMethod ResolveCommandRunMethod(CommandDescriptor commandDescriptor)
-        {
-            ResolveRunnerMethodCalled = true;
-
-            if (ReturnThisRunMethod != null)
-            {
-                ReturnedRunMethod = ReturnThisRunMethod;
-            }
-            else
-            {
-                MethodInfo methodInfo = typeof(MockCommandRunnerInner).GetMethod(nameof(MockCommandRunnerInner.RunCommandAsync))!;
-                ReturnedRunMethod = new RunMethod(commandDescriptor.Id, methodInfo);
-            }
-
-            return ReturnedRunMethod;
         }
     }
 }

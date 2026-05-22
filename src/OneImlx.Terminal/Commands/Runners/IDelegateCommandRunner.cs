@@ -2,10 +2,10 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Runners
 {
@@ -19,7 +19,7 @@ namespace OneImlx.Terminal.Commands.Runners
     public interface IDelegateCommandRunner
     {
         /// <summary>
-        /// Delegates to <see cref="ICommandRunner{TResult}.RunHelpAsync(CommandContext)"/> asynchronously.
+        /// Delegates to <see cref="ICommandRunner{TResult}.RunHelpAsync(ICommandContext)"/> asynchronously.
         /// </summary>
         /// <param name="context">The runner context.</param>
         /// <param name="helpProvider">The help provider.</param>
@@ -28,7 +28,7 @@ namespace OneImlx.Terminal.Commands.Runners
         Task<CommandRunnerResult> DelegateHelpAsync(ICommandContext context, ITerminalHelpProvider helpProvider, ILogger? logger = null);
 
         /// <summary>
-        /// Delegates to <see cref="ICommandRunner{TResult}.RunCommandAsync(CommandContext)"/> asynchronously.
+        /// Delegates to <see cref="ICommandRunner{TResult}.RunCommandAsync(ICommandContext)"/> asynchronously.
         /// </summary>
         /// <param name="context">The runner context.</param>
         /// <param name="logger">The logger.</param>

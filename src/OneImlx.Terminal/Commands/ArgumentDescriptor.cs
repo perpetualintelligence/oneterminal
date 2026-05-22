@@ -43,7 +43,7 @@ namespace OneImlx.Terminal.Commands
                 throw new System.ArgumentException($"'{nameof(description)}' cannot be null or empty.", nameof(description));
             }
 
-            Id = id;
+            CommandId = id;
             DataType = dataType;
             Description = description;
             Flags = flags;
@@ -53,7 +53,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The argument identifier.
         /// </summary>
-        public string Id { get; }
+        public string CommandId { get; }
 
         /// <summary>
         /// The argument data type.
@@ -109,7 +109,7 @@ namespace OneImlx.Terminal.Commands
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{Id} | {DataType} | {Flags} | {Order}";
+            return $"{CommandId} | {DataType} | {Flags} | {Order}";
         }
 
         private IEnumerable<IValueChecker<Argument>>? valueCheckers;

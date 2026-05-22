@@ -44,7 +44,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetParsedCommand_ThrowsTerminalException_WhenNotAvailable()
         {
             var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns(new Dictionary<string, object>());
+            mockContext.Setup(x => x.Properties).Returns([]);
             var act = () => mockContext.Object.GetParsedCommand();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The parsed command is missing in the context.");
         }
@@ -72,7 +72,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetCommand_ThrowsTerminalException_WhenParsedCommandNotAvailable()
         {
             var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns(new Dictionary<string, object>());
+            mockContext.Setup(x => x.Properties).Returns([]);
             var act = () => mockContext.Object.GetCommand();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The parsed command is missing in the context.");
         }
@@ -91,7 +91,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetCommandResult_ThrowsTerminalException_WhenNotAvailable()
         {
             var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns(new Dictionary<string, object>());
+            mockContext.Setup(x => x.Properties).Returns([]);
             var act = () => mockContext.Object.GetCommandResult();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The command result is missing in the context.");
         }
@@ -121,7 +121,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void TryGetCommandResult_ReturnsFalse_WhenCommandResultNotAvailable()
         {
             var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns(new Dictionary<string, object>());
+            mockContext.Setup(x => x.Properties).Returns([]);
             mockContext.Object.TryGetCommandResult(out var outResult).Should().BeFalse();
         }
 
@@ -139,7 +139,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void TryGetParsedCommand_ReturnsFalse_WhenParsedCommandNotAvailable()
         {
             var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns(new Dictionary<string, object>());
+            mockContext.Setup(x => x.Properties).Returns([]);
             mockContext.Object.TryGetParsedCommand(out var outResult).Should().BeFalse();
         }
 

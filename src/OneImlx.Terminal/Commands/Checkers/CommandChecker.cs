@@ -61,7 +61,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             // Check the arguments against the descriptor constraints
             foreach (var arg in argumentDescriptors)
             {
-                bool containsArg = command.TryGetArgument(arg.Id, out Argument? argument);
+                bool containsArg = command.TryGetArgument(arg.CommandId, out Argument? argument);
                 var flags = arg.Flags;
 
                 if (!containsArg)
@@ -69,7 +69,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                     // Required argument is missing
                     if (flags.HasFlag(BehaviorFlags.Required))
                     {
-                        throw new TerminalException(TerminalErrors.MissingArgument, "The required argument is missing. command={0} argument={1}", command.Id, arg.Id);
+                        throw new TerminalException(TerminalErrors.MissingArgument, "The required argument is missing. command={0} argument={1}", command.Id, arg.CommandId);
                     }
 
                     continue;  // Skip checking the other conditions if argument isn't present
@@ -78,13 +78,13 @@ namespace OneImlx.Terminal.Commands.Checkers
                 // Check obsolete
                 if (flags.HasFlag(BehaviorFlags.Obsolete) && !terminalOptions.Checker.AllowObsolete)
                 {
-                    throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is obsolete. command={0} argument={1}", command.Id, arg.Id);
+                    throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is obsolete. command={0} argument={1}", command.Id, arg.CommandId);
                 }
 
                 // Check disabled
                 if (flags.HasFlag(BehaviorFlags.Disabled))
                 {
-                    throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is disabled. command={0} argument={1}", command.Id, arg.Id);
+                    throw new TerminalException(TerminalErrors.InvalidArgument, "The argument is disabled. command={0} argument={1}", command.Id, arg.CommandId);
                 }
 
                 // Check arg value

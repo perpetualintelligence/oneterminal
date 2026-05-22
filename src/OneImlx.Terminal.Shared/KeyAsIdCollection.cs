@@ -27,7 +27,7 @@ namespace OneImlx.Terminal.Shared
         /// <returns></returns>
         protected override string GetKeyForItem(TItem item)
         {
-            return item.Id;
+            return item.CommandId;
         }
     }
 }

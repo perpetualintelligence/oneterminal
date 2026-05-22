@@ -67,31 +67,29 @@ namespace OneImlx.Terminal.Extensions
         }
 
         /// <summary>
-        /// Starts a new <see cref="IRunMethodBuilder"/> definition.
+        /// Adds <see cref="RunMethodDescriptor"/>  to the <see cref="ICommandBuilder"/>.
         /// </summary>
         /// <param name="builder">The <see cref="ICommandBuilder"/>.</param>
         /// <param name="id">The command identifier.</param>
         /// <param name="methodName">The runner method name.</param>
-        /// <returns>The configured <see cref="IRunMethodBuilder"/>.</returns>
-        public static IRunMethodBuilder DefineRunMethod(this ICommandBuilder builder, string id, string methodName)
+        /// <returns>The configured <see cref="ICommandBuilder"/>.</returns>
+        public static ICommandBuilder RunMethod(this ICommandBuilder builder, string id, string methodName)
         {
-            RunMethodBuilder runnerMethodBuilder = new(builder);
-            runnerMethodBuilder.Services.AddSingleton(new RunMethod(id, methodName));
-            return runnerMethodBuilder;
+            builder.Services.AddSingleton(new RunMethodDescriptor(id, methodName));
+            return builder;
         }
 
         /// <summary>
-        /// Starts a new <see cref="IRunMethodBuilder"/> definition.
+        /// Adds <see cref="RunMethodDescriptor"/> to the <see cref="ICommandBuilder"/>.
         /// </summary>
         /// <param name="builder">The <see cref="ICommandBuilder"/>.</param>
         /// <param name="id">The command identifier.</param>
         /// <param name="methodInfo">The runner method info.</param>
-        /// <returns>The configured <see cref="IRunMethodBuilder"/>.</returns>
-        public static IRunMethodBuilder DefineRunMethod(this ICommandBuilder builder, string id, MethodInfo methodInfo)
+        /// <returns>The configured <see cref="ICommandBuilder"/>.</returns>
+        public static ICommandBuilder RunMethod(this ICommandBuilder builder, string id, MethodInfo methodInfo)
         {
-            RunMethodBuilder runnerMethodBuilder = new(builder);
-            runnerMethodBuilder.Services.AddSingleton(new RunMethod(id, methodInfo));
-            return runnerMethodBuilder;
+            builder.Services.AddSingleton(new RunMethodDescriptor(id, methodInfo));
+            return builder;
         }
 
         /// <summary>

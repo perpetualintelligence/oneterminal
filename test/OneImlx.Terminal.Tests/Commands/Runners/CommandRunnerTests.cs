@@ -2,6 +2,9 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
 using OneImlx.Terminal.Commands.Parsers;
@@ -9,9 +12,6 @@ using OneImlx.Terminal.Commands.Runners.Mocks;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Shared;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace OneImlx.Terminal.Commands.Runners
@@ -46,6 +46,8 @@ namespace OneImlx.Terminal.Commands.Runners
         public async Task DelegateRunShouldCallRunAsync()
         {
             Command command = new(new CommandDescriptor("id", "name", "desc", CommandTypes.Leaf));
+            command.Descriptor.Runner = typeof(MockCommandRunner);
+
             ParsedCommand extractedCommand = new(command, null);
             commandContext.SetParsedCommand(extractedCommand);
 

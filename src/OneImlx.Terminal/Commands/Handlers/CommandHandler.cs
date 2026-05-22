@@ -54,7 +54,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             {
                 if (command.TryGetOption(terminalOptions.Help.OptionId, out Option? helpOption) || command.TryGetOption(terminalOptions.Help.OptionAlias, out helpOption))
                 {
-                    logger.LogDebug("Found help option. option={0}", helpOption?.Id ?? "?");
+                    logger.LogDebug("Found help option. option={0}", helpOption?.CommandId ?? "?");
                     CommandRunnerResult runnerResult = await RunCommandInnerAsync(context, command, runHelp: true).ConfigureAwait(false);
                     return (new CommandCheckerResult(), runnerResult);
                 }

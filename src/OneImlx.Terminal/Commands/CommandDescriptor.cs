@@ -88,7 +88,7 @@ namespace OneImlx.Terminal.Commands
         public string Description { get; }
 
         /// <summary>
-        /// The command type.
+        /// The command type. NOTE: this is not <see cref="System.Type"/>.
         /// </summary>
         public int Type { get; }
 
@@ -120,6 +120,11 @@ namespace OneImlx.Terminal.Commands
         /// The tags to find the command.
         /// </summary>
         public TagIdCollection? TagIds { get; internal set; }
+
+        /// <summary>
+        /// The run method descriptor.
+        /// </summary>
+        public RunMethodDescriptor? RunMethod { get; internal set; }
 
         /// <inheritdoc/>
         public override string ToString()

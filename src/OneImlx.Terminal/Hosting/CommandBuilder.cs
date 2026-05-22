@@ -41,6 +41,20 @@ namespace OneImlx.Terminal.Hosting
             ServiceProvider lsp = Services.BuildServiceProvider();
             CommandDescriptor commandDescriptor = lsp.GetRequiredService<CommandDescriptor>();
 
+            // Run Methods
+            IEnumerable<RunMethodDescriptor> runMethodDescriptors = lsp.GetServices<RunMethodDescriptor>();
+            if (runMethodDescriptors.Any())
+            {
+                if (runMethodDescriptors.Count() == 1)
+                {
+                    commandDescriptor.RunMethod = runMethodDescriptors.First();
+                }
+                else
+                {
+                    throw new TerminalException(TerminalErrors.InvalidCommand, "The command cannot have multiple run methods. command_type={0} command={1}", commandDescriptor.Type, commandDescriptor.Id);
+                }
+            }
+
             // Arguments
             IEnumerable<ArgumentDescriptor> argumentDescriptors = lsp.GetServices<ArgumentDescriptor>();
             if (argumentDescriptors.Any())
@@ -87,8 +101,8 @@ namespace OneImlx.Terminal.Hosting
             terminalBuilder.Services.AddSingleton(commandDescriptor);
 
             // Add the run methods to the terminal builder.
-            IEnumerable<RunMethod> runMethods = lsp.GetServices<RunMethod>();
-            foreach (RunMethod runMethod in runMethods)
+            IEnumerable<RunMethodDescriptor> runMethods = lsp.GetServices<RunMethodDescriptor>();
+            foreach (RunMethodDescriptor runMethod in runMethods)
             {
                 terminalBuilder.Services.AddSingleton(runMethod);
             }

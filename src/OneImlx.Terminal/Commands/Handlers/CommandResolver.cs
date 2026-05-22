@@ -77,29 +77,6 @@ namespace OneImlx.Terminal.Commands.Handlers
             return runnerDelegate;
         }
 
-        /// <summary>
-        /// Resolves the command runner method for a given command descriptor.
-        /// </summary>
-        /// <param name="commandDescriptor">The command descriptor.</param>
-        /// <returns>The resolved command runner method.</returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public RunMethod ResolveCommandRunMethod(CommandDescriptor commandDescriptor)
-        {
-            if (commandDescriptor.Type != CommandTypes.Leaf)
-            {
-                throw new TerminalException(TerminalErrors.ServerError, "The command runner method is only supported for leaf commands. command={0} type={1}", commandDescriptor.Id, commandDescriptor.Type);
-            }
-
-            var commandRunnerMethods = serviceDescriptors.GetRequiredService<RunMethods>();
-            bool found = commandRunnerMethods.TryGetValue(commandDescriptor.Id, out RunMethod? runnerMethod);
-            if (!found)
-            {
-                throw new TerminalException(TerminalErrors.ServerError, "The command runner method is not configured. command={0}", commandDescriptor.Id);
-            }
-
-            return runnerMethod;
-        }
-
         private readonly ILogger<CommandResolver> logger;
         private readonly IServiceProvider serviceDescriptors;
     }

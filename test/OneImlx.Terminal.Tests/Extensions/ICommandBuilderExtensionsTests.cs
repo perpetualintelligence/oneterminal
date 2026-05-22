@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Mocks;
-using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using System;
 using System.Linq;
@@ -76,36 +75,32 @@ namespace OneImlx.Terminal.Extensions
         }
 
         [Fact]
-        public void DefineRunMethod_WithMethodName_Adds_Correctly()
+        public void RunMethod_WithMethodName_Adds_Correctly()
         {
-            IRunMethodBuilder runMethodBuilder = commandBuilder.DefineRunMethod("method1", "TestMethod");
+            commandBuilder.RunMethod("method1", "TestMethod");
 
-            runMethodBuilder.Services.Should().NotBeSameAs(commandBuilder.Services);
-
-            ServiceDescriptor serviceDescriptor = runMethodBuilder.Services.First(static e => e.ServiceType.Equals(typeof(RunMethod)));
+            ServiceDescriptor serviceDescriptor = commandBuilder.Services.First(static e => e.ServiceType.Equals(typeof(RunMethodDescriptor)));
             serviceDescriptor!.Lifetime.Should().Be(ServiceLifetime.Singleton);
             serviceDescriptor.ImplementationType.Should().BeNull();
 
-            RunMethod runMethod = (RunMethod)serviceDescriptor.ImplementationInstance!;
-            runMethod.Id.Should().Be("method1");
+            RunMethodDescriptor runMethod = (RunMethodDescriptor)serviceDescriptor.ImplementationInstance!;
+            runMethod.CommandId.Should().Be("method1");
             runMethod.MethodName.Should().Be("TestMethod");
             runMethod.MethodInfo.Should().BeNull();
         }
 
         [Fact]
-        public void DefineRunMethod_WithMethodInfo_Adds_Correctly()
+        public void RunMethod_WithMethodInfo_Adds_Correctly()
         {
             MethodInfo methodInfo = typeof(MockCommandRunner).GetMethod(nameof(MockCommandRunner.RunCommandAsync))!;
-            IRunMethodBuilder runMethodBuilder = commandBuilder.DefineRunMethod("method1", methodInfo);
+            commandBuilder.RunMethod("method1", methodInfo);
 
-            runMethodBuilder.Services.Should().NotBeSameAs(commandBuilder.Services);
-
-            ServiceDescriptor serviceDescriptor = runMethodBuilder.Services.First(static e => e.ServiceType.Equals(typeof(RunMethod)));
+            ServiceDescriptor serviceDescriptor = commandBuilder.Services.First(static e => e.ServiceType.Equals(typeof(RunMethodDescriptor)));
             serviceDescriptor!.Lifetime.Should().Be(ServiceLifetime.Singleton);
             serviceDescriptor.ImplementationType.Should().BeNull();
 
-            RunMethod runMethod = (RunMethod)serviceDescriptor.ImplementationInstance!;
-            runMethod.Id.Should().Be("method1");
+            RunMethodDescriptor runMethod = (RunMethodDescriptor)serviceDescriptor.ImplementationInstance!;
+            runMethod.CommandId.Should().Be("method1");
             runMethod.MethodInfo.Should().BeSameAs(methodInfo);
             runMethod.MethodName.Should().Be("RunCommandAsync");
         }
@@ -123,7 +118,7 @@ namespace OneImlx.Terminal.Extensions
 
             ArgumentDescriptor argument = (ArgumentDescriptor)serviceDescriptor.ImplementationInstance!;
             argument.Order.Should().Be(1);
-            argument.Id.Should().Be("arg1");
+            argument.CommandId.Should().Be("arg1");
             argument.DataType.Should().Be(nameof(String));
             argument.Description.Should().Be("description1");
             argument.Flags.Should().Be(BehaviorFlags.Required);

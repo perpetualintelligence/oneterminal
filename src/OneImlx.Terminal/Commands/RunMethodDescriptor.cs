@@ -17,46 +17,46 @@ namespace OneImlx.Terminal.Commands
     /// a <see cref="CommandTypes.CompositeGroup"/>.
     /// </summary>
     /// <remarks>
-    /// Each <see cref="RunMethod"/> maps to one unique command as its execution logic.
+    /// Each <see cref="RunMethodDescriptor"/> maps to one unique command as its execution logic.
     /// </remarks>
-    public sealed class RunMethod
+    public sealed class RunMethodDescriptor : IKeyAsId
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RunMethod"/> with specified command identifier and method name using reflection.
+        /// Initializes a new instance of the <see cref="RunMethodDescriptor"/> with specified command identifier and method name using reflection.
         /// </summary>
         /// <param name="id">The run method identifier.</param>
         /// <param name="methodName">The run method name.</param>
-        public RunMethod(string id, string methodName)
+        public RunMethodDescriptor(string id, string methodName)
         {
-            Id = id ?? throw new ArgumentNullException(nameof(id));
+            CommandId = id ?? throw new ArgumentNullException(nameof(id));
             MethodName = methodName ?? throw new ArgumentNullException(nameof(methodName));
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RunMethod"/> with specified command identifier and the method info.
+        /// Initializes a new instance of the <see cref="RunMethodDescriptor"/> with specified command identifier and the method info.
         /// </summary>
         /// <param name="id">The run method identifier.</param>
         /// <param name="methodInfo">The run method info.</param>
-        public RunMethod(string id, MethodInfo methodInfo)
+        public RunMethodDescriptor(string id, MethodInfo methodInfo)
         {
-            Id = id ?? throw new ArgumentNullException(nameof(id));
+            CommandId = id ?? throw new ArgumentNullException(nameof(id));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
             MethodName = methodInfo.Name;
         }
 
         /// <summary>
-        /// Delegates the command execution to the method using reflection.
+        /// Runs the command execution to the method using reflection.
         /// </summary>
         /// <remarks>
         /// THIS METHOD IS PART OF INTERNAL INFRASTRUCTURE AND IS NOT INTENDED FOR DIRECT USE BY APPLICATION CODE.
         /// </remarks>
-        public async Task<TResult> DelegateRunAsync<TResult>(CommandRunner<TResult> commandRunner, ICommandContext context) where TResult : CommandRunnerResult
+        public async Task<TResult> RunAsync<TResult>(CommandRunner<TResult> commandRunner, ICommandContext context) where TResult : CommandRunnerResult
         {
             // Ensure command matches the passed context
             ParsedCommand parsedCommand = context.GetParsedCommand();
-            if (parsedCommand.Command.Id != Id)
+            if (parsedCommand.Command.Id != CommandId)
             {
-                throw new TerminalException(TerminalErrors.InvalidCommand, "The method's command is invalid. command={0}", Id);
+                throw new TerminalException(TerminalErrors.InvalidCommand, "The method's command is invalid. command={0}", CommandId);
             }
 
             if (MethodInfo != null)
@@ -67,21 +67,21 @@ namespace OneImlx.Terminal.Commands
             }
             else if (MethodName != null)
             {
-                MethodInfo methodInfo = commandRunner.GetType().GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public) ?? throw new TerminalException(TerminalErrors.InvalidCommand, "No public run method found on the command. command={0}, name={1}", Id, MethodName);
+                MethodInfo methodInfo = commandRunner.GetType().GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public) ?? throw new TerminalException(TerminalErrors.InvalidCommand, "No public run method found on the command. command={0}, name={1}", CommandId, MethodName);
                 Task<TResult> resultTask = (Task<TResult>)methodInfo.Invoke(commandRunner, [context]);
                 await resultTask.ConfigureAwait(false);
                 return resultTask.Result;
             }
             else
             {
-                throw new TerminalException(TerminalErrors.InvalidCommand, "The method name or method info is not registered. command={0}", Id);
+                throw new TerminalException(TerminalErrors.InvalidCommand, "The method name or method info is not registered. command={0}", CommandId);
             }
         }
 
         /// <summary>
-        /// The method identifiers.
+        /// The command identifier.
         /// </summary>
-        public string Id { get; }
+        public string CommandId { get; }
 
         /// <summary>
         /// The method info.

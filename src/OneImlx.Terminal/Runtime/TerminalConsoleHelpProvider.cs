@@ -37,7 +37,7 @@ namespace OneImlx.Terminal.Runtime
                 await terminalConsole.WriteLineAsync("Arguments:");
                 foreach (ArgumentDescriptor argument in context.Command.Descriptor.ArgumentDescriptors)
                 {
-                    await terminalConsole.WriteLineAsync(string.Format("{0}{1} <{2}>", new string(' ', indent), argument.Id, argument.DataType));
+                    await terminalConsole.WriteLineAsync(string.Format("{0}{1} <{2}>", new string(' ', indent), argument.CommandId, argument.DataType));
                     await terminalConsole.WriteLineAsync(string.Format("{0}{1}", new string(' ', indent * 2), argument.Description));
                 }
             }

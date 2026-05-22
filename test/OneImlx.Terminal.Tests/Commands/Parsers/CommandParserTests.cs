@@ -87,8 +87,8 @@ namespace OneImlx.Terminal.Commands.Parsers
             parsedCommand.Hierarchy!.ElementAt(1).Id.Should().Be("grp2");
 
             parsedCommand.Command.Arguments.Should().HaveCount(2);
-            parsedCommand.Command.Arguments![0].Id.Should().Be("arg1");
-            parsedCommand.Command.Arguments[1].Id.Should().Be("arg2");
+            parsedCommand.Command.Arguments![0].CommandId.Should().Be("arg1");
+            parsedCommand.Command.Arguments[1].CommandId.Should().Be("arg2");
 
             parsedCommand.Command.Options.Should().HaveCount(6);
             parsedCommand.Command.Options!["opt1"].Value.Should().Be("val1");
@@ -139,8 +139,8 @@ namespace OneImlx.Terminal.Commands.Parsers
             parsedCommand.Should().NotBeNull();
             parsedCommand!.Command.Id.Should().Be("grp1");
             parsedCommand.Command.Arguments.Should().HaveCount(2);
-            parsedCommand.Command.Arguments![0].Id.Should().Be("arg1");
-            parsedCommand.Command.Arguments[1].Id.Should().Be("arg2");
+            parsedCommand.Command.Arguments![0].CommandId.Should().Be("arg1");
+            parsedCommand.Command.Arguments[1].CommandId.Should().Be("arg2");
             parsedCommand.Command.Options.Should().BeNull();
         }
 

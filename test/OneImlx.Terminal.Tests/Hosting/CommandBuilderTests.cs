@@ -146,12 +146,25 @@ namespace OneImlx.Terminal.Hosting
         {
             TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.CompositeGroup).Checker<MockCommandChecker>();
-            commandBuilder.DefineRunMethod("method1", "TestMethod1").Add();
-            commandBuilder.DefineRunMethod("method2", "TestMethod2").Add();
+            commandBuilder.RunMethod("method1", "TestMethod1");
             ITerminalBuilder tb = commandBuilder.Add();
             ServiceProvider sp = tb.Services.BuildServiceProvider();
-            var runMethods = sp.GetServices<RunMethod>();
-            runMethods.Count().Should().Be(2);
+
+            var cmdDesc = sp.GetServices<CommandDescriptor>().First(c => c.Id == "id1");
+            cmdDesc.RunMethod.Should().NotBeNull();
+            cmdDesc.RunMethod.MethodName.Should().Be("TestMethod1");
+        }
+
+        [Fact]
+        public void Multiple_RunMethods_Throws()
+        {
+            TerminalBuilder terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
+            ICommandBuilder commandBuilder = terminalBuilder.DefineCommand<MockCommandRunner>("id1", "name1", "Command description", CommandTypes.CompositeGroup).Checker<MockCommandChecker>();
+            commandBuilder.RunMethod("method1", "TestMethod1");
+            commandBuilder.RunMethod("method2", "TestMethod2");
+
+            Action act = () => commandBuilder.Add();
+            act.Should().Throw<TerminalException>().WithErrorCode("invalid_command").WithErrorDescription("The command cannot have multiple run methods. command_type=3 command=id1");
         }
 
         [Fact]
