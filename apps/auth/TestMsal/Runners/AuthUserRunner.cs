@@ -51,12 +51,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
                 await _terminalConsole.WriteLineAsync("Invoking Microsoft Graph API...");
                 await _terminalConsole.WriteLineColorAsync(ConsoleColor.Magenta, "The test app will not store any data.");
                 await Task.Delay(2000); // Simulate a delay
-                Microsoft.Graph.Models.User? user = await graphServiceClient.Me.GetAsync();
-                if (user == null)
-                {
-                    throw new Exception("User not found.");
-                }
-
+                Microsoft.Graph.Models.User? user = await graphServiceClient.Me.GetAsync() ?? throw new Exception("User not found.");
                 await _terminalConsole.WriteLineAsync($"User information:");
                 await _terminalConsole.WriteLineAsync($"Display Name: {user.DisplayName}");
                 await _terminalConsole.WriteLineAsync($"User Principal Name: {user.UserPrincipalName}");

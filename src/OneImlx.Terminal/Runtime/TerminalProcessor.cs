@@ -210,12 +210,7 @@ namespace OneImlx.Terminal.Runtime
             // We are good to route requests.
             for (int idx = 0; idx < lengthToProcess; ++idx)
             {
-                TerminalInputOutput? input = JsonSerializer.Deserialize<TerminalInputOutput>(rawInputs[idx]);
-                if (input == null)
-                {
-                    throw new TerminalException(TerminalErrors.InvalidRequest, "The input bytes cannot be deserialized to terminal input.");
-                }
-
+                TerminalInputOutput? input = JsonSerializer.Deserialize<TerminalInputOutput>(rawInputs[idx]) ?? throw new TerminalException(TerminalErrors.InvalidRequest, "The input bytes cannot be deserialized to terminal input.");
                 if (input.SenderId != null && input.SenderId != senderId)
                 {
                     throw new TerminalException(TerminalErrors.InvalidRequest, "The sender id does not match the input.");
