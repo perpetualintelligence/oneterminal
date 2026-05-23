@@ -2,15 +2,15 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using FluentAssertions;
-using OneImlx.Terminal.Shared;
-using OneImlx.Test.FluentAssertions;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using OneImlx.Terminal.Shared;
+using OneImlx.Test.FluentAssertions;
 using Xunit;
 
 namespace OneImlx.Terminal.Client.Extensions.Tests

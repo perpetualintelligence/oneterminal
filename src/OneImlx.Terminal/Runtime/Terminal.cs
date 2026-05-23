@@ -6,7 +6,6 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("OneImlx.Terminal.Tests")]
-[assembly: InternalsVisibleTo("OneImlx.Terminal.Server.Tests")]
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -15,20 +14,15 @@ namespace OneImlx.Terminal.Runtime
     /// accomplish and automate tasks on a computer without using a graphical user interface. If a CLI terminal supports
     /// user interaction, the UX is the terminal.
     /// </summary>
-    public sealed class Terminal
+    /// <remarks>
+    /// Initializes a new instance.
+    /// </remarks>
+    /// <param name="id">The terminal identifier.</param>
+    public sealed class Terminal(string id)
     {
-        /// <summary>
-        /// Initializes a new instance.
-        /// </summary>
-        /// <param name="id">The terminal identifier.</param>
-        public Terminal(string id)
-        {
-            Id = id;
-        }
-
         /// <summary>
         /// The terminal identifier.
         /// </summary>
-        public string Id { get; }
+        public string Id { get; } = id;
     }
 }
