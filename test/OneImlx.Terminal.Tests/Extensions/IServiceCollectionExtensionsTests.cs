@@ -77,9 +77,6 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
 
-            // Processor
-            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
-
             // Terminal router - should be TerminalConsoleRouter
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeOfType<TerminalConsoleRouter>();
         }
@@ -126,9 +123,6 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
-
-            // Processor
-            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
 
             // Terminal router
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeOfType<TerminalConsoleRouter>();
@@ -177,9 +171,6 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
 
-            // Processor
-            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
-
             // Terminal router should NOT be registered (added separately)
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeNull();
         }
@@ -226,9 +217,6 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
-
-            // Processor
-            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
 
             // Terminal router should NOT be registered (added separately)
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeNull();

@@ -183,7 +183,7 @@ namespace OneImlx.Terminal.Runtime
                             }
 
                             // Remove the delimiter and return the raw value.
-                            optionValue = optionValue.Trim(options.Parser.ValueDelimiter);
+                            optionValue = optionValue.Substring(1, optionValue.Length - 2);
                         }
 
                         // The option value is processed to remove it from the queue, so we can process the next option.
@@ -340,7 +340,7 @@ namespace OneImlx.Terminal.Runtime
                         throw new TerminalException(TerminalErrors.InvalidArgument, "The argument value is missing the closing delimiter. argument={0}", token);
                     }
 
-                    token = token.Trim(options.Parser.ValueDelimiter);
+                    token = token.Substring(1, token.Length - 2);
                 }
 
                 // Not an option so now dequeue and process the token.

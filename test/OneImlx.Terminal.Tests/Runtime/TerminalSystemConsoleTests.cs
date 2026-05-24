@@ -113,9 +113,9 @@ namespace OneImlx.Terminal.Runtime
         {
             Console.SetIn(new StringReader("yes"));
 
-            string result = await _console.ReadAnswerAsync("Continue");
+            string result = await _console.ReadAnswerAsync("Continue", "yes", "no");
 
-            _writer.ToString().Should().Be("Continue? ");
+            _writer.ToString().Should().Be("Continue (yes/no)? ");
             result.Should().Be("yes");
         }
 
