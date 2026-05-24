@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Threading;
@@ -12,7 +9,7 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Runtime
 {
     /// <summary>
-    /// The default implementation of <see cref="ITerminalConsole"/> that uses the system <see cref="Console"/>.
+    /// The default implementation of <see cref="ITerminalConsole"/> that uses the system <see cref="Console"m/>.
     /// </summary>
     /// <remarks>
     /// The <see cref="TerminalSystemConsole"/> is thread safe and allows multiple tasks to write to the console concurrently.

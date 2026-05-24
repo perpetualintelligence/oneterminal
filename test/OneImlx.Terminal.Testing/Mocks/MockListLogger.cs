@@ -8,14 +8,9 @@ using System.Collections.Generic;
 
 namespace OneImlx.Terminal.Testing.Mocks
 {
-    internal class MockListLogger : ILogger
+    internal class MockListLogger(List<string> allLogMessages) : ILogger
     {
-        private readonly List<string> logMessages;
-
-        public MockListLogger(List<string> allLogMessages)
-        {
-            this.logMessages = allLogMessages;
-        }
+        private readonly List<string> logMessages = allLogMessages;
 
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull
         {
@@ -29,10 +24,7 @@ namespace OneImlx.Terminal.Testing.Mocks
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            if (formatter == null)
-            {
-                throw new ArgumentNullException(nameof(formatter));
-            }
+            ArgumentNullException.ThrowIfNull(formatter);
 
             logMessages.Add(formatter(state, exception));
         }
