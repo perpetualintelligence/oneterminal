@@ -5,6 +5,8 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Handlers;
@@ -29,10 +31,15 @@ namespace OneImlx.Terminal.Extensions
             services.AddLogging();
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+            bool setupActionInvoked = false;
 
-            var builder = services.AddTerminalConsole<TerminalInMemoryCommandStore>(textHandler, static options => { });
+            var builder = services.AddTerminalConsole<TerminalInMemoryCommandStore>(textHandler, options => { setupActionInvoked = true; });
             builder.AddCommandContextFactory<CommandContextFactory>();
             var provider = services.BuildServiceProvider();
+
+            setupActionInvoked.Should().BeFalse();
+            provider.GetRequiredService<IOptions<TerminalOptions>>().Value.Should().NotBeNull();
+            setupActionInvoked.Should().BeTrue();
 
             // Text handler is special
             provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
@@ -70,6 +77,9 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
 
+            // Processor
+            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
+
             // Terminal router - should be TerminalConsoleRouter
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeOfType<TerminalConsoleRouter>();
         }
@@ -81,12 +91,17 @@ namespace OneImlx.Terminal.Extensions
             services.AddLogging();
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+            bool setupActionInvoked = false;
 
             var builder = services.AddTerminalCli<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole, TerminalConsoleRouter, TerminalConsoleRouterContext>(
                 textHandler,
-                static options => { });
+                options => { setupActionInvoked = true; });
             builder.AddCommandContextFactory<CommandContextFactory>();
             var provider = services.BuildServiceProvider();
+
+            setupActionInvoked.Should().BeFalse();
+            provider.GetRequiredService<IOptions<TerminalOptions>>().Value.Should().NotBeNull();
+            setupActionInvoked.Should().BeTrue();
 
             // Text handler
             provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
@@ -111,6 +126,9 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
+
+            // Processor
+            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
 
             // Terminal router
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeOfType<TerminalConsoleRouter>();
@@ -123,13 +141,17 @@ namespace OneImlx.Terminal.Extensions
             services.AddLogging();
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+            bool setupActionInvoked = false;
 
             services.AddTerminalClient<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
-                static options => { }
-                                                                                                                                                         );
+                options => { setupActionInvoked = true; });
 
             var provider = services.BuildServiceProvider();
+
+            setupActionInvoked.Should().BeFalse();
+            provider.GetRequiredService<IOptions<TerminalOptions>>().Value.Should().NotBeNull();
+            setupActionInvoked.Should().BeTrue();
 
             // Text handler
             provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
@@ -154,6 +176,9 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
+
+            // Processor
+            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
 
             // Terminal router should NOT be registered (added separately)
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeNull();
@@ -166,13 +191,17 @@ namespace OneImlx.Terminal.Extensions
             services.AddLogging();
 
             var textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.Unicode);
+            bool setupActionInvoked = false;
 
             services.AddTerminalServer<TerminalInMemoryCommandStore, TerminalConsoleHelpProvider, TerminalConsoleExceptionHandler, TerminalSystemConsole>(
                 textHandler,
-                static options => { }
-                                                                                                                                                         );
+                options => { setupActionInvoked = true; });
 
             var provider = services.BuildServiceProvider();
+
+            setupActionInvoked.Should().BeFalse();
+            provider.GetRequiredService<IOptions<TerminalOptions>>().Value.Should().NotBeNull();
+            setupActionInvoked.Should().BeTrue();
 
             // Text handler
             provider.GetService<ITerminalTextHandler>().Should().BeSameAs(textHandler);
@@ -197,6 +226,9 @@ namespace OneImlx.Terminal.Extensions
             provider.GetService<ILicenseChecker>().Should().BeOfType<LicenseChecker>();
             provider.GetService<ILicenseExtractor>().Should().BeOfType<LicenseExtractor>();
             provider.GetService<ILicenseDebugger>().Should().BeOfType<LicenseDebugger>();
+
+            // Processor
+            provider.GetService<ITerminalProcessor>().Should().BeOfType<TerminalProcessor>();
 
             // Terminal router should NOT be registered (added separately)
             provider.GetService<ITerminalRouter<TerminalConsoleRouterContext>>().Should().BeNull();
