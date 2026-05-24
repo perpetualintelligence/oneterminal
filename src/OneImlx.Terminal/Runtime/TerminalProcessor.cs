@@ -190,7 +190,7 @@ namespace OneImlx.Terminal.Runtime
             }
 
             // Split the input stream into batches using the stream delimiter
-            byte[][] rawInputs = terminalBytesParser.Split(previousStream.ToArray(), terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out bool endsWithDelimiter);
+            byte[][] rawInputs = terminalBytesParser.Split([.. previousStream], terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out bool endsWithDelimiter);
             previousStream.Clear();
 
             // Check if the last batch ends with the delimiter

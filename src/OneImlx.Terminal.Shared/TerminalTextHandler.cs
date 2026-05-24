@@ -11,28 +11,22 @@ namespace OneImlx.Terminal.Shared
     /// <summary>
     /// The default <see cref="ITerminalTextHandler"/>.
     /// </summary>
-    public sealed class TerminalTextHandler : ITerminalTextHandler
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TerminalTextHandler"/> class with specified comparison and encoding.
+    /// </remarks>
+    /// <param name="comparison">The string comparison to use.</param>
+    /// <param name="encoding">The text encoding to use.</param>
+    public sealed class TerminalTextHandler(StringComparison comparison, Encoding encoding) : ITerminalTextHandler
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TerminalTextHandler"/> class with specified comparison and encoding.
-        /// </summary>
-        /// <param name="comparison">The string comparison to use.</param>
-        /// <param name="encoding">The text encoding to use.</param>
-        public TerminalTextHandler(StringComparison comparison, Encoding encoding)
-        {
-            Comparison = comparison;
-            Encoding = encoding;
-        }
-
         /// <summary>
         /// The string comparison.
         /// </summary>
-        public StringComparison Comparison { get; }
+        public StringComparison Comparison { get; } = comparison;
 
         /// <summary>
         /// The text encoding.
         /// </summary>
-        public Encoding Encoding { get; }
+        public Encoding Encoding { get; } = encoding;
 
         /// <inheritdoc/>
         public bool CharEquals(char? ch1, char? ch2)

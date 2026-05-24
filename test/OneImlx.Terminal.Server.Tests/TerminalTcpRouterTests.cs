@@ -252,7 +252,7 @@ namespace OneImlx.Terminal.Server
                         messages.Add($"id {localIdx}.{jdx}", $"test message {localIdx}.{jdx}");
                     }
 
-                    TerminalInputOutput input = TerminalInputOutput.Batch($"batch{localIdx}", messages.Keys.Cast<string>().ToArray(), messages.Values.Cast<string>().ToArray());
+                    TerminalInputOutput input = TerminalInputOutput.Batch($"batch{localIdx}", [.. messages.Keys.Cast<string>()], [.. messages.Values.Cast<string>()]);
                     return await SendTcpMessageAsync(input, routerIpEndpoint);
                 });
 

@@ -247,9 +247,9 @@ namespace OneImlx.Terminal.Runtime
         {
             // Arrange
             // Use delimiter 0xFF and ensure test data uses values 0x00-0xFE to avoid accidental splits
-            byte[] segment1 = Enumerable.Range(0, 1000).Select(x => (byte)(x % 255)).ToArray();
-            byte[] segment2 = Enumerable.Range(0, 2000).Select(x => (byte)(x % 255)).ToArray();
-            byte[] source = segment1.Concat(new byte[] { 0xFF }).Concat(segment2).ToArray();
+            byte[] segment1 = [.. Enumerable.Range(0, 1000).Select(x => (byte)(x % 255))];
+            byte[] segment2 = [.. Enumerable.Range(0, 2000).Select(x => (byte)(x % 255))];
+            byte[] source = [.. segment1, .. new byte[] { 0xFF }, .. segment2];
             byte delimiter = 0xFF;
 
             // Act
@@ -271,9 +271,7 @@ namespace OneImlx.Terminal.Runtime
                 .Select(i => Enumerable.Range(0, 10).Select(j => (byte)(i + j)).ToArray())
                 .ToArray();
 
-            byte[] source = segments
-                .SelectMany(s => s.Concat(new byte[] { 0xFF }))
-                .ToArray();
+            byte[] source = [.. segments.SelectMany(s => s.Concat(new byte[] { 0xFF }))];
             byte delimiter = 0xFF;
 
             // Act
@@ -297,9 +295,7 @@ namespace OneImlx.Terminal.Runtime
                 .Select(i => Enumerable.Range(0, 10).Select(j => (byte)(i + j)).ToArray())
                 .ToArray();
 
-            byte[] source = segments
-                .SelectMany(s => s.Concat(new byte[] { 0xFF }))
-                .ToArray();
+            byte[] source = [.. segments.SelectMany(s => s.Concat(new byte[] { 0xFF }))];
             byte delimiter = 0xFF;
 
             // Act
@@ -361,12 +357,8 @@ namespace OneImlx.Terminal.Runtime
             byte[] jsonMessage2 = System.Text.Encoding.UTF8.GetBytes("{\"id\":2}");
             byte[] jsonMessage3Partial = System.Text.Encoding.UTF8.GetBytes("{\"id\":3,\"da"); // Incomplete
 
-            byte[] source = jsonMessage1
-                .Concat(new byte[] { 0x1E })
-                .Concat(jsonMessage2)
-                .Concat(new byte[] { 0x1E })
-                .Concat(jsonMessage3Partial)
-                .ToArray();
+            byte[] source = [.. jsonMessage1
+, .. new byte[] { 0x1E }, .. jsonMessage2, .. new byte[] { 0x1E }, .. jsonMessage3Partial];
             byte delimiter = 0x1E;
 
             // Act
@@ -387,11 +379,8 @@ namespace OneImlx.Terminal.Runtime
             byte[] jsonMessage1 = System.Text.Encoding.UTF8.GetBytes("{\"id\":1}");
             byte[] jsonMessage2 = System.Text.Encoding.UTF8.GetBytes("{\"id\":2}");
 
-            byte[] source = jsonMessage1
-                .Concat(new byte[] { 0x1E })
-                .Concat(jsonMessage2)
-                .Concat(new byte[] { 0x1E })
-                .ToArray();
+            byte[] source = [.. jsonMessage1
+, .. new byte[] { 0x1E }, .. jsonMessage2, .. new byte[] { 0x1E }];
             byte delimiter = 0x1E;
 
             // Act

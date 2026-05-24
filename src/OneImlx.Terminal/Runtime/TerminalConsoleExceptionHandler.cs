@@ -1,15 +1,11 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using OneImlx.Terminal.Shared;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using OneImlx.Shared.Infrastructure;
-using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -37,7 +33,7 @@ namespace OneImlx.Terminal.Runtime
         {
             if (context.Exception is TerminalException ee)
             {
-                object[] args = ee.Error.Args != null ? ee.Error.Args.Select(static e => e ?? "").ToArray() : [];
+                object[] args = ee.Error.Args != null ? [.. ee.Error.Args.Select(static e => e ?? "")] : [];
                 terminalConsole.WriteLineColorAsync(ConsoleColor.Red, ee.Error.ErrorDescription, args);
             }
             else if (context.Exception is OperationCanceledException)

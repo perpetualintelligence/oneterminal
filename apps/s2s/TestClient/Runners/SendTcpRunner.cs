@@ -87,7 +87,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
 
                     if (bytesRead > 0)
                     {
-                        byte[][] outputs = terminalBytesParser.Split(buffer.Take(bytesRead).ToArray(), terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
+                        byte[][] outputs = terminalBytesParser.Split([.. buffer.Take(bytesRead)], terminalOptions.Value.Router.StreamDelimiter, ignoreEmpty: true, out _);
                         foreach (byte[] opt in outputs)
                         {
                             TerminalInputOutput? output = JsonSerializer.Deserialize<TerminalInputOutput>(opt);
