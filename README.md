@@ -4,11 +4,11 @@
 
 > **The most flexible cross-platform framework for building modern, secured, and production-ready terminal and CLI applications on .NET.**
 
-[![build-test-cross](https://github.com/perpetualintelligence/terminal/actions/workflows/build-test-cross.yml/badge.svg)](https://github.com/perpetualintelligence/terminal/actions/workflows/build-test-cross.yml)
-[![build-test-push](https://github.com/perpetualintelligence/terminal/actions/workflows/build-test-push.yml/badge.svg)](https://github.com/perpetualintelligence/terminal/actions/workflows/build-test-push.yml)
+[![build-test-cross](https://github.com/perpetualintelligence/oneterminal/actions/workflows/build-test-cross.yml/badge.svg)](https://github.com/perpetualintelligence/oneterminal/actions/workflows/build-test-cross.yml)
+[![build-test-push](https://github.com/perpetualintelligence/oneterminal/actions/workflows/build-test-push.yml/badge.svg)](https://github.com/perpetualintelligence/oneterminal/actions/workflows/build-test-push.yml)
 
-![coverage-line](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/perpetualintelligencegit/141903832ee52f1e9e7913300a92d507/raw/coverage_terminal_line.json)
-![coverage-branch](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/perpetualintelligencegit/141903832ee52f1e9e7913300a92d507/raw/coverage_terminal_branch.json)
+![coverage-line](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/perpetualintelligencegit/141903832ee52f1e9e7913300a92d507/raw/coverage_oneterminal_line.json)
+![coverage-branch](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/perpetualintelligencegit/141903832ee52f1e9e7913300a92d507/raw/coverage_oneterminal_branch.json)
 
 `OneImlx.Terminal` is the cross-platform, production-grade framework for building modern CLI and terminal applications on .NET. It eliminates terminal infrastructure complexity so you can focus on delivering rich, enterprise-grade command experiences — with full Unicode support, deep command hierarchies, real-time streaming, and secure distributed architectures.
 
