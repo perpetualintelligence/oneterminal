@@ -60,7 +60,7 @@ runs:
       run: dotnet nuget push _packages/${{ inputs.project }}.${{ inputs.version }}.nupkg --skip-duplicate --no-symbols --api-key ${{ inputs.ghapikey }} --source github
       shell: bash      
 
-    # Second push to NuGet (for package cadence, GitHub will be used and in production NuGet after package verification)
+    # Second push
     - name: NuGet Push
       if: ${{ inputs.registry == 'nuget' }}
       run: dotnet nuget push _packages/${{ inputs.project }}.${{ inputs.version }}.nupkg --skip-duplicate --no-symbols --api-key ${{ inputs.nugetapikey }} --source nuget.org
