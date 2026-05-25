@@ -123,6 +123,11 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
 
+    # Setup ReportGenerator
+    - name: Setup ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      shell: bash
+
     # Build Terminal.DependentAssembly.csproj so it can be loaded during unit tests.
     - name: Build Dependency Project
       run: dotnet build ./test/OneImlx.Terminal.DependentAssembly/OneImlx.Terminal.DependentAssembly.csproj -c Release --verbosity minimal
@@ -237,7 +242,7 @@ jobs:
 
     # Aggregate coverage report across all packages deposited into ./coverage
     - name: Coverage Report
-      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:JsonSummary
+      run: dotnet tool run reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:JsonSummary
       shell: bash
 
     # Extract aggregate line and branch coverage
