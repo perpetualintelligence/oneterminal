@@ -32,7 +32,15 @@ on:
         description: 'The package name to delete'
         required: true
         options:
+        - OneImlx.Terminal.Shared
         - OneImlx.Terminal
+        - OneImlx.Terminal.Server
+        - OneImlx.Terminal.Server.Grpc
+        - OneImlx.Terminal.Server.Pulsar
+        - OneImlx.Terminal.Client
+        - OneImlx.Terminal.Client.Grpc
+        - OneImlx.Terminal.Client.Pulsar
+        - OneImlx.Terminal.Authentication
         - All
         default: 'All'  
 
@@ -66,15 +74,15 @@ jobs:
       # Delete specific
       - name: Delete ${{ env.PI_DELETE_PACKAGES }}
         if: ${{ env.PI_DELETE_PACKAGES != 'All' }}
-        uses: actions/delete-package-versions@v2       
+        uses: actions/delete-package-versions@v5       
         with:
           package-name: ${{ env.PI_DELETE_PACKAGES }}
           min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
-      
+
       # Delete OneImlx.Terminal.Shared
       - name: Delete OneImlx.Terminal.Shared
         if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
-        uses: actions/delete-package-versions@v2       
+        uses: actions/delete-package-versions@v5       
         with:
           package-name: OneImlx.Terminal.Shared
           min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
@@ -82,7 +90,63 @@ jobs:
       # Delete OneImlx.Terminal
       - name: Delete OneImlx.Terminal
         if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
-        uses: actions/delete-package-versions@v2       
+        uses: actions/delete-package-versions@v5       
         with:
           package-name: OneImlx.Terminal
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal.Server
+      - name: Delete OneImlx.Terminal.Server
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v5       
+        with:
+          package-name: OneImlx.Terminal.Server
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal.Server.Grpc
+      - name: Delete OneImlx.Terminal.Server.Grpc
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v5       
+        with:
+          package-name: OneImlx.Terminal.Server.Grpc
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal.Server.Pulsar
+      - name: Delete OneImlx.Terminal.Server.Pulsar
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v5       
+        with:
+          package-name: OneImlx.Terminal.Server.Pulsar
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal.Client
+      - name: Delete OneImlx.Terminal.Client
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v5       
+        with:
+          package-name: OneImlx.Terminal.Client
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal.Client.Grpc
+      - name: Delete OneImlx.Terminal.Client.Grpc
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v5       
+        with:
+          package-name: OneImlx.Terminal.Client.Grpc
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal.Client.Pulsar
+      - name: Delete OneImlx.Terminal.Client.Pulsar
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v5       
+        with:
+          package-name: OneImlx.Terminal.Client.Pulsar
+          min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
+
+      # Delete OneImlx.Terminal.Authentication
+      - name: Delete OneImlx.Terminal.Authentication
+        if: ${{ env.PI_DELETE_PACKAGES == 'All' }}
+        uses: actions/delete-package-versions@v5       
+        with:
+          package-name: OneImlx.Terminal.Authentication
           min-versions-to-keep: ${{ env.PI_KEEP_MINIMUM_VERSIONS }}
