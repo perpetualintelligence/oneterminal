@@ -242,7 +242,7 @@ jobs:
 
     # Aggregate coverage report across all packages deposited into ./coverage
     - name: Coverage Report
-      run: dotnet tool run reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:JsonSummary
+      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:JsonSummary
       shell: bash
 
     # Extract aggregate line and branch coverage
