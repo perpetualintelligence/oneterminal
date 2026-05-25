@@ -26,8 +26,8 @@ namespace OneImlx.Terminal.Commands.Runners
             Command command = context.GetCommand();
             logger?.LogDebug("Run help. command={0}", command.Id);
 
-            await RunHelpAsync(context);
-            return new CommandRunnerResult();
+            await RunHelpAsync(context).ConfigureAwait(false);
+            return (TResult)new CommandRunnerResult();
         }
 
         /// <inheritdoc/>
@@ -36,10 +36,20 @@ namespace OneImlx.Terminal.Commands.Runners
             this.logger = logger;
 
             Command command = context.GetCommand();
-            logger?.LogDebug("Run command. command={0}", command.Id);
+            logger?.LogDebug("Run command. command={0} type={1}", command.Id, command.Descriptor.Type);
 
-            var result = await RunCommandAsync(context);
-            return (CommandRunnerResult)(object)result;
+            TResult result;
+            RunMethodDescriptor? runMethodDescriptor = command.Descriptor.RunMethod;
+            if (runMethodDescriptor != null)
+            {
+                result = await runMethodDescriptor.RunAsync(this, context).ConfigureAwait(false);
+            }
+            else
+            {
+                result = await RunCommandAsync(context).ConfigureAwait(false);
+            }
+
+            return result;
         }
 
         /// <inheritdoc/>

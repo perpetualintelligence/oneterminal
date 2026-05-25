@@ -1,6 +1,3 @@
-//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
-//  For license, terms, and data policies, go to:
-//  https://terms.perpetualintelligence.com/articles/intro.html
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -38,7 +35,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             logger.LogInformation("Executing grp2 base command");
             await terminalConsole.WriteLineAsync("Group 2 (CompositeGroup under grp1)");
             await terminalConsole.WriteLineAsync("====================================");
-            await terminalConsole.WriteLineAsync("Available subcommands:");
+            await terminalConsole.WriteLineAsync("Available sub-commands:");
             await terminalConsole.WriteLineAsync("  cmd4 - Command 4");
             await terminalConsole.WriteLineAsync("  cmd5 - Command 5");
             await terminalConsole.WriteLineAsync("  cmd6 - Command 6");
@@ -54,10 +51,10 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [OptionDescriptor("opt1", nameof(String), "Option 1", BehaviorFlags.None)]
         public async Task<CommandRunnerResult> Cmd4Async(ICommandContext context)
         {
-            logger.LogInformation("Executing grp1 grp2 cmd4");
-            string arg1 = context.GetCommand().GetRequiredArgumentValue<string>("arg1");
-            string arg2 = context.GetCommand().GetRequiredArgumentValue<string>("arg2");
-            string opt1 = context.GetCommand().GetRequiredOptionValue<string>("opt1");
+            logger.LogInformation("Cmd4 (Leaf under composite grp2)");
+            context.GetCommand().TryGetArgumentValue<string>("arg1", out string? arg1);
+            context.GetCommand().TryGetArgumentValue<string>("arg2", out string? arg2);
+            context.GetCommand().TryGetOptionValue<string>("opt1", out string? opt1);
             await terminalConsole.WriteLineAsync($"grp1 grp2 cmd4 executed: arg1={arg1}, arg2={arg2}, opt1={opt1}");
             return new CommandRunnerResult();
         }
@@ -67,7 +64,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", BehaviorFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
         [ArgumentValidation("arg1", typeof(RangeAttribute), 1, 100)]
-        [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", BehaviorFlags.None)]
+        [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", BehaviorFlags.Required)]
         public async Task<CommandRunnerResult> Cmd5Async(ICommandContext context)
         {
             logger.LogInformation("Executing grp1 grp2 cmd5");
@@ -79,7 +76,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
 
         [CommandDescriptor("cmd6", "Command 6", "Command 6 in grp2.", CommandTypes.Leaf)]
         [CommandTags("command", "leaf")]
-        [ArgumentDescriptor(1, "arg1", nameof(Boolean), "Boolean argument", BehaviorFlags.None)]
+        [ArgumentDescriptor(1, "arg1", nameof(Boolean), "Boolean argument", BehaviorFlags.Required)]
         [OptionDescriptor("opt1", nameof(String), "String option", BehaviorFlags.Required)]
         [OptionValidation("opt1", typeof(RequiredAttribute))]
         public async Task<CommandRunnerResult> Cmd6Async(ICommandContext context)

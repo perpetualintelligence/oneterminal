@@ -2,10 +2,10 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System.Linq;
-using System.Threading.Tasks;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -37,7 +37,7 @@ namespace OneImlx.Terminal.Runtime
                 await terminalConsole.WriteLineAsync("Arguments:");
                 foreach (ArgumentDescriptor argument in context.Command.Descriptor.ArgumentDescriptors)
                 {
-                    await terminalConsole.WriteLineAsync(string.Format("{0}{1} <{2}>", new string(' ', indent), argument.Id, argument.DataType));
+                    await terminalConsole.WriteLineAsync(string.Format("{0}{1} <{2}>", new string(' ', indent), argument.CommandId, argument.DataType));
                     await terminalConsole.WriteLineAsync(string.Format("{0}{1}", new string(' ', indent * 2), argument.Description));
                 }
             }
@@ -46,15 +46,15 @@ namespace OneImlx.Terminal.Runtime
             {
                 indent = 2;
                 await terminalConsole.WriteLineAsync("Options:");
-                foreach (OptionDescriptor option in context.Command.Descriptor.OptionDescriptors.Values.Distinct())
+                foreach (OptionDescriptor option in context.Command.Descriptor.OptionDescriptors.Values.Distinct()) 
                 {
                     if (option.Alias != null)
                     {
-                        await terminalConsole.WriteLineAsync(string.Format("{0}{1}{1}{2}, {3}{4} <{5}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, option.Alias, terminalOptions.Parser.OptionPrefix, option.DataType));
+                        await terminalConsole.WriteLineAsync(string.Format("{0}{1}{1}{2}, {1}{3} <{4}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, option.Alias, option.DataType));
                     }
                     else
                     {
-                        await terminalConsole.WriteLineAsync(string.Format("{0}{1}{2} <{3}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, option.DataType));
+                        await terminalConsole.WriteLineAsync(string.Format("{0}{1}{1}{2} <{3}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, option.DataType));
                     }
 
                     await terminalConsole.WriteLineAsync(string.Format("{0}{1}", new string(' ', indent * 2), option.Description));

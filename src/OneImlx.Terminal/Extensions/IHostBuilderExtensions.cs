@@ -4,6 +4,7 @@
 
 using Microsoft.Extensions.Hosting;
 using OneImlx.Terminal.Runtime;
+using OneImlx.Terminal.Shared;
 using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Extensions

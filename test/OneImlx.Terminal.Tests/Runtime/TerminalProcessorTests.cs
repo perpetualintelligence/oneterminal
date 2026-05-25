@@ -229,16 +229,16 @@ namespace OneImlx.Terminal.Runtime
             }
 
             // Create batches for each command collection
-            var batch1 = TerminalInputOutput.Batch("batch1", commands1.Keys.Cast<string>().ToArray(), commands1.Values.Cast<string>().ToArray(), "sender1", "endpoint1");
-            var batch2 = TerminalInputOutput.Batch("batch2", commands2.Keys.Cast<string>().ToArray(), commands2.Values.Cast<string>().ToArray(), "sender2", "endpoint2");
-            var batch3 = TerminalInputOutput.Batch("batch3", commands3.Keys.Cast<string>().ToArray(), commands3.Values.Cast<string>().ToArray(), "sender3", "endpoint3");
-            var batch4 = TerminalInputOutput.Batch("batch4", commands4.Keys.Cast<string>().ToArray(), commands4.Values.Cast<string>().ToArray(), "sender4", "endpoint4");
-            var batch5 = TerminalInputOutput.Batch("batch5", commands5.Keys.Cast<string>().ToArray(), commands5.Values.Cast<string>().ToArray(), "sender5", "endpoint5");
-            var batch6 = TerminalInputOutput.Batch("batch6", commands6.Keys.Cast<string>().ToArray(), commands6.Values.Cast<string>().ToArray(), "sender6", "endpoint6");
-            var batch7 = TerminalInputOutput.Batch("batch7", commands7.Keys.Cast<string>().ToArray(), commands7.Values.Cast<string>().ToArray(), "sender7", "endpoint7");
-            var batch8 = TerminalInputOutput.Batch("batch8", commands8.Keys.Cast<string>().ToArray(), commands8.Values.Cast<string>().ToArray(), "sender8", "endpoint8");
-            var batch9 = TerminalInputOutput.Batch("batch9", commands9.Keys.Cast<string>().ToArray(), commands9.Values.Cast<string>().ToArray(), "sender9", "endpoint9");
-            var batch10 = TerminalInputOutput.Batch("batch10", commands10.Keys.Cast<string>().ToArray(), commands10.Values.Cast<string>().ToArray(), "sender10", "endpoint10");
+            var batch1 = TerminalInputOutput.Batch("batch1", [.. commands1.Keys.Cast<string>()], [.. commands1.Values.Cast<string>()], "sender1", "endpoint1");
+            var batch2 = TerminalInputOutput.Batch("batch2", [.. commands2.Keys.Cast<string>()], [.. commands2.Values.Cast<string>()], "sender2", "endpoint2");
+            var batch3 = TerminalInputOutput.Batch("batch3", [.. commands3.Keys.Cast<string>()], [.. commands3.Values.Cast<string>()], "sender3", "endpoint3");
+            var batch4 = TerminalInputOutput.Batch("batch4", [.. commands4.Keys.Cast<string>()], [.. commands4.Values.Cast<string>()], "sender4", "endpoint4");
+            var batch5 = TerminalInputOutput.Batch("batch5", [.. commands5.Keys.Cast<string>()], [.. commands5.Values.Cast<string>()], "sender5", "endpoint5");
+            var batch6 = TerminalInputOutput.Batch("batch6", [.. commands6.Keys.Cast<string>()], [.. commands6.Values.Cast<string>()], "sender6", "endpoint6");
+            var batch7 = TerminalInputOutput.Batch("batch7", [.. commands7.Keys.Cast<string>()], [.. commands7.Values.Cast<string>()], "sender7", "endpoint7");
+            var batch8 = TerminalInputOutput.Batch("batch8", [.. commands8.Keys.Cast<string>()], [.. commands8.Values.Cast<string>()], "sender8", "endpoint8");
+            var batch9 = TerminalInputOutput.Batch("batch9", [.. commands9.Keys.Cast<string>()], [.. commands9.Values.Cast<string>()], "sender9", "endpoint9");
+            var batch10 = TerminalInputOutput.Batch("batch10", [.. commands10.Keys.Cast<string>()], [.. commands10.Values.Cast<string>()], "sender10", "endpoint10");
 
             // Add all batches asynchronously
             Task addBatch1 = _terminalProcessor.AddAsync(batch1);
@@ -296,7 +296,7 @@ namespace OneImlx.Terminal.Runtime
             {
                 allCommands.Add($"id{i}", $"command{i}");
             }
-            var longBatch = TerminalInputOutput.Batch("batch_id", allCommands.Keys.ToArray(), allCommands.Values.ToArray(), "sender", "endpoint");
+            var longBatch = TerminalInputOutput.Batch("batch_id", [.. allCommands.Keys], [.. allCommands.Values], "sender", "endpoint");
             await _terminalProcessor.AddAsync(longBatch);
 
             await _terminalProcessor.StopProcessingAsync(5000);
@@ -712,7 +712,7 @@ namespace OneImlx.Terminal.Runtime
             var bytes3NonDelimited = JsonSerializer.SerializeToUtf8Bytes(input2);
 
             // The last batch is not delimited.
-            byte[] bytes = bytes1.Concat(bytes2).Concat(bytes3NonDelimited).ToArray();
+            byte[] bytes = [.. bytes1, .. bytes2, .. bytes3NonDelimited];
             await _terminalProcessor.StreamAsync(bytes, bytes.Length, senderId, senderEndpoint);
 
             // Allow time for processing to complete

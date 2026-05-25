@@ -384,9 +384,9 @@ namespace OneImlx.Terminal.Extensions
             return DefineCommand(builder, id, name, description, typeof(CommandChecker), typeof(TRunner), commandType);
         }
 
-        private static ITerminalBuilder AddDeclarativeRunnerInner(this ITerminalBuilder builder, Type declarativeRunner)
+        private static ITerminalBuilder AddDeclarativeRunnerInner(this ITerminalBuilder builder, Type declarativeOwner)
         {
-            object[] classAttrs = declarativeRunner.GetCustomAttributes(false);
+            object[] classAttrs = declarativeOwner.GetCustomAttributes(false);
 
             // Command descriptor The declarative runner is the command runner.
             ICommandDescriptorAttribute cmdAttr = GetDeclarativeInterface<ICommandDescriptorAttribute>(classAttrs) ?? throw new TerminalException(TerminalErrors.InvalidDeclaration, "The declarative target does not define command descriptor.");
@@ -395,40 +395,41 @@ namespace OneImlx.Terminal.Extensions
             Type checkerType = ProcessCommandChecker(classAttrs, typeof(CommandChecker));
 
             // Establish command builder
-            ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeRunner, cmdAttr.CommandType);
+            ICommandBuilder commandBuilder = builder.DefineCommand(cmdAttr.Id, cmdAttr.Name, cmdAttr.Description, checkerType, declarativeOwner, cmdAttr.CommandType);
 
             // Command runner methods
             if (cmdAttr.CommandType == CommandTypes.CompositeGroup)
             {
-                MethodInfo[] runnerMethods = declarativeRunner.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+                // This is a leaf command inside a composite group so our runner is now a method not a class.
+                MethodInfo[] runnerMethods = declarativeOwner.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
                 for (int i = 0; i < runnerMethods.Length; i++)
                 {
+                    // We are iterating over all the instance methods so we skip the once that does not have
+                    // ICommandDescriptorAttribute attribute
                     MethodInfo runnerMethod = runnerMethods[i];
                     object[] methodAttrs = runnerMethod.GetCustomAttributes(false);
-
-                    // Get command descriptor attribute from method
                     ICommandDescriptorAttribute? methodCmdAttr = GetDeclarativeInterface<ICommandDescriptorAttribute>(methodAttrs);
                     if (methodCmdAttr == null)
                     {
                         continue;
                     }
 
-                    // Get command checker for method, defaults to CommandChecker if not defined
-                    Type methodCheckerType = ProcessCommandChecker(methodAttrs, typeof(CommandChecker));
+                    // Get command checker for method, defaults to composite group checker if not defined
+                    Type methodCheckerType = ProcessCommandChecker(methodAttrs, checkerType);
 
-                    // Create command descriptor for the method
-                    ICommandBuilder methodCommandBuilder = builder.DefineCommand(methodCmdAttr.Id, methodCmdAttr.Name, methodCmdAttr.Description, methodCheckerType, declarativeRunner, methodCmdAttr.CommandType);
+                    // Create command descriptor for the method.
+                    // NOTE: The runner is now a method of type(RunMethod) instead of a class, and the command checker is determined at method level.
+                    ICommandBuilder methodCommandBuilder = builder.DefineCommand(methodCmdAttr.Id, methodCmdAttr.Name, methodCmdAttr.Description, methodCheckerType, declarativeOwner, methodCmdAttr.CommandType);
+
+                    // Add run method
+                    methodCommandBuilder.RunMethod(methodCmdAttr.Id, runnerMethod);
 
                     // Process method-level attributes, parent CompositeGroup as owner
-                    ProcessCommandAttributes(methodAttrs, methodCommandBuilder, declarativeRunner, null, cmdAttr.Id);
+                    ProcessCommandAttributes(methodAttrs, methodCommandBuilder, declarativeOwner, null, cmdAttr.Id);
 
-                    // Add the method command descriptor
+                    // Add the command descriptor
                     methodCommandBuilder.Add();
-
-                    // Also add the run method to the composite group
-                    var runnerbuilder = commandBuilder.DefineRunMethod(cmdAttr.Id, runnerMethod);
-                    runnerbuilder.Add();
                 }
             }
 
@@ -451,7 +452,6 @@ namespace OneImlx.Terminal.Extensions
         private static Type ProcessCommandChecker(object[] attrs, Type defaultChecker)
         {
             ICommandCheckerAttribute? cmdChecker = GetDeclarativeInterface<ICommandCheckerAttribute>(attrs);
-
             return cmdChecker?.Checker ?? defaultChecker;
         }
 
@@ -584,7 +584,7 @@ namespace OneImlx.Terminal.Extensions
 
         private static List<TInterface> GetDeclarativeInterfaces<TInterface>(object[] attrs) where TInterface : class
         {
-            List<TInterface> results = new();
+            List<TInterface> results = [];
 
             for (int i = 0; i < attrs.Length; i++)
             {

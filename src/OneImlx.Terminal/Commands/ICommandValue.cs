@@ -20,7 +20,7 @@ namespace OneImlx.Terminal.Commands
         /// <summary>
         /// The identifier.
         /// </summary>
-        string Id { get; }
+        string CommandId { get; }
 
         /// <summary>
         /// The actual value.

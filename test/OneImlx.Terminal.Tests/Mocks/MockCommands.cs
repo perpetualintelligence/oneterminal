@@ -63,6 +63,13 @@ namespace OneImlx.Terminal.Mocks
                 new("चार", nameof(Double), "चौथा तर्क", BehaviorFlags.None, "चारहै"),
             ]);
 
+            TestArgumentDescriptors = new(unicodeTextHandler,
+            [
+                new ArgumentDescriptor(1, "arg1", nameof(String),  "First positional argument",  BehaviorFlags.None),
+                new ArgumentDescriptor(2, "arg2", nameof(Int32),   "Second positional argument", BehaviorFlags.Required),
+                new ArgumentDescriptor(3, "arg3", nameof(Boolean), "Third positional argument",  BehaviorFlags.None),
+            ]);
+
             Commands = new(unicodeTextHandler,
             [
 
@@ -180,9 +187,9 @@ namespace OneImlx.Terminal.Mocks
             ]);
         }
 
-        public static Tuple<CommandDescriptor, Command> NewCommandDefinition(string id, string name, string desc, int commandType, OptionDescriptors? args = null, Type? checker = null, Type? runner = null, Options? options = null)
+        public static Tuple<CommandDescriptor, Command> NewCommandDefinition(string id, string name, string desc, int commandType, OptionDescriptors? args = null, Type? checker = null, Type? runner = null, Options? options = null, ArgumentDescriptors? argumentDescriptors = null)
         {
-            var cmd1 = new CommandDescriptor(id, name, desc, commandType, optionDescriptors: args)
+            var cmd1 = new CommandDescriptor(id, name, desc, commandType, argumentDescriptors: argumentDescriptors, optionDescriptors: args)
             {
                 Checker = checker,
                 Runner = runner,
@@ -191,6 +198,7 @@ namespace OneImlx.Terminal.Mocks
             return new Tuple<CommandDescriptor, Command>(cmd1, new Command(cmd1, options: options));
         }
 
+        public static ArgumentDescriptors TestArgumentDescriptors;
         public static CommandDescriptors Commands;
         public static CommandDescriptors GroupedCommands;
         public static CommandDescriptors GroupedOptionsCommands;

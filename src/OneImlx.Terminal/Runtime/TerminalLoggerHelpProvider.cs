@@ -1,15 +1,12 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Configuration.Options;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Runtime
 {
@@ -41,7 +38,7 @@ namespace OneImlx.Terminal.Runtime
                 _logger.LogInformation("Arguments:");
                 foreach (ArgumentDescriptor argument in context.Command.Descriptor.ArgumentDescriptors)
                 {
-                    _logger.LogInformation(string.Format("{0}{1} <{2}>", new string(' ', indent), argument.Id, argument.DataType));
+                    _logger.LogInformation(string.Format("{0}{1} <{2}>", new string(' ', indent), argument.CommandId, argument.DataType));
                     _logger.LogInformation(string.Format("{0}{1}", new string(' ', indent * 2), argument.Description));
                 }
             }
@@ -54,11 +51,11 @@ namespace OneImlx.Terminal.Runtime
                 {
                     if (option.Alias != null)
                     {
-                        _logger.LogInformation(string.Format("{0}{1}{1}{2}, {3}{4} <{5}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, terminalOptions.Parser.OptionPrefix, option.Alias, option.DataType));
+                        _logger.LogInformation(string.Format("{0}{1}{1}{2}, {1}{3} <{4}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, option.Alias, option.DataType));
                     }
                     else
                     {
-                        _logger.LogInformation(string.Format("{0}{1}{2} <{3}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, option.DataType));
+                        _logger.LogInformation(string.Format("{0}{1}{1}{2} <{3}>", new string(' ', indent), terminalOptions.Parser.OptionPrefix, option.Id, option.DataType));
                     }
 
                     _logger.LogInformation(string.Format("{0}{1}", new string(' ', indent * 2), option.Description));

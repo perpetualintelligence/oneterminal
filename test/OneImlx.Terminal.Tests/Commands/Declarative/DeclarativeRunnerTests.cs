@@ -184,14 +184,14 @@ namespace OneImlx.Terminal.Commands.Declarative
             var argDescs = cmdDescs.First().ArgumentDescriptors;
             argDescs.Should().NotBeNull();
 
-            argDescs!["arg1"].Id.Should().Be("arg1");
+            argDescs!["arg1"].CommandId.Should().Be("arg1");
             argDescs["arg1"].Order.Should().Be(1);
             argDescs["arg1"].DataType.Should().Be(nameof(String));
             argDescs["arg1"].Description.Should().Be("test arg desc1");
             argDescs["arg1"].Flags.Should().Be(BehaviorFlags.None);
             argDescs["arg1"].ValueCheckers.Should().BeNull();
 
-            argDescs["arg2"].Id.Should().Be("arg2");
+            argDescs["arg2"].CommandId.Should().Be("arg2");
             argDescs["arg2"].Order.Should().Be(2);
             argDescs["arg2"].DataType.Should().Be(nameof(String));
             argDescs["arg2"].Description.Should().Be("test arg desc2");
@@ -201,7 +201,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             argDescs["arg2"].ValueCheckers!.Cast<DataValidationValueChecker<Argument>>().First().ValidationAttribute.Should().BeOfType<RequiredAttribute>();
             argDescs["arg2"].ValueCheckers!.Cast<DataValidationValueChecker<Argument>>().Last().ValidationAttribute.Should().BeOfType<OneOfAttribute>();
 
-            argDescs["arg3"].Id.Should().Be("arg3");
+            argDescs["arg3"].CommandId.Should().Be("arg3");
             argDescs["arg3"].Order.Should().Be(3);
             argDescs["arg3"].DataType.Should().Be(nameof(Double));
             argDescs["arg3"].Description.Should().Be("test arg desc3");

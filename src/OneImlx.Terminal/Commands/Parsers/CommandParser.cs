@@ -103,12 +103,7 @@ namespace OneImlx.Terminal.Commands.Parsers
                         throw new TerminalException(TerminalErrors.MissingCommand, "The arguments were provided, but no command was found or specified.");
                     }
 
-                    ArgumentDescriptors? argumentDescriptors = parsedCommand.ArgumentDescriptors;
-                    if (argumentDescriptors == null)
-                    {
-                        throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support arguments. command={0}", parsedCommand.Id);
-                    }
-
+                    ArgumentDescriptors? argumentDescriptors = parsedCommand.ArgumentDescriptors ?? throw new TerminalException(TerminalErrors.UnsupportedArgument, "The command does not support arguments. command={0}", parsedCommand.Id);
                     int currentArgCount = parsedArguments.Count;
                     if (argumentDescriptors.Count <= currentArgCount)
                     {
@@ -131,11 +126,7 @@ namespace OneImlx.Terminal.Commands.Parsers
                 return null;
             }
 
-            OptionDescriptors? optionDescriptors = commandDescriptor.OptionDescriptors;
-            if (optionDescriptors == null)
-            {
-                throw new TerminalException(TerminalErrors.UnsupportedOption, "The command does not support options. command={0}", commandDescriptor.Id);
-            }
+            OptionDescriptors? optionDescriptors = commandDescriptor.OptionDescriptors ?? throw new TerminalException(TerminalErrors.UnsupportedOption, "The command does not support options. command={0}", commandDescriptor.Id);
 
             // 1. An input can be either an option or an alias, but not both.
             // 2. If a segment is identified as an option, it must match the option ID.

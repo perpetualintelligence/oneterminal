@@ -1,15 +1,12 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Handlers.Mocks
 {

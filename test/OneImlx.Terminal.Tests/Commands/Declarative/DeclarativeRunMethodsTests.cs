@@ -4,14 +4,12 @@
 
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Mocks;
-using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Generic;
@@ -27,44 +25,64 @@ namespace OneImlx.Terminal.Commands.Declarative
     {
         public DeclarativeRunMethodsTests()
         {
-            var hostBuilder = Host.CreateDefaultBuilder([]).ConfigureServices(ConfigureServicesDelegate);
-            host = hostBuilder.Build();
+            serviceCollection = new ServiceCollection();
             terminalBuilder = new(serviceCollection, new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             terminalBuilder.AddDeclarativeRunner<MockDeclarativeRunMethodsRunner>();
             serviceProvider = terminalBuilder.Services.BuildServiceProvider();
-            cmdDescs = serviceProvider.GetServices<CommandDescriptor>().ToList();
+            cmdDescs = [.. serviceProvider.GetServices<CommandDescriptor>()];
         }
 
         [Fact]
-        public void CompositeGroup_Registers_Three_RunMethods()
+        public void CompositeGroup_Has_No_RunMethod()
         {
-            serviceProvider.GetServices<RunMethod>().Should().HaveCount(3);
+            CommandDescriptor commandDescriptor = cmdDescs.First(e => e.Id == "composite1");
+            commandDescriptor.RunMethod.Should().BeNull();
         }
 
         [Fact]
-        public void NonCompositeGroup_Has_No_RunMethods()
+        public void NonCompositeGroup_Has_No_RunMethod()
         {
             var tb = new TerminalBuilder(new ServiceCollection(), new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII));
             tb.AddDeclarativeRunner<MockDeclarativeRunner1>();
             var sp = tb.Services.BuildServiceProvider();
-            sp.GetServices<RunMethod>().Should().BeEmpty();
+
+            var cmdDesc = sp.GetServices<CommandDescriptor>();
+            cmdDesc.Count().Should().Be(1);
+            cmdDesc.First().RunMethod.Should().BeNull();
         }
 
         [Fact]
-        public void RunMethods_Store_MethodInfo()
+        public void RunMethods_Not_Registered()
         {
-            var runMethods = serviceProvider.GetServices<RunMethod>();
+            var runMethods = serviceProvider.GetServices<RunMethodDescriptor>();
+            runMethods.Count().Should().Be(3);
+        }
+
+        [Fact]
+        public void RunMethod_Stores_MethodInfo()
+        {
+            var method1 = cmdDescs.First(c => c.Id == "method1");
+            method1.RunMethod.Should().NotBeNull();
+
+            var runMethods = serviceProvider.GetServices<RunMethodDescriptor>();
             runMethods.Should().OnlyContain(rm => rm.MethodInfo != null && rm.MethodInfo.DeclaringType == typeof(MockDeclarativeRunMethodsRunner) && rm.MethodInfo.ReturnType == typeof(Task<CommandRunnerResult>));
         }
 
         [Fact]
-        public void RunMethods_Map_To_Parent_CompositeGroup_Id()
+        public void RunMethod_Map_To_CommandDescriptor()
         {
-            serviceProvider.GetServices<RunMethod>().Should().OnlyContain(rm => rm.Id == "composite1");
+            var leafs = cmdDescs.Where(c => c.Type == CommandTypes.Leaf);
+            leafs.Should().HaveCount(3);
+
+            foreach (CommandDescriptor cmd in leafs)
+            {
+                cmd.RunMethod.Should().NotBeNull();
+                cmd.RunMethod.CommandId.Should().Be(cmd.Id);
+            }
         }
 
         [Fact]
-        public void Creates_Descriptors_For_Group_And_Methods()
+        public void Creates_Descriptors_Maps_To_Correct_Type()
         {
             cmdDescs.Should().HaveCount(4);
             cmdDescs.Where(c => c.Type == CommandTypes.Leaf).Should().HaveCount(3);
@@ -74,12 +92,23 @@ namespace OneImlx.Terminal.Commands.Declarative
         [Fact]
         public void Method_Descriptors_Have_Correct_Metadata()
         {
-            var method1 = cmdDescs.First(c => c.Id == "method1");
+            var methodDescriptors = cmdDescs.Where(c => c.Type == CommandTypes.Leaf);
+            methodDescriptors.Should().HaveCount(3);
+
+            var method1 = methodDescriptors.First(c => c.Id == "method1");
             method1.Name.Should().Be("method1_name");
-            method1.Description.Should().Be("method1 description");
+            method1.Description.Should().Be("method1_description");
             method1.Type.Should().Be(CommandTypes.Leaf);
-            var method2 = cmdDescs.First(c => c.Id == "method2");
-            var method3 = cmdDescs.First(c => c.Id == "method3");
+
+            var method2 = methodDescriptors.First(c => c.Id == "method2");
+            method2.Name.Should().Be("method2_name");
+            method2.Description.Should().Be("method2_description");
+            method2.Type.Should().Be(CommandTypes.Leaf);
+
+            var method3 = methodDescriptors.First(c => c.Id == "method3");
+            method3.Name.Should().Be("method3_name");
+            method3.Description.Should().Be("method3_description");
+            method3.Type.Should().Be(CommandTypes.Leaf);
         }
 
         [Fact]
@@ -94,8 +123,16 @@ namespace OneImlx.Terminal.Commands.Declarative
         public void Method_Checkers_Default_Or_Override()
         {
             cmdDescs.First(c => c.Id == "method1").Checker.Should().Be<MockCommandChecker>();
-            cmdDescs.First(c => c.Id == "method2").Checker.Should().Be<MockCommandCheckerInner>();
-            cmdDescs.First(c => c.Id == "method3").Checker.Should().Be(typeof(CommandChecker));
+            cmdDescs.First(c => c.Id == "method2").Checker.Should().Be<MockCommandChecker>();
+            cmdDescs.First(c => c.Id == "method3").Checker.Should().Be<MockCommandCheckerInner>();
+        }
+
+        [Fact]
+        public void Method_Runner_Is_Always_CompositeRunner()
+        {
+            cmdDescs.First(c => c.Id == "method1").Runner.Should().Be<MockDeclarativeRunMethodsRunner>();
+            cmdDescs.First(c => c.Id == "method2").Runner.Should().Be<MockDeclarativeRunMethodsRunner>();
+            cmdDescs.First(c => c.Id == "method3").Runner.Should().Be<MockDeclarativeRunMethodsRunner>();
         }
 
         [Fact]
@@ -104,12 +141,12 @@ namespace OneImlx.Terminal.Commands.Declarative
             var method1 = cmdDescs.First(c => c.Id == "method1");
             method1.ArgumentDescriptors.Should().HaveCount(2);
             var argDescs = method1.ArgumentDescriptors!;
-            argDescs["m1_arg1"].Id.Should().Be("m1_arg1");
+            argDescs["m1_arg1"].CommandId.Should().Be("m1_arg1");
             argDescs["m1_arg1"].Order.Should().Be(1);
             argDescs["m1_arg1"].DataType.Should().Be(nameof(String));
             argDescs["m1_arg1"].Description.Should().Be("method1 arg1 desc");
             argDescs["m1_arg1"].Flags.Should().Be(BehaviorFlags.None);
-            argDescs["m1_arg2"].Id.Should().Be("m1_arg2");
+            argDescs["m1_arg2"].CommandId.Should().Be("m1_arg2");
             argDescs["m1_arg2"].Order.Should().Be(2);
             argDescs["m1_arg2"].DataType.Should().Be(nameof(Int32));
             argDescs["m1_arg2"].Description.Should().Be("method1 arg2 desc");
@@ -136,9 +173,9 @@ namespace OneImlx.Terminal.Commands.Declarative
         {
             var method2 = cmdDescs.First(c => c.Id == "method2");
             method2.ArgumentDescriptors.Should().HaveCount(2);
-            method2.ArgumentDescriptors!["m2_arg1"].Id.Should().Be("m2_arg1");
+            method2.ArgumentDescriptors!["m2_arg1"].CommandId.Should().Be("m2_arg1");
             method2.ArgumentDescriptors["m2_arg1"].Flags.Should().Be(BehaviorFlags.Required | BehaviorFlags.Obsolete);
-            method2.ArgumentDescriptors["m2_arg2"].Id.Should().Be("m2_arg2");
+            method2.ArgumentDescriptors["m2_arg2"].CommandId.Should().Be("m2_arg2");
             method2.ArgumentDescriptors["m2_arg2"].Flags.Should().Be(BehaviorFlags.None);
             method2.OptionDescriptors.Should().HaveCount(1);
             method2.OptionDescriptors!["m2_opt1"].Id.Should().Be("m2_opt1");
@@ -150,9 +187,9 @@ namespace OneImlx.Terminal.Commands.Declarative
         {
             var method3 = cmdDescs.First(c => c.Id == "method3");
             method3.ArgumentDescriptors.Should().HaveCount(3);
-            method3.ArgumentDescriptors!["m3_arg1"].Id.Should().Be("m3_arg1");
-            method3.ArgumentDescriptors["m3_arg2"].Id.Should().Be("m3_arg2");
-            method3.ArgumentDescriptors["m3_arg3"].Id.Should().Be("m3_arg3");
+            method3.ArgumentDescriptors!["m3_arg1"].CommandId.Should().Be("m3_arg1");
+            method3.ArgumentDescriptors["m3_arg2"].CommandId.Should().Be("m3_arg2");
+            method3.ArgumentDescriptors["m3_arg3"].CommandId.Should().Be("m3_arg3");
             method3.ArgumentDescriptors["m3_arg3"].Flags.Should().Be(BehaviorFlags.Required | BehaviorFlags.Disabled);
             method3.OptionDescriptors.Should().HaveCount(3);
             method3.OptionDescriptors!["m3_opt1"].Id.Should().Be("m3_opt1");
@@ -183,16 +220,9 @@ namespace OneImlx.Terminal.Commands.Declarative
 
         public ValueTask DisposeAsync()
         {
-            host.Dispose();
             return new ValueTask(Task.CompletedTask);
         }
 
-        private void ConfigureServicesDelegate(IServiceCollection opt2)
-        {
-            serviceCollection = opt2;
-        }
-
-        private readonly IHost host;
         private readonly TerminalBuilder terminalBuilder;
         private IServiceCollection serviceCollection = null!;
         private readonly ServiceProvider serviceProvider;

@@ -213,21 +213,6 @@ namespace OneImlx.Terminal.Extensions
             where THelp : class, ITerminalHelpProvider
             where TException : class, ITerminalExceptionHandler
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            if (textHandler is null)
-            {
-                throw new ArgumentNullException(nameof(textHandler));
-            }
-
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
-
             services.Configure(setupAction);
 
             return services.CreateTerminalBuilder(textHandler)

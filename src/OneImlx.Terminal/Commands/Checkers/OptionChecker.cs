@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -36,7 +33,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             // Check for null option value
             if (option.Value == null)
             {
-                throw new TerminalException(TerminalErrors.InvalidOption, "The option value cannot be null. option={0}", option.Id);
+                throw new TerminalException(TerminalErrors.InvalidOption, "The option value cannot be null. option={0}", option.CommandId);
             }
 
             // Check option data type and value type
@@ -60,7 +57,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                     }
                     catch (Exception ex)
                     {
-                        throw new TerminalException(TerminalErrors.InvalidOption, "The option value is not valid. option={0} value={1} info={2}", option.Id, option.Value, ex.Message);
+                        throw new TerminalException(TerminalErrors.InvalidOption, "The option value is not valid. option={0} value={1} info={2}", option.CommandId, option.Value, ex.Message);
                     }
                 }
             }
@@ -84,7 +81,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             catch
             {
                 // Meaningful error instead of format exception
-                throw new TerminalException(TerminalErrors.InvalidOption, "The option value does not match the mapped type. option={0} type={1} data_type={2} value_type={3} value={4}", option.Id, mapperResult.MappedType, option.DataType, option.Value.GetType().Name, option.Value);
+                throw new TerminalException(TerminalErrors.InvalidOption, "The option value does not match the mapped type. option={0} type={1} data_type={2} value_type={3} value={4}", option.CommandId, mapperResult.MappedType, option.DataType, option.Value.GetType().Name, option.Value);
             }
 
             return Task.FromResult(new OptionCheckerResult(mapperResult.MappedType));

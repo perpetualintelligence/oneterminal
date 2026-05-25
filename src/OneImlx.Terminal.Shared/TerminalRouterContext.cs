@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace OneImlx.Terminal.Runtime
+namespace OneImlx.Terminal.Shared
 {
     /// <summary>
-    /// The <see cref="ITerminalRouter{TContext}"/> context.
+    /// An abstraction of terminal router context.
     /// </summary>
     public abstract class TerminalRouterContext
     {
@@ -49,7 +49,7 @@ namespace OneImlx.Terminal.Runtime
         /// particularly useful in scenarios where a complete shutdown of the terminal's operational context is
         /// required, such as during application termination or critical error handling.
         /// </remarks>
-        public CancellationToken TerminalCancellationToken { get; internal set; }
+        public CancellationToken TerminalCancellationToken { get; set; }
 
         /// <summary>
         /// Initializes a new <see cref="TerminalRouterContext"/> instance.

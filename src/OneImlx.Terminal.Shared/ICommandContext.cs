@@ -3,11 +3,8 @@
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System.Collections.Generic;
-using OneImlx.Terminal.Commands.Parsers;
-using OneImlx.Terminal.Runtime;
-using OneImlx.Terminal.Shared;
 
-namespace OneImlx.Terminal.Commands
+namespace OneImlx.Terminal.Shared
 {
     /// <summary>
     /// An abstraction for the command execution context.

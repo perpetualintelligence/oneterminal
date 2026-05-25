@@ -95,6 +95,13 @@ namespace OneImlx.Terminal.Client.Extensions
             _capturedRequest.Method.Should().Be(HttpMethod.Post);
         }
 
+        [Fact]
+        public async Task Null_Input_Throws()
+        {
+            Func<Task> act = async () => await _httpClient.SendToTerminalAsync(null!, CancellationToken.None);
+            await act.Should().ThrowAsync<ArgumentNullException>().WithMessage("The input cannot be null. (Parameter 'input')");
+        }
+
         private readonly HttpClient _httpClient;
         private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock;
         private HttpRequestMessage? _capturedRequest; // Capture the request for content verification

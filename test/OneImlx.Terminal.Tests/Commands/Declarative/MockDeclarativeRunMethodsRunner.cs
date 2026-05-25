@@ -16,8 +16,8 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Commands.Declarative
 {
     [CommandOwners("owner1", "owner2")]
-    [CommandDescriptor("composite1", "composite_name1", "composite description", CommandTypes.CompositeGroup)]
-    [CommandChecker(typeof(MockCommandChecker))]
+    [CommandDescriptor("composite1", "composite_name1", "composite_description", CommandTypes.CompositeGroup)]
+    [CommandChecker(typeof(MockCommandCheckerInner))]
     [CommandTags("comp_tag1", "comp_tag2")]
     [CommandCustomProperty("comp_key1", "comp_value1")]
     [CommandCustomProperty("comp_key2", "comp_value2")]
@@ -31,7 +31,7 @@ namespace OneImlx.Terminal.Commands.Declarative
 
         public string? LastMethodCalled { get; private set; }
 
-        [CommandDescriptor("method1", "method1_name", "method1 description", CommandTypes.Leaf)]
+        [CommandDescriptor("method1", "method1_name", "method1_description", CommandTypes.Leaf)]
         [CommandChecker(typeof(MockCommandChecker))]
         [CommandTags("m1_tag1", "m1_tag2", "m1_tag3")]
         [CommandCustomProperty("m1_key1", "m1_value1")]
@@ -50,8 +50,8 @@ namespace OneImlx.Terminal.Commands.Declarative
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        [CommandDescriptor("method2", "method2_name", "method2 description", CommandTypes.Leaf)]
-        [CommandChecker(typeof(MockCommandCheckerInner))]
+        [CommandDescriptor("method2", "method2_name", "method2_description", CommandTypes.Leaf)]
+        [CommandChecker(typeof(MockCommandChecker))]
         [CommandTags("m2_tag1")]
         [CommandCustomProperty("m2_key1", "m2_value1")]
         [OptionDescriptor("m2_opt1", nameof(Double), "method2 option1 desc", BehaviorFlags.Disabled)]
@@ -67,7 +67,7 @@ namespace OneImlx.Terminal.Commands.Declarative
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        [CommandDescriptor("method3", "method3_name", "method3 description", CommandTypes.Leaf)]
+        [CommandDescriptor("method3", "method3_name", "method3_description", CommandTypes.Leaf)]
         [CommandTags("m3_tag1", "m3_tag2")]
         [CommandCustomProperty("m3_key1", "m3_value1")]
         [CommandCustomProperty("m3_key2", "m3_value2")]

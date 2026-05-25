@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Threading.Tasks;
@@ -34,7 +31,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             if (string.IsNullOrWhiteSpace(value.DataType))
             {
-                throw new TerminalException(TerminalErrors.InvalidRequest, "The value data type cannot be null or whitespace. value={0}", value.Id);
+                throw new TerminalException(TerminalErrors.InvalidRequest, "The value data type cannot be null or whitespace. value={0}", value.CommandId);
             }
 
             switch (value.DataType)
@@ -54,7 +51,7 @@ namespace OneImlx.Terminal.Commands.Checkers
                 case nameof(DateTime): return MapperResultAsync(typeof(DateTime));
                 default:
                     {
-                        throw new TerminalException(TerminalErrors.InvalidRequest, "The value data type is not supported. value={0} data_type={1}", value.Id, value.DataType);
+                        throw new TerminalException(TerminalErrors.InvalidRequest, "The value data type is not supported. value={0} data_type={1}", value.CommandId, value.DataType);
                     }
             }
         }

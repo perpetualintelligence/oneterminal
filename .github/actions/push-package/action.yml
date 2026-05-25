@@ -9,21 +9,21 @@ inputs:
     default: 'false'
     required: false
   config:
-    description: 'The build configuration (Build or Release)'
+    description: 'The build configuration (Debug or Release)'
     default: Release
     required: true
   version:
     description: 'The package version'
     required: true
   ghapikey:
-    description: 'The Git Hub Api Key for package feed'
+    description: 'The GitHub API Key for package feed'
     required: true
   nugetapikey:
-    description: 'The Nuget Api Key for package feed'
+    description: 'The NuGet API Key for package feed'
     required: true
   registry:
-    description: 'The package registry (oneimlx or nuget)'
-    default: oneimlx
+    description: 'The package registry (GitHub or NuGet)'
+    default: github
     required: true
 runs:
   using: "composite"
@@ -33,11 +33,11 @@ runs:
     - name: Build
       run: dotnet build ./src/${{ inputs.project }}/${{ inputs.project }}.csproj -c ${{ inputs.config }} --verbosity minimal
       shell: bash
-      
-    # Test
+
+    # Test and collect coverage
     - name: Test
       if: ${{ inputs.skiptest == 'false' }}
-      run: dotnet test ./test/${{ inputs.project }}.Tests/${{ inputs.project }}.Tests.csproj -c ${{ inputs.config }} --verbosity minimal
+      run: dotnet test ./test/${{ inputs.project }}.Tests/${{ inputs.project }}.Tests.csproj -c ${{ inputs.config }} --verbosity minimal --collect:"XPlat Code Coverage" --results-directory ./coverage --filter "Category!=Performance"
       shell: bash
 
     # Pack
@@ -47,22 +47,21 @@ runs:
         dotnet pack ./src/${{ inputs.project }}/${{ inputs.project }}.csproj -p:PackageVersion=${{ inputs.version }} --no-build -c ${{ inputs.config }} -o _packages -v minimal
       shell: bash
 
-    # GITHUB
-    - name: Github Push
-      if: ${{ inputs.registry == 'oneimlx' }}
-      run: dotnet nuget push _packages/${{ inputs.project }}.${{ inputs.version }}.nupkg --skip-duplicate --no-symbols --api-key ${{ inputs.ghapikey }} --source oneimlx
+    # GitHub Feed
+    - name: GitHub Push
+      if: ${{ inputs.registry == 'github' }}
+      run: dotnet nuget push _packages/${{ inputs.project }}.${{ inputs.version }}.nupkg --skip-duplicate --no-symbols --api-key ${{ inputs.ghapikey }} --source github
       shell: bash    
 
-    # NUGET - 1
-    # First push to github (for package cadence, Nuget requires package verification)
-    - name: Github Push
+    # NuGet Feed
+    # First push to GitHub (for package cadence, NuGet requires package verification)
+    - name: GitHub Push
       if: ${{ inputs.registry == 'nuget' }}
-      run: dotnet nuget push _packages/${{ inputs.project }}.${{ inputs.version }}.nupkg --skip-duplicate --no-symbols --api-key ${{ inputs.ghapikey }} --source oneimlx
+      run: dotnet nuget push _packages/${{ inputs.project }}.${{ inputs.version }}.nupkg --skip-duplicate --no-symbols --api-key ${{ inputs.ghapikey }} --source github
       shell: bash      
-      
-    # NUGET - 2
-    # Second push to Nuget (for package cadence, Github will be used and in production Nuget after package verification)
-    - name: Nuget Push
+
+    # Second push
+    - name: NuGet Push
       if: ${{ inputs.registry == 'nuget' }}
       run: dotnet nuget push _packages/${{ inputs.project }}.${{ inputs.version }}.nupkg --skip-duplicate --no-symbols --api-key ${{ inputs.nugetapikey }} --source nuget.org
       shell: bash

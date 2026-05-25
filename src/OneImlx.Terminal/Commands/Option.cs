@@ -1,9 +1,6 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using System;
 using System.Collections.Generic;
@@ -18,7 +15,7 @@ namespace OneImlx.Terminal.Commands
     /// <remarks>
     /// <para>
     /// An option id is always unique within a command. By design <see cref="Option"/> implements the default equality
-    /// <see cref="IEquatable{T}"/> and <see cref="GetHashCode()"/> using <see cref="Id"/> property. Thus, two options
+    /// <see cref="IEquatable{T}"/> and <see cref="GetHashCode()"/> using <see cref="CommandId"/> property. Thus, two options
     /// with the same id are equal irrespective of other property values. This is done to improve performance during
     /// lookup and avoid multiple options with same identifiers.
     /// </para>
@@ -69,7 +66,7 @@ namespace OneImlx.Terminal.Commands
         /// The option id.
         /// </summary>
         /// <remarks>The option id is unique with in a command.</remarks>
-        public string Id => Descriptor.Id;
+        public string CommandId => Descriptor.Id;
 
         /// <summary>
         /// The option value.
@@ -130,7 +127,7 @@ namespace OneImlx.Terminal.Commands
         public bool Equals(Option? other)
         {
             return other != null &&
-                   Id == other.Id;
+                   CommandId == other.CommandId;
         }
 
         /// <summary>
@@ -139,7 +136,7 @@ namespace OneImlx.Terminal.Commands
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return CommandId.GetHashCode();
         }
     }
 }
