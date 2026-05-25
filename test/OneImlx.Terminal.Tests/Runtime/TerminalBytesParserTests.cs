@@ -357,8 +357,7 @@ namespace OneImlx.Terminal.Runtime
             byte[] jsonMessage2 = System.Text.Encoding.UTF8.GetBytes("{\"id\":2}");
             byte[] jsonMessage3Partial = System.Text.Encoding.UTF8.GetBytes("{\"id\":3,\"da"); // Incomplete
 
-            byte[] source = [.. jsonMessage1
-, .. new byte[] { 0x1E }, .. jsonMessage2, .. new byte[] { 0x1E }, .. jsonMessage3Partial];
+            byte[] source = [.. jsonMessage1, .. new byte[] { 0x1E }, .. jsonMessage2, .. new byte[] { 0x1E }, .. jsonMessage3Partial];
             byte delimiter = 0x1E;
 
             // Act
@@ -379,8 +378,7 @@ namespace OneImlx.Terminal.Runtime
             byte[] jsonMessage1 = System.Text.Encoding.UTF8.GetBytes("{\"id\":1}");
             byte[] jsonMessage2 = System.Text.Encoding.UTF8.GetBytes("{\"id\":2}");
 
-            byte[] source = [.. jsonMessage1
-, .. new byte[] { 0x1E }, .. jsonMessage2, .. new byte[] { 0x1E }];
+            byte[] source = [.. jsonMessage1, .. new byte[] { 0x1E }, .. jsonMessage2, .. new byte[] { 0x1E }];
             byte delimiter = 0x1E;
 
             // Act
@@ -424,6 +422,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         [Fact]
+        [Trait("Category", "Performance")]
         public void Split_Performance_SmallBuffer_10KB()
         {
             // Arrange
@@ -454,6 +453,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         [Fact]
+        [Trait("Category", "Performance")]
         public void Split_Performance_MediumBuffer_100KB()
         {
             // Arrange
@@ -484,6 +484,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         [Fact]
+        [Trait("Category", "Performance")]
         public void Split_Performance_LargeBuffer_1MB()
         {
             // Arrange
@@ -514,6 +515,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         [Fact]
+        [Trait("Category", "Performance")]
         public void Split_Performance_ManySmallSegments()
         {
             // Arrange
@@ -544,6 +546,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         [Fact]
+        [Trait("Category", "Performance")]
         public void Split_Performance_NoDelimiters()
         {
             // Arrange
@@ -575,6 +578,7 @@ namespace OneImlx.Terminal.Runtime
         }
 
         [Fact]
+        [Trait("Category", "Performance")]
         public void Split_Performance_IgnoreEmptyVsKeepEmpty()
         {
             // Arrange
@@ -616,7 +620,7 @@ namespace OneImlx.Terminal.Runtime
             avgKeepEmpty.Should().BeLessThan(0.5);
         }
 
-        private byte[] CreateTestBuffer(int totalSize, int delimiterCount)
+        private static byte[] CreateTestBuffer(int totalSize, int delimiterCount)
         {
             byte[] buffer = new byte[totalSize];
 

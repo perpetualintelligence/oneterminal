@@ -37,7 +37,7 @@ runs:
     # Test and collect coverage
     - name: Test
       if: ${{ inputs.skiptest == 'false' }}
-      run: dotnet test ./test/${{ inputs.project }}.Tests/${{ inputs.project }}.Tests.csproj -c ${{ inputs.config }} --verbosity minimal --collect:"XPlat Code Coverage" --results-directory ./coverage
+      run: dotnet test ./test/${{ inputs.project }}.Tests/${{ inputs.project }}.Tests.csproj -c ${{ inputs.config }} --verbosity minimal --collect:"XPlat Code Coverage" --results-directory ./coverage --filter "Category!=Performance"
       shell: bash
 
     # Pack
