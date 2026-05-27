@@ -486,18 +486,18 @@ namespace OneImlx.Terminal.Extensions
 
         private static void ProcessArgumentDescriptors(object[] attrs, ICommandBuilder commandBuilder)
         {
-            List<ArgumentDescriptorAttribute> argAttrs = GetDeclarativeInterfaces<ArgumentDescriptorAttribute>(attrs);
-            List<ArgumentValidationAttribute> argVdls = GetDeclarativeInterfaces<ArgumentValidationAttribute>(attrs);
+            List<IArgumentDescriptorAttribute> argAttrs = GetDeclarativeInterfaces<IArgumentDescriptorAttribute>(attrs);
+            List<IArgumentValidationAttribute> argVdls = GetDeclarativeInterfaces<IArgumentValidationAttribute>(attrs);
 
             for (int i = 0; i < argAttrs.Count; i++)
             {
-                ArgumentDescriptorAttribute argAttr = argAttrs[i];
+                IArgumentDescriptorAttribute argAttr = argAttrs[i];
 
                 IArgumentBuilder argBuilder = commandBuilder.DefineArgument(argAttr.Order, argAttr.Id, argAttr.DataType, argAttr.Description, argAttr.Flags);
 
                 for (int j = 0; j < argVdls.Count; j++)
                 {
-                    ArgumentValidationAttribute argVdl = argVdls[j];
+                    IArgumentValidationAttribute argVdl = argVdls[j];
 
                     if (argVdl.ArgumentId.Equals(argAttr.Id))
                     {
@@ -511,18 +511,18 @@ namespace OneImlx.Terminal.Extensions
 
         private static void ProcessOptionDescriptors(object[] attrs, ICommandBuilder commandBuilder)
         {
-            List<OptionDescriptorAttribute> optAttrs = GetDeclarativeInterfaces<OptionDescriptorAttribute>(attrs);
-            List<OptionValidationAttribute> optVdls = GetDeclarativeInterfaces<OptionValidationAttribute>(attrs);
+            List<IOptionDescriptorAttribute> optAttrs = GetDeclarativeInterfaces<IOptionDescriptorAttribute>(attrs);
+            List<IOptionValidationAttribute> optVdls = GetDeclarativeInterfaces<IOptionValidationAttribute>(attrs);
 
             for (int i = 0; i < optAttrs.Count; i++)
             {
-                OptionDescriptorAttribute optAttr = optAttrs[i];
+                IOptionDescriptorAttribute optAttr = optAttrs[i];
 
                 IOptionBuilder optBuilder = commandBuilder.DefineOption(optAttr.Id, optAttr.DataType, optAttr.Description, optAttr.Flags, optAttr.Alias);
 
                 for (int j = 0; j < optVdls.Count; j++)
                 {
-                    OptionValidationAttribute optVdl = optVdls[j];
+                    IOptionValidationAttribute optVdl = optVdls[j];
 
                     if (optVdl.OptionId.Equals(optAttr.Id))
                     {
@@ -536,18 +536,18 @@ namespace OneImlx.Terminal.Extensions
 
         private static void ProcessCustomProperties(object[] attrs, ICommandBuilder commandBuilder)
         {
-            List<CommandCustomPropertyAttribute> cmdPropAttrs = GetDeclarativeInterfaces<CommandCustomPropertyAttribute>(attrs);
+            List<ICommandCustomPropertyAttribute> cmdPropAttrs = GetDeclarativeInterfaces<ICommandCustomPropertyAttribute>(attrs);
 
             for (int i = 0; i < cmdPropAttrs.Count; i++)
             {
-                CommandCustomPropertyAttribute attr = cmdPropAttrs[i];
+                ICommandCustomPropertyAttribute attr = cmdPropAttrs[i];
                 commandBuilder.CustomProperty(attr.Key, attr.Value);
             }
         }
 
         private static void ProcessTags(object[] attrs, ICommandBuilder commandBuilder)
         {
-            CommandTagsAttribute? tagsAttr = GetDeclarativeInterface<CommandTagsAttribute>(attrs);
+            ICommandTagsAttribute? tagsAttr = GetDeclarativeInterface<ICommandTagsAttribute>(attrs);
 
             if (tagsAttr != null)
             {

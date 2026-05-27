@@ -10,6 +10,11 @@ namespace OneImlx.Terminal.Shared.Declarative
     public interface IOptionDescriptorAttribute
     {
         /// <summary>
+        /// The option alias.
+        /// </summary>
+        public string? Alias { get; }
+
+        /// <summary>
         /// The option data type.
         /// </summary>
         public string DataType { get; }
