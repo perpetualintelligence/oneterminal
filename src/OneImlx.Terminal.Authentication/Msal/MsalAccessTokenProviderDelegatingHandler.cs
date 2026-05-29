@@ -22,7 +22,7 @@ namespace OneImlx.Terminal.Authentication.Msal
     public class MsalAccessTokenProviderDelegatingHandler : DelegatingHandler
     {
         private readonly IAccessTokenProvider accessTokenProvider;
-        private readonly ILogger<MsalAccessTokenProviderDelegatingHandler> logger;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MsalAccessTokenProviderDelegatingHandler"/> class.
@@ -30,6 +30,14 @@ namespace OneImlx.Terminal.Authentication.Msal
         /// <param name="accessTokenProvider">The access token provider.</param>
         /// <param name="logger">The logger.</param>
         public MsalAccessTokenProviderDelegatingHandler(IAccessTokenProvider accessTokenProvider, ILogger<MsalAccessTokenProviderDelegatingHandler> logger)
+            : this(accessTokenProvider, (ILogger)logger) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MsalAccessTokenProviderDelegatingHandler"/> class.
+        /// </summary>
+        /// <param name="accessTokenProvider">The access token provider.</param>
+        /// <param name="logger">The logger.</param>
+        protected MsalAccessTokenProviderDelegatingHandler(IAccessTokenProvider accessTokenProvider, ILogger logger)
         {
             this.accessTokenProvider = accessTokenProvider;
             this.logger = logger;
@@ -61,6 +69,7 @@ namespace OneImlx.Terminal.Authentication.Msal
             await PreflightAsync(request, cancellationToken);
 
             // Get the access token using the provider.
+            // Use Properties (netstandard2.0/2.1 compatible; aliases Options in .NET 5+).
             Dictionary<string, object>? propertiesDictionary = request.Properties != null ? new Dictionary<string, object>(request.Properties) : null;
             string token = await accessTokenProvider.GetAuthorizationTokenAsync(request.RequestUri, propertiesDictionary, cancellationToken);
 

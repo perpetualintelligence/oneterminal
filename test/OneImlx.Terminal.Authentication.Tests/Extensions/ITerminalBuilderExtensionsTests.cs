@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Identity.Client;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Moq;
+using OneImlx.Terminal.Authentication.Duende;
 using OneImlx.Terminal.Authentication.Msal;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Hosting;
@@ -47,6 +48,37 @@ namespace OneImlx.Terminal.Authentication.Extensions
                 descriptor.ServiceType == typeof(IPublicClientApplication) && descriptor.Lifetime == ServiceLifetime.Singleton)
                 .And.Contain(static descriptor =>
                 descriptor.ServiceType == typeof(IMsalTokenAcquisition) && descriptor.Lifetime == ServiceLifetime.Scoped)
+                .And.Contain(static descriptor =>
+                descriptor.ServiceType == typeof(IAuthenticationProvider) && descriptor.Lifetime == ServiceLifetime.Scoped)
+                .And.Contain(static descriptor =>
+                descriptor.ServiceType == typeof(IAccessTokenProvider) && descriptor.Lifetime == ServiceLifetime.Scoped)
+                .And.Contain(static descriptor =>
+                descriptor.ServiceType == typeof(TestHandler) && descriptor.Lifetime == ServiceLifetime.Scoped);
+        }
+
+        [Fact]
+        public void AddDuendeAuthentication_RegistersRequiredServicesWithCorrectLifetimes()
+        {
+            var services = new ServiceCollection();
+            services.AddSingleton<ILoggerFactory, NullLoggerFactory>();
+            services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+            services.AddSingleton(new TerminalOptions());
+
+            var builder = new Mock<ITerminalBuilder>();
+            builder.Setup(static b => b.Services).Returns(services);
+            var duendeTokenAcquisition = Mock.Of<IDuendeTokenAcquisition>();
+
+            ITerminalBuilderExtensions.AddDuendeAuthentication<DuendeKiotaAuthProvider, DuendeKiotaAuthProvider, TestHandler>(builder.Object, duendeTokenAcquisition);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            serviceProvider.GetService<IDuendeTokenAcquisition>().Should().NotBeNull();
+            serviceProvider.GetService<IAuthenticationProvider>().Should().BeOfType<DuendeKiotaAuthProvider>();
+            serviceProvider.GetService<IAccessTokenProvider>().Should().BeOfType<DuendeKiotaAuthProvider>();
+            serviceProvider.GetService<TestHandler>().Should().NotBeNull();
+
+            services.Should().Contain(static descriptor =>
+                descriptor.ServiceType == typeof(IDuendeTokenAcquisition) && descriptor.Lifetime == ServiceLifetime.Singleton)
                 .And.Contain(static descriptor =>
                 descriptor.ServiceType == typeof(IAuthenticationProvider) && descriptor.Lifetime == ServiceLifetime.Scoped)
                 .And.Contain(static descriptor =>

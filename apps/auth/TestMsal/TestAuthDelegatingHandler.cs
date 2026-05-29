@@ -7,14 +7,15 @@ using OneImlx.Terminal.Authentication.Msal;
 
 namespace OneImlx.Terminal.Apps.TestAuth
 {
-    public class TestAuthDelegatingHandler : MsalAuthenticationProviderDelegatingHandler
+    public class TestAuthDelegatingHandler : MsalAccessTokenProviderDelegatingHandler
     {
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        /// <param name="authenticationProvider"></param>
-        public TestAuthDelegatingHandler(IAuthenticationProvider authenticationProvider, ILogger<TestAuthDelegatingHandler> logger)
-        : base(authenticationProvider, logger)
+        /// <param name="accessTokenProvider">The access token provider.</param>
+        /// <param name="logger">The logger.</param>
+        public TestAuthDelegatingHandler(IAccessTokenProvider accessTokenProvider, ILogger<TestAuthDelegatingHandler> logger)
+        : base(accessTokenProvider, logger)
         {
         }
 

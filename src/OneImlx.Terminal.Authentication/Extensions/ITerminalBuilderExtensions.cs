@@ -8,6 +8,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using Microsoft.Kiota.Abstractions.Authentication;
+using OneImlx.Terminal.Authentication.Duende;
 using OneImlx.Terminal.Authentication.Msal;
 using OneImlx.Terminal.Hosting;
 using System.Net.Http;
@@ -15,6 +16,7 @@ using System.Net.Http;
 namespace OneImlx.Terminal.Authentication.Extensions
 {
     /// <summary>
+    /// Extension methods for <see cref="ITerminalBuilder"/> to register authentication services.
     /// </summary>
     public static class ITerminalBuilderExtensions
     {
@@ -40,6 +42,36 @@ namespace OneImlx.Terminal.Authentication.Extensions
 
             // Scoped services for token acquisition and providers
             builder.Services.AddScoped<IMsalTokenAcquisition, MsalPublicClientTokenAcquisition>();
+            builder.Services.AddScoped<IAuthenticationProvider, TAuthenticationProvider>();
+            builder.Services.AddScoped<IAccessTokenProvider, TAccessTokenProvider>();
+
+            // Directly add scoped TDelegatingHandler to support custom Http message handler.
+            builder.Services.AddScoped<TDelegatingHandler>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds Duende IdentityServer authentication to the service collection.
+        /// </summary>
+        /// <typeparam name="TAuthenticationProvider">The type of the authentication provider.</typeparam>
+        /// <typeparam name="TAccessTokenProvider">The type of the access token provider.</typeparam>
+        /// <typeparam name="TDelegatingHandler">The type of the custom HTTP delegating handler.</typeparam>
+        /// <param name="builder">The terminal builder.</param>
+        /// <param name="duendeTokenAcquisition">The Duende token acquisition instance.</param>
+        /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
+        public static ITerminalBuilder AddDuendeAuthentication<TAuthenticationProvider, TAccessTokenProvider, TDelegatingHandler>(
+            this ITerminalBuilder builder,
+            IDuendeTokenAcquisition duendeTokenAcquisition
+        )
+            where TAuthenticationProvider : class, IAuthenticationProvider
+            where TAccessTokenProvider : class, IAccessTokenProvider
+            where TDelegatingHandler : DelegatingHandler
+        {
+            // Singleton for the Duende token acquisition
+            builder.Services.AddSingleton(duendeTokenAcquisition);
+
+            // Scoped services for providers
             builder.Services.AddScoped<IAuthenticationProvider, TAuthenticationProvider>();
             builder.Services.AddScoped<IAccessTokenProvider, TAccessTokenProvider>();
 
