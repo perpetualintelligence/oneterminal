@@ -2,31 +2,30 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using System.Collections.Generic;
+using System.Threading;
 using FluentAssertions;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Shared;
-using System.Collections.Generic;
-using System.Threading;
 using Xunit;
 
 namespace OneImlx.Terminal.Commands
 {
-    public class CommandContextFactoryTests
+    public class CommandContextTests
     {
         [Fact]
-        public void Create_SetsRequestContextAndProperties()
+        public void Constructor_Sets_Request_RouterContext_And_Properties()
         {
-            var factory = new CommandContextFactory();
-            var request = new CommandRequest("req-1", "run cmd");
+            var request = new CommandRequest("req-1", "test command");
             var routerContext = new MockRoutingContext(TerminalStartMode.Console, CancellationToken.None);
             var properties = new Dictionary<string, object> { ["key"] = "value" };
 
-            var result = factory.Create(request, routerContext, properties);
+            ICommandContext context = new CommandContextFactory().Create(request, routerContext, properties);
 
-            result.Properties.Should().BeSameAs(properties);
-            result.GetCommandRequest().Should().BeSameAs(request);
-            result.GetRouterContext().Should().BeSameAs(routerContext);
+            context.Properties.Should().BeSameAs(properties);
+            context.GetCommandRequest().Should().BeSameAs(request);
+            context.GetRouterContext().Should().BeSameAs(routerContext);
         }
     }
 }

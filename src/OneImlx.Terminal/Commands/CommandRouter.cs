@@ -47,7 +47,7 @@ namespace OneImlx.Terminal.Commands
         {
             ParsedCommand? parsedCommand = null;
             CommandResult? commandResult = null!;
-            CommandRequest request = context.Request;
+            CommandRequest request = context.GetCommandRequest();
             string requestId = request.Id;
 
             try

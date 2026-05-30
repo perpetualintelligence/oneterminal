@@ -15,15 +15,5 @@ namespace OneImlx.Terminal.Shared
         /// The additional router properties.
         /// </summary>
         public Dictionary<string, object> Properties { get; }
-
-        /// <summary>
-        /// The terminal request.
-        /// </summary>
-        public CommandRequest Request { get; }
-
-        /// <summary>
-        /// The terminal router context.
-        /// </summary>
-        public TerminalRouterContext RouterContext { get; }
     }
 }

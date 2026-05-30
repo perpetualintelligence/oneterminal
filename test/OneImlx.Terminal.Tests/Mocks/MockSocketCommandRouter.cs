@@ -37,8 +37,9 @@ namespace OneImlx.Terminal.Mocks
         public async Task RouteCommandAsync(ICommandContext context)
         {
             // Stats
+            CommandRequest commandRequest  = context.GetCommandRequest();
             RouteCalled = true;
-            RawCommandStrings.Add(context.Request.Raw);
+            RawCommandStrings.Add(commandRequest.Raw);
             RouteCounter += 1;
 
             // Add delay

@@ -7,9 +7,12 @@ using Moq;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Parsers;
 using OneImlx.Terminal.Extensions;
+using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Shared;
 using OneImlx.Test.FluentAssertions;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using Xunit;
 
 namespace OneImlx.Terminal.Tests.Extensions
@@ -18,219 +21,322 @@ namespace OneImlx.Terminal.Tests.Extensions
     {
         private readonly Command command;
         private readonly ParsedCommand parsedCommand;
-        private readonly ITerminalTextHandler textHandler;
 
         public ICommandContextExtensionsTests()
         {
-            textHandler = new Mock<ITerminalTextHandler>().Object;
-            var optionDescriptor = new OptionDescriptor("opt1", "System.Int32", "Option 1", 0, null);
-            var options = new Options(textHandler, new[] { new Option(optionDescriptor, 123) });
-            var argumentDescriptor = new ArgumentDescriptor(0, "arg1", "System.Int32", "Argument 1", 0);
-            var arguments = new Arguments(textHandler, new[] { new Argument(argumentDescriptor, 42) });
-            command = new Command(new CommandDescriptor("id1", "name1", "desc1", CommandTypes.Leaf), arguments, options);
+            ITerminalTextHandler textHandler = new Mock<ITerminalTextHandler>().Object;
+
+            OptionDescriptor optionDescriptor = new("opt1", "System.Int32", "Option 1", 0, null);
+            Option option = new(optionDescriptor, 123);
+            Options options = new(textHandler, new[] { option });
+
+            ArgumentDescriptor argumentDescriptor = new(0, "arg1", "System.Int32", "Argument 1", 0);
+            Argument argument = new(argumentDescriptor, 42);
+            Arguments arguments = new(textHandler, new[] { argument });
+
+            CommandDescriptor commandDescriptor = new("id1", "name1", "desc1", CommandTypes.Leaf);
+            command = new Command(commandDescriptor, arguments, options);
             parsedCommand = new ParsedCommand(command, null);
         }
 
-        [Fact]
-        public void GetParsedCommand_ReturnsParsedCommand_WhenAvailable()
+        private static ICommandContext Context(Dictionary<string, object>? properties = null)
         {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            mockContext.Object.GetParsedCommand().Should().Be(parsedCommand);
+            Mock<ICommandContext> mock = new();
+            Dictionary<string, object> props = properties ?? new Dictionary<string, object>();
+            mock.Setup(x => x.Properties).Returns(props);
+            return mock.Object;
         }
 
         [Fact]
-        public void GetParsedCommand_ThrowsTerminalException_WhenNotAvailable()
+        public void GetParsedCommand_Returns_WhenAvailable()
         {
-            var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns([]);
-            var act = () => mockContext.Object.GetParsedCommand();
-            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The parsed command is missing in the context.");
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            ParsedCommand result = context.GetParsedCommand();
+            result.Should().Be(parsedCommand);
         }
 
         [Fact]
-        public void GetParsedCommand_ThrowsTerminalException_WhenWrongType()
+        public void GetParsedCommand_Throws_WhenMissing()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, "wrong type" } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            var act = () => mockContext.Object.GetParsedCommand();
-            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The parsed command is missing in the context.");
+            ICommandContext context = Context();
+            Action act = () => context.GetParsedCommand();
+            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError)
+                .WithErrorDescription("The parsed command is missing in the context.");
         }
 
         [Fact]
-        public void GetCommand_ReturnsCommand_WhenParsedCommandAvailable()
+        public void GetParsedCommand_Throws_WhenWrongType()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            mockContext.Object.GetCommand().Should().Be(command);
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, "wrong" } };
+            ICommandContext context = Context(properties);
+            Action act = () => context.GetParsedCommand();
+            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError);
         }
 
         [Fact]
-        public void GetCommand_ThrowsTerminalException_WhenParsedCommandNotAvailable()
+        public void TryGetParsedCommand_ReturnsTrue_WhenAvailable()
         {
-            var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns([]);
-            var act = () => mockContext.Object.GetCommand();
-            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The parsed command is missing in the context.");
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetParsedCommand(out ParsedCommand? result);
+            found.Should().BeTrue();
+            result.Should().Be(parsedCommand);
         }
 
         [Fact]
-        public void GetCommandResult_ReturnsCommandResult_WhenAvailable()
+        public void TryGetParsedCommand_ReturnsFalse_WhenMissing()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var commandResult = new CommandResult();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.CommandResult, commandResult } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            mockContext.Object.GetCommandResult().Should().Be(commandResult);
+            ICommandContext context = Context();
+            bool found = context.TryGetParsedCommand(out ParsedCommand? result);
+            found.Should().BeFalse();
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void GetCommandResult_ThrowsTerminalException_WhenNotAvailable()
+        public void SetParsedCommand_SetsValue()
         {
-            var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns([]);
-            var act = () => mockContext.Object.GetCommandResult();
+            ICommandContext context = Context(new Dictionary<string, object>());
+            context.SetParsedCommand(parsedCommand);
+            context.Properties[TerminalIdentifiers.ParsedCommand].Should().Be(parsedCommand);
+        }
+
+        [Fact]
+        public void GetCommand_Returns_WhenAvailable()
+        {
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            Command result = context.GetCommand();
+            result.Should().Be(command);
+        }
+
+        [Fact]
+        public void GetCommand_Throws_WhenParsedCommandMissing()
+        {
+            ICommandContext context = Context();
+            Action act = () => context.GetCommand();
+            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError);
+        }
+
+        [Fact]
+        public void GetCommandRequest_Returns_WhenAvailable()
+        {
+            CommandRequest request = new("req-1", "cmd");
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandRequest, request } };
+            ICommandContext context = Context(properties);
+            CommandRequest result = context.GetCommandRequest();
+            result.Should().BeSameAs(request);
+        }
+
+        [Fact]
+        public void GetCommandRequest_Throws_WhenMissing()
+        {
+            ICommandContext context = Context();
+            Action act = () => context.GetCommandRequest();
+            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError)
+                .WithErrorDescription("The command request is missing in the context.");
+        }
+
+        [Fact]
+        public void TryGetCommandRequest_ReturnsTrue_WhenAvailable()
+        {
+            CommandRequest request = new("req-1", "cmd");
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandRequest, request } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetCommandRequest(out CommandRequest? result);
+            found.Should().BeTrue();
+            result.Should().BeSameAs(request);
+        }
+
+        [Fact]
+        public void TryGetCommandRequest_ReturnsFalse_WhenMissing()
+        {
+            ICommandContext context = Context();
+            bool found = context.TryGetCommandRequest(out CommandRequest? result);
+            found.Should().BeFalse();
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public void SetCommandRequest_SetsValue()
+        {
+            CommandRequest request = new("req-1", "cmd");
+            ICommandContext context = Context(new Dictionary<string, object>());
+            context.SetCommandRequest(request);
+            context.Properties[TerminalIdentifiers.CommandRequest].Should().BeSameAs(request);
+        }
+
+        [Fact]
+        public void GetRouterContext_Returns_WhenAvailable()
+        {
+            MockRoutingContext routerContext = new(TerminalStartMode.Console, CancellationToken.None);
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.RouterContext, routerContext } };
+            ICommandContext context = Context(properties);
+            TerminalRouterContext result = context.GetRouterContext();
+            result.Should().BeSameAs(routerContext);
+        }
+
+        [Fact]
+        public void GetRouterContext_Throws_WhenMissing()
+        {
+            ICommandContext context = Context();
+            Action act = () => context.GetRouterContext();
+            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The router context is missing in the context.");
+        }
+
+        [Fact]
+        public void TryGetRouterContext_ReturnsTrue_WhenAvailable()
+        {
+            MockRoutingContext routerContext = new(TerminalStartMode.Console, CancellationToken.None);
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.RouterContext, routerContext } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetRouterContext(out TerminalRouterContext? result);
+            found.Should().BeTrue();
+            result.Should().BeSameAs(routerContext);
+        }
+
+        [Fact]
+        public void TryGetRouterContext_ReturnsFalse_WhenMissing()
+        {
+            ICommandContext context = Context();
+            bool found = context.TryGetRouterContext(out TerminalRouterContext? result);
+            found.Should().BeFalse();
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public void SetRouterContext_SetsValue()
+        {
+            MockRoutingContext routerContext = new(TerminalStartMode.Console, CancellationToken.None);
+            ICommandContext context = Context(new Dictionary<string, object>());
+            context.SetRouterContext(routerContext);
+            context.Properties[TerminalIdentifiers.RouterContext].Should().BeSameAs(routerContext);
+        }
+
+        [Fact]
+        public void GetCommandResult_Returns_WhenAvailable()
+        {
+            CommandResult commandResult = new();
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandResult, commandResult } };
+            ICommandContext context = Context(properties);
+            CommandResult result = context.GetCommandResult();
+            result.Should().Be(commandResult);
+        }
+
+        [Fact]
+        public void GetCommandResult_Throws_WhenMissing()
+        {
+            ICommandContext context = Context();
+            Action act = () => context.GetCommandResult();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The command result is missing in the context.");
         }
 
         [Fact]
-        public void GetCommandResult_ThrowsTerminalException_WhenWrongType()
+        public void TryGetCommandResult_ReturnsTrue_WhenAvailable()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.CommandResult, "wrong type" } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            var act = () => mockContext.Object.GetCommandResult();
-            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The command result is missing in the context.");
+            CommandResult commandResult = new();
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandResult, commandResult } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetCommandResult(out CommandResult? result);
+            found.Should().BeTrue();
+            result.Should().Be(commandResult);
         }
 
         [Fact]
-        public void TryGetCommandResult_ReturnsTrue_WhenCommandResultAvailable()
+        public void TryGetCommandResult_ReturnsFalse_WhenMissing()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var commandResult = new CommandResult();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.CommandResult, commandResult } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            mockContext.Object.TryGetCommandResult(out var outResult).Should().BeTrue();
-            outResult.Should().Be(commandResult);
+            ICommandContext context = Context();
+            bool found = context.TryGetCommandResult(out CommandResult? result);
+            found.Should().BeFalse();
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void TryGetCommandResult_ReturnsFalse_WhenCommandResultNotAvailable()
+        public void SetCommandResult_SetsValue()
         {
-            var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns([]);
-            mockContext.Object.TryGetCommandResult(out var outResult).Should().BeFalse();
+            CommandResult commandResult = new();
+            ICommandContext context = Context(new Dictionary<string, object>());
+            context.SetCommandResult(commandResult);
+            context.Properties[TerminalIdentifiers.CommandResult].Should().Be(commandResult);
         }
 
         [Fact]
-        public void TryGetParsedCommand_ReturnsTrue_WhenParsedCommandAvailable()
+        public void GetRequiredOptionValue_Returns_WhenAvailable()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            mockContext.Object.TryGetParsedCommand(out var outResult).Should().BeTrue();
-            outResult.Should().Be(parsedCommand);
-        }
-
-        [Fact]
-        public void TryGetParsedCommand_ReturnsFalse_WhenParsedCommandNotAvailable()
-        {
-            var mockContext = new Mock<ICommandContext>();
-            mockContext.Setup(x => x.Properties).Returns([]);
-            mockContext.Object.TryGetParsedCommand(out var outResult).Should().BeFalse();
-        }
-
-        [Fact]
-        public void SetParsedCommand_AddsParsedCommandToProperties()
-        {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object>();
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            mockContext.Object.SetParsedCommand(parsedCommand);
-            properties.Should().ContainKey(TerminalIdentifiers.ParsedCommand);
-            properties[TerminalIdentifiers.ParsedCommand].Should().Be(parsedCommand);
-        }
-
-        [Fact]
-        public void SetParsedCommand_OverwritesExistingParsedCommand()
-        {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            var newParsedCommand = new ParsedCommand(command, null);
-            mockContext.Object.SetParsedCommand(newParsedCommand);
-            properties[TerminalIdentifiers.ParsedCommand].Should().Be(newParsedCommand);
-        }
-
-        [Fact]
-        public void SetCommandResult_AddsCommandResultToProperties()
-        {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object>();
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            var commandResult = new CommandResult();
-            mockContext.Object.SetCommandResult(commandResult);
-            properties.Should().ContainKey(TerminalIdentifiers.CommandResult);
-            properties[TerminalIdentifiers.CommandResult].Should().Be(commandResult);
-        }
-
-        [Fact]
-        public void SetCommandResult_OverwritesExistingCommandResult()
-        {
-            var mockContext = new Mock<ICommandContext>();
-            var commandResult = new CommandResult();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.CommandResult, commandResult } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            var newCommandResult = new CommandResult();
-            mockContext.Object.SetCommandResult(newCommandResult);
-            properties[TerminalIdentifiers.CommandResult].Should().Be(newCommandResult);
-        }
-
-        [Fact]
-        public void GetRequiredOptionValue_ReturnsOptionValue_WhenAvailable()
-        {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            int value = mockContext.Object.GetRequiredOptionValue<int>("opt1");
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            int value = context.GetRequiredOptionValue<int>("opt1");
             value.Should().Be(123);
         }
 
         [Fact]
-        public void GetRequiredOptionValue_ThrowsTerminalException_WhenOptionsNull()
+        public void GetRequiredOptionValue_Throws_WhenOptionsNull()
         {
-            var textHandler = new Mock<ITerminalTextHandler>().Object;
-            var cmd = new Command(new CommandDescriptor("id2", "name2", "desc2", CommandTypes.Leaf), new Arguments(textHandler, new List<Argument>()), null);
-            var mockContext = new Mock<ICommandContext>();
-            var parsedCmd = new ParsedCommand(cmd, null);
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCmd } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            var act = () => mockContext.Object.GetRequiredOptionValue<int>("opt1");
+            ITerminalTextHandler textHandler = new Mock<ITerminalTextHandler>().Object;
+            CommandDescriptor commandDescriptor = new("id2", "name2", "desc2", CommandTypes.Leaf);
+            Arguments arguments = new(textHandler, new List<Argument>());
+            Command cmd = new(commandDescriptor, arguments, null);
+            ParsedCommand parsedCmd = new(cmd, null);
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCmd } };
+            ICommandContext context = Context(properties);
+            Action act = () => context.GetRequiredOptionValue<int>("opt1");
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.UnsupportedOption);
         }
 
         [Fact]
-        public void TryGetOptionValue_ReturnsFalse_WhenOptionNotAvailable()
+        public void TryGetOptionValue_ReturnsTrue_WhenAvailable()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            bool found = mockContext.Object.TryGetOptionValue<int>("notfound", out var value);
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetOptionValue<int>("opt1", out int value);
+            found.Should().BeTrue();
+            value.Should().Be(123);
+        }
+
+        [Fact]
+        public void TryGetOptionValue_ReturnsFalse_WhenNotAvailable()
+        {
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetOptionValue<int>("notfound", out int value);
             found.Should().BeFalse();
         }
 
         [Fact]
-        public void TryGetOptionValue_ReturnsTrue_WhenOptionAvailable()
+        public void GetRequiredArgumentValue_ById_Returns_WhenAvailable()
         {
-            var mockContext = new Mock<ICommandContext>();
-            var properties = new Dictionary<string, object> { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            mockContext.Setup(x => x.Properties).Returns(properties);
-            bool found = mockContext.Object.TryGetOptionValue<int>("opt1", out var value);
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            int value = context.GetRequiredArgumentValue<int>("arg1");
+            value.Should().Be(42);
+        }
+
+        [Fact]
+        public void GetRequiredArgumentValue_ByIndex_Returns_WhenAvailable()
+        {
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            int value = context.GetRequiredArgumentValue<int>(0);
+            value.Should().Be(42);
+        }
+
+        [Fact]
+        public void TryGetArgumentValue_ReturnsTrue_WhenAvailable()
+        {
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetArgumentValue<int>("arg1", out int value);
             found.Should().BeTrue();
-            value.Should().Be(123);
+            value.Should().Be(42);
+        }
+
+        [Fact]
+        public void TryGetArgumentValue_ReturnsFalse_WhenNotAvailable()
+        {
+            Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
+            ICommandContext context = Context(properties);
+            bool found = context.TryGetArgumentValue<int>("notfound", out int value);
+            found.Should().BeFalse();
         }
     }
 }

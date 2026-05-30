@@ -15,6 +15,7 @@ using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Client.Grpc;
 using OneImlx.Terminal.Shared.Declarative;
+using OneImlx.Terminal.Extensions;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
@@ -45,7 +46,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 var clientTasks = new Task[maxClients];
                 for (int idx = 0; idx < clientTasks.Length; idx++)
                 {
-                    clientTasks[idx] = StartClientAsync(serverAddress, idx, context.RouterContext.TerminalCancellationToken);
+                    clientTasks[idx] = StartClientAsync(serverAddress, idx, context.GetRouterContext().TerminalCancellationToken);
                 }
 
                 await Task.WhenAll(clientTasks);

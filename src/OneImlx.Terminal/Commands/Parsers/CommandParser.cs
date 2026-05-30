@@ -41,9 +41,10 @@ namespace OneImlx.Terminal.Commands.Parsers
         /// <inheritdoc/>
         public async Task ParseCommandAsync(ICommandContext context)
         {
-            logger.LogDebug("Parse request. request={0} raw={1}", context.Request.Id, context.Request.Raw);
-            TerminalParsedRequest parsedOutput = await terminalRequestParser.ParseRequestAsync(context.Request).ConfigureAwait(false);
-            context.SetParsedCommand(await MapParsedRequestAsync(context.Request, parsedOutput).ConfigureAwait(false));
+            CommandRequest commandRequest = context.GetCommandRequest();
+            logger.LogDebug("Parse request. request={0} raw={1}", commandRequest.Id, commandRequest.Raw);
+            TerminalParsedRequest parsedOutput = await terminalRequestParser.ParseRequestAsync(commandRequest).ConfigureAwait(false);
+            context.SetParsedCommand(await MapParsedRequestAsync(commandRequest, parsedOutput).ConfigureAwait(false));
         }
 
         private async Task<(List<CommandDescriptor> parsedCommands, List<Argument> parsedArguments)> MapCommandAndArguments(TerminalParsedRequest parsedOutput)

@@ -36,7 +36,8 @@ namespace OneImlx.Terminal.Commands.Handlers
         /// <inheritdoc/>
         public async Task HandleCommandAsync(ICommandContext context)
         {
-            logger.LogDebug("Handle request. request={0}", context.Request.Id);
+            CommandRequest commandRequest = context.GetCommandRequest();
+            logger.LogDebug("Handle request. request={0}", commandRequest.Id);
 
             // Check and run the command
             (CommandCheckerResult checkerResult, CommandRunnerResult runnerResult) = await CheckAndRunCommandInnerAsync(context).ConfigureAwait(false);

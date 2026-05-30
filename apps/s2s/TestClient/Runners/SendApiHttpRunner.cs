@@ -12,6 +12,7 @@ using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Declarative;
+using OneImlx.Terminal.Extensions;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
@@ -44,7 +45,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 var clientTasks = new Task[maxClients];
                 for (int idx = 0; idx < clientTasks.Length; idx++)
                 {
-                    clientTasks[idx] = StartHttpClientAsync(serverAddress, idx, context.RouterContext.TerminalCancellationToken);
+                    clientTasks[idx] = StartHttpClientAsync(serverAddress, idx, context.GetRouterContext().TerminalCancellationToken);
                 }
 
                 await Task.WhenAll(clientTasks);
@@ -55,7 +56,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 stopwatch.Stop();
                 await terminalConsole.WriteLineColorAsync(ConsoleColor.Green, $"{_commandCount} Terminal HTTP, {_requestCount} ASP.NET HTTP, {maxClients} Clients, {stopwatch.Elapsed.TotalMilliseconds} Milliseconds");
             }
-        }  
+        }
 
         private async Task SendTerminalHttpCommandsAsync(HttpClient client, int clientIndex, CancellationToken cToken)
         {

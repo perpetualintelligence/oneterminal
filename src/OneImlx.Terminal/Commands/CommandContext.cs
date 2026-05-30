@@ -2,6 +2,7 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using System;
 using System.Collections.Generic;
@@ -22,16 +23,6 @@ namespace OneImlx.Terminal.Commands
         public Dictionary<string, object> Properties { get; }
 
         /// <summary>
-        /// The terminal request.
-        /// </summary>
-        public CommandRequest Request { get; }
-
-        /// <summary>
-        /// The terminal router context.
-        /// </summary>
-        public TerminalRouterContext RouterContext { get; }
-
-        /// <summary>
         /// Initialize a new instance of <see cref="CommandContext"/>.
         /// </summary>
         /// <param name="request">The request to process.</param>
@@ -42,9 +33,19 @@ namespace OneImlx.Terminal.Commands
             TerminalRouterContext context,
             Dictionary<string, object> properties)
         {
+            if (request is null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             Properties = properties ?? throw new ArgumentNullException(nameof(properties));
-            Request = request ?? throw new ArgumentNullException(nameof(request));
-            RouterContext = context ?? throw new ArgumentNullException(nameof(context));
+            this.SetCommandRequest(request);
+            this.SetRouterContext(context);
         }
     }
 }

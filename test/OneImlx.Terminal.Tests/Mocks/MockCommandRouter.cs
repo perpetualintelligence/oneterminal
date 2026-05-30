@@ -28,7 +28,7 @@ namespace OneImlx.Terminal.Mocks
 
         public List<string> MultipleRawString { get; set; }
 
-        public ICommandContext PassedContext { get; private set; }
+        public ICommandContext? PassedContext { get; private set; }
 
         public string? RawCommandString { get; set; }
 
@@ -51,8 +51,9 @@ namespace OneImlx.Terminal.Mocks
             {
                 // Your critical section code here
                 RouteCalled = true;
-                RawCommandString = context.Request.Raw;
-                MultipleRawString.Add(context.Request.Raw);
+                CommandRequest request = context.GetCommandRequest();
+                RawCommandString = request.Raw;
+                MultipleRawString.Add(request.Raw);
                 RouteCounter += 1;
 
                 if (routeDelay != null)
