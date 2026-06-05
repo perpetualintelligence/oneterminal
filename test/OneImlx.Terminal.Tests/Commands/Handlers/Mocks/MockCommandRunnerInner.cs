@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Handlers.Mocks
 {
-    internal class MockCommandRunnerInner : IDelegateCommandRunner, ICommandRunner<CommandRunnerResult>
+    internal class MockCommandRunnerInner : IDelegateCommandRunner, ICommandRunner<ICommandContext, CommandRunnerResult>
     {
         public bool DelegateHelpCalled { get; private set; }
 

@@ -2,13 +2,13 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System.Threading.Tasks;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Shared;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Handlers.Mocks
 {
-    internal class MockGenericCommandRunnerInner : CommandRunner<MockGenericCommandRunnerResult>
+    internal class MockGenericCommandRunnerInner : CommandRunner<ICommandContext, MockGenericCommandRunnerResult>
     {
         public bool Called { get; private set; }
 

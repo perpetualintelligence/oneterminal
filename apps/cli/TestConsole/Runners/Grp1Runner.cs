@@ -23,7 +23,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     [CommandDescriptor("grp1", "Group 1", "Group 1 as a composite group", CommandTypes.CompositeGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "composite")]
-    public class Grp1Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Grp1Runner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Grp1Runner> logger;
@@ -34,7 +34,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             logger.LogInformation("Executing grp1 base command");
             await terminalConsole.WriteLineAsync("Group 1 (CompositeGroup)");

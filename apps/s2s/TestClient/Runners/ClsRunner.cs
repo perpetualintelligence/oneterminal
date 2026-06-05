@@ -11,7 +11,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// Clears the console.
     /// </summary>
     [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandTypes.Native)]
-    public class ClsRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class ClsRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClsRunner"/> class.
@@ -23,7 +23,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.ClearAsync();
             return await CommandRunnerResult.EmptyAsync();

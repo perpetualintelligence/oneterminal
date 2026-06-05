@@ -9,7 +9,7 @@ using OneImlx.Terminal.Shared.Declarative;
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandDescriptor("tc", "Test root", "Sample test client for testing the server.", CommandTypes.Root)]
-    public class TestClientRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class TestClientRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         public TestClientRunner(ITerminalConsole terminalConsole, ILogger<TestClientRunner> logger)
         {
@@ -17,7 +17,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.logger = logger;
         }
 
-        public override Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             terminalConsole.WriteLineAsync("Test client");
             return Task.FromResult(new CommandRunnerResult());

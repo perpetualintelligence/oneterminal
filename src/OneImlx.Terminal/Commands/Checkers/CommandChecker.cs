@@ -15,7 +15,7 @@ namespace OneImlx.Terminal.Commands.Checkers
     /// <summary>
     /// The default command checker.
     /// </summary>
-    public sealed class CommandChecker : ICommandChecker
+    public class CommandChecker : ICommandChecker
     {
         /// <summary>
         /// Initialize a new instance.
@@ -33,7 +33,7 @@ namespace OneImlx.Terminal.Commands.Checkers
         }
 
         /// <inheritdoc/>
-        public async Task<CommandCheckerResult> CheckCommandAsync(ICommandContext context)
+        public virtual async Task<CommandCheckerResult> CheckCommandAsync(ICommandContext context)
         {
             Command command = context.GetCommand();
             logger.LogDebug("Check command. command={0}", command.Id);

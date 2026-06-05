@@ -19,7 +19,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     [CommandDescriptor("grp2", "Group 2", "Group 2 CompositeGroup under grp1 with cmd4, cmd5, cmd6.", CommandTypes.CompositeGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "composite", "nested")]
-    public class Grp2Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Grp2Runner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Grp2Runner> logger;
@@ -30,7 +30,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             logger.LogInformation("Executing grp2 base command");
             await terminalConsole.WriteLineAsync("Group 2 (CompositeGroup under grp1)");

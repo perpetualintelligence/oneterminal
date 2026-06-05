@@ -16,7 +16,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     [CommandOwners("grp3")]
     [CommandDescriptor("cmd9", "Command 9", "Command 9 under grp3 with custom checker.", CommandTypes.Leaf)]
     [CommandChecker(typeof(Cmd3CommandChecker))]
-    public class Cmd9Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Cmd9Runner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Cmd9Runner> logger;
@@ -27,7 +27,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             logger.LogInformation("Executing grp3 cmd9");
             await terminalConsole.WriteLineAsync("Executing: grp3 cmd9");

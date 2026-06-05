@@ -12,7 +12,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// Runs native OS commands.
     /// </summary>
     [CommandDescriptor("help", "Help Command", "Displays all supported commands.", CommandTypes.Native)]
-    public class HelpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class HelpRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HelpRunner"/> class.
@@ -24,7 +24,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             var commands = await commandStore.AllAsync();
 

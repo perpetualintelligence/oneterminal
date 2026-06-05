@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer.Runners
     [CommandOwners("grp1")]
     [CommandDescriptor("grp2", "Group 2", "Group2 description.", CommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(CommandChecker))]
-    public class Grp2Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Grp2Runner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Grp2Runner> logger;
@@ -24,7 +24,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.WriteLineAsync("Group2 command called.");
             return new CommandRunnerResult("Response from grp2");

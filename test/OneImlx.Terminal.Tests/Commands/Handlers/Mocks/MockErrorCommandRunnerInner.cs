@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Handlers.Mocks
 {
-    internal class MockErrorCommandRunnerInner : IDelegateCommandRunner, ICommandRunner<CommandRunnerResult>
+    internal class MockErrorCommandRunnerInner : IDelegateCommandRunner, ICommandRunner<ICommandContext, CommandRunnerResult>
     {
         public async Task<CommandRunnerResult> DelegateHelpAsync(ICommandContext context, ITerminalHelpProvider helpProvider, ILogger? logger = null)
         {

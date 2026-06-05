@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace OneImlx.Terminal.Commands
 {
     /// <summary>
-    /// Identifies <see cref="CommandRunner{TResult}.RunCommandAsync(ICommandContext)"/> for commands in
+    /// Identifies <see cref="CommandRunner{TContext, TResult}.RunCommandAsync(TContext)"/> for commands in
     /// a <see cref="CommandTypes.CompositeGroup"/>.
     /// </summary>
     /// <remarks>
@@ -50,7 +50,9 @@ namespace OneImlx.Terminal.Commands
         /// <remarks>
         /// THIS METHOD IS PART OF INTERNAL INFRASTRUCTURE AND IS NOT INTENDED FOR DIRECT USE BY APPLICATION CODE.
         /// </remarks>
-        public async Task<TResult> RunAsync<TResult>(CommandRunner<TResult> commandRunner, ICommandContext context) where TResult : CommandRunnerResult
+        public async Task<TResult> RunAsync<TContext, TResult>(CommandRunner<TContext, TResult> commandRunner, TContext context)
+            where TContext : ICommandContext
+            where TResult : CommandRunnerResult
         {
             // Ensure command matches the passed context
             ParsedCommand parsedCommand = context.GetParsedCommand();

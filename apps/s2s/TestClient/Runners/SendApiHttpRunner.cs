@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
     [CommandDescriptor("apihttp", "HTTP test", "Send HTTP commands to both Terminal router and ASP.NET API server.", CommandTypes.Leaf)]
-    public class SendApiHttpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class SendApiHttpRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         public SendApiHttpRunner(IConfiguration configuration, ITerminalConsole terminalConsole, IHttpClientFactory httpClientFactory)
         {
@@ -27,7 +27,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             string ip = configuration["testclient:testserver:ip"] ?? throw new InvalidOperationException("Server IP address is missing.");
             string port = configuration.GetValue<string>("testclient:testserver:port") ?? throw new InvalidOperationException("Server port is missing.");

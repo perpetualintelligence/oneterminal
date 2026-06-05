@@ -379,7 +379,7 @@ namespace OneImlx.Terminal.Extensions
         /// <typeparam name="TRunner">The command runner type.</typeparam>
         /// <returns>The configured <see cref="ITerminalBuilder"/>.</returns>
         /// <returns>The configured <see cref="ICommandBuilder"/>.</returns>
-        public static ICommandBuilder DefineCommand<TRunner>(this ITerminalBuilder builder, string id, string name, string description, int commandType) where TRunner : ICommandRunner<CommandRunnerResult>
+        public static ICommandBuilder DefineCommand<TRunner>(this ITerminalBuilder builder, string id, string name, string description, int commandType) where TRunner : ICommandRunner<ICommandContext, CommandRunnerResult>
         {
             return DefineCommand(builder, id, name, description, typeof(CommandChecker), typeof(TRunner), commandType);
         }

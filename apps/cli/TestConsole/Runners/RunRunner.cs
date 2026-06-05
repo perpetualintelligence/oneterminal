@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// </summary>
     [CommandDescriptor("run", "Run Command", "Runs a native OS command.", CommandTypes.Native)]
     [ArgumentDescriptor(0, "cmd", nameof(String), "The full native command to execute, e.g., 'ls -all'", BehaviorFlags.Required)]
-    public class RunRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class RunRunner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RunRunner"/> class.
@@ -29,7 +29,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             var command = context.GetParsedCommand().Command;
             var osCommand = command.GetRequiredArgumentValue<string>("cmd");

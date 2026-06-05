@@ -15,7 +15,9 @@ namespace OneImlx.Terminal.Commands.Runners
     /// The framework resolves and invokes the appropriate runner for each command, enabling
     /// modular and isolated command execution within a terminal application.
     /// </summary>
-    public abstract class CommandRunner<TResult> : IDelegateCommandRunner, ICommandRunner<TResult> where TResult : CommandRunnerResult
+    public abstract class CommandRunner<TContext, TResult> : IDelegateCommandRunner, ICommandRunner<TContext, TResult>
+        where TContext : ICommandContext
+        where TResult : CommandRunnerResult
     {
         /// <inheritdoc/>
         public async Task<CommandRunnerResult> DelegateHelpAsync(ICommandContext context, ITerminalHelpProvider helpProvider, ILogger? logger = null)
@@ -26,7 +28,7 @@ namespace OneImlx.Terminal.Commands.Runners
             Command command = context.GetCommand();
             logger?.LogDebug("Run help. command={0}", command.Id);
 
-            await RunHelpAsync(context).ConfigureAwait(false);
+            await RunHelpAsync((TContext)context).ConfigureAwait(false);
             return (TResult)new CommandRunnerResult();
         }
 
@@ -38,25 +40,26 @@ namespace OneImlx.Terminal.Commands.Runners
             Command command = context.GetCommand();
             logger?.LogDebug("Run command. command={0} type={1}", command.Id, command.Descriptor.Type);
 
+            TContext typedContext = (TContext)context;
             TResult result;
             RunMethodDescriptor? runMethodDescriptor = command.Descriptor.RunMethod;
             if (runMethodDescriptor != null)
             {
-                result = await runMethodDescriptor.RunAsync(this, context).ConfigureAwait(false);
+                result = await runMethodDescriptor.RunAsync(this, typedContext).ConfigureAwait(false);
             }
             else
             {
-                result = await RunCommandAsync(context).ConfigureAwait(false);
+                result = await RunCommandAsync(typedContext).ConfigureAwait(false);
             }
 
             return result;
         }
 
         /// <inheritdoc/>
-        public abstract Task<TResult> RunCommandAsync(ICommandContext context);
+        public abstract Task<TResult> RunCommandAsync(TContext context);
 
         /// <inheritdoc/>
-        public virtual Task RunHelpAsync(ICommandContext context)
+        public virtual Task RunHelpAsync(TContext context)
         {
             if (helpProvider == null)
             {

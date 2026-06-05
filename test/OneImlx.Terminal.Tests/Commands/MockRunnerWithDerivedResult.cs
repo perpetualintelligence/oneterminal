@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands
 {
-    public class MockRunnerWithDerivedResult : CommandRunner<MockRunnerDerviedResult>
+    public class MockRunnerWithDerivedResult : CommandRunner<ICommandContext, MockRunnerDerviedResult>
     {
         public bool MethodCalled { get; private set; }
 

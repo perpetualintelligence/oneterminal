@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
     /// </summary>
     [CommandDescriptor("ts", "Test Server", "Test server description.", CommandTypes.Root)]
     [OptionDescriptor("version", nameof(String), "Test server version description", BehaviorFlags.None, "v")]
-    public class TestServerRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class TestServerRunner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<TestServerRunner> logger;
@@ -29,7 +29,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.WriteLineAsync("Test server root command called.");
 
