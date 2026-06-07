@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
@@ -13,7 +14,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// </summary>
     [CommandOwners("grp3")]
     [CommandDescriptor("cmd8", "Command 8", "Command 8 under grp3.", CommandTypes.Leaf)]
-    public class Cmd8Runner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
+    public class Cmd8Runner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Cmd8Runner> logger;
@@ -24,12 +25,12 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             logger.LogInformation("Executing grp3 cmd8");
             await terminalConsole.WriteLineAsync("Executing: grp3 cmd8");
             await terminalConsole.WriteLineAsync("This is a leaf command under isolated group grp3.");
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
     }
 }

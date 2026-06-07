@@ -1,9 +1,7 @@
-﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
-//  For license, terms, and data policies, go to:
-//  https://terms.perpetualintelligence.com/articles/intro.html
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Extensions;
@@ -18,7 +16,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// </summary>
     [CommandDescriptor("run", "Run Command", "Runs a native OS command.", CommandTypes.Native)]
     [ArgumentDescriptor(0, "cmd", nameof(String), "The full native command to execute, e.g., 'ls -all'", BehaviorFlags.Required)]
-    public class RunRunner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
+    public class RunRunner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RunRunner"/> class.
@@ -29,7 +27,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             var command = context.GetParsedCommand().Command;
             var osCommand = command.GetRequiredArgumentValue<string>("cmd");
@@ -47,12 +45,10 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             };
 
             using var process = new Process { StartInfo = processStartInfo };
-
             process.Start();
 
             var output = await process.StandardOutput.ReadToEndAsync();
             var error = await process.StandardError.ReadToEndAsync();
-
             await process.WaitForExitAsync();
 
             if (!string.IsNullOrWhiteSpace(error))
@@ -61,7 +57,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             }
 
             await terminalConsole.WriteLineColorAsync(ConsoleColor.Green, $"OS command complete: {output}");
-            return new CommandRunnerResult(output);
+            return new CustomRunnerResult(output);
         }
 
         private readonly ITerminalConsole terminalConsole;

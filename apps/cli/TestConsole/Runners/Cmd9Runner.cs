@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Apps.Test.Checkers;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
-using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
@@ -16,7 +16,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     [CommandOwners("grp3")]
     [CommandDescriptor("cmd9", "Command 9", "Command 9 under grp3 with custom checker.", CommandTypes.Leaf)]
     [CommandChecker(typeof(Cmd3CommandChecker))]
-    public class Cmd9Runner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
+    public class Cmd9Runner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Cmd9Runner> logger;
@@ -27,12 +27,12 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             logger.LogInformation("Executing grp3 cmd9");
             await terminalConsole.WriteLineAsync("Executing: grp3 cmd9");
             await terminalConsole.WriteLineAsync("This is a leaf command with custom checker under grp3.");
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
     }
 }

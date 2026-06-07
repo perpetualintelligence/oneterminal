@@ -1,22 +1,20 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Declarative;
-using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Apps.Test.Runners
 {
     /// <summary>
-    /// Runs native OS commands.
+    /// Exits the client terminal application.
     /// </summary>
     [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandTypes.Native)]
-    public class ExitRunner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
+    public class ExitRunner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExitRunner"/> class.
-        /// </summary>
         public ExitRunner(ITerminalConsole terminalConsole, IHostApplicationLifetime applicationLifetime)
         {
             this.terminalConsole = terminalConsole;
@@ -24,7 +22,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             string answer = await terminalConsole.ReadAnswerAsync("Are you sure you want to exit ?", "y", "Y");
             if (answer == "y" || answer == "Y")
@@ -32,8 +30,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
                 _applicationLifetime.StopApplication();
                 await Task.Delay(2000);
             }
-
-            return CommandRunnerResult.Empty();
+            return new CustomRunnerResult();
         }
 
         private readonly IHostApplicationLifetime _applicationLifetime;
