@@ -53,7 +53,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [CommandTags("command", "leaf")]
         [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", BehaviorFlags.None)]
         [OptionDescriptor("opt1", nameof(String), "Option 1", BehaviorFlags.None)]
-        public async Task<CommandRunnerResult> Cmd1Async(ICommandContext context)
+        public async Task<CommandRunnerResult> Cmd1Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 cmd1");
             string arg1 = context.GetCommand().GetRequiredArgumentValue<string>("arg1");
@@ -67,7 +67,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentDescriptor(1, "arg1", nameof(Int32), "Integer argument", BehaviorFlags.Required)]
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
         [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", BehaviorFlags.None)]
-        public async Task<CommandRunnerResult> Cmd2Async(ICommandContext context)
+        public async Task<CommandRunnerResult> Cmd2Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 cmd2");
             int arg1 = context.GetCommand().GetRequiredArgumentValue<int>("arg1");
@@ -82,7 +82,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
         [ArgumentValidation("arg1", typeof(StringLengthAttribute), 50)]
         [OptionDescriptor("opt1", nameof(String), "String option", BehaviorFlags.None)]
-        public async Task<CommandRunnerResult> Cmd3Async(ICommandContext context)
+        public async Task<CommandRunnerResult> Cmd3Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 cmd3");
             string arg1 = context.GetCommand().GetRequiredArgumentValue<string>("arg1");

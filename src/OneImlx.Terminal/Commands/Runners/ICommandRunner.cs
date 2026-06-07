@@ -11,7 +11,7 @@ namespace OneImlx.Terminal.Commands.Runners
     /// An abstraction of a command runner.
     /// </summary>
     public interface ICommandRunner<TContext, TResult>
-        where TContext : ICommandContext
+        where TContext : CommandContext
         where TResult : CommandRunnerResult
     {
         /// <summary>

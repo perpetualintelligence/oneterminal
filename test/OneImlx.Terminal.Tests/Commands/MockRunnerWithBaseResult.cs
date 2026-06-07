@@ -18,7 +18,7 @@ namespace OneImlx.Terminal.Commands
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        public Task<CommandRunnerResult> TestMethodBase(ICommandContext context)
+        public Task<CommandRunnerResult> TestMethodBase(CommandContext context)
         {
             MethodCalled = true;
             return Task.FromResult(new CommandRunnerResult());

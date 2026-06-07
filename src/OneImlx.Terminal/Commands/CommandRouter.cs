@@ -43,7 +43,7 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="context">The router context.</param>
         /// <returns>The <see cref="CommandResult"/> instance.</returns>
-        public async Task RouteCommandAsync(ICommandContext context)
+        public async Task RouteCommandAsync(CommandContext context)
         {
             ParsedCommand? parsedCommand = null;
             CommandResult? commandResult = null!;

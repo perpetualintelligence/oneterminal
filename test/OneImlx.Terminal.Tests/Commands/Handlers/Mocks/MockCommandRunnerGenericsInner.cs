@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Handlers.Mocks
 {
-    internal class MockGenericCommandRunnerInner : CommandRunner<ICommandContext, MockGenericCommandRunnerResult>
+    internal class MockGenericCommandRunnerInner : CommandRunner<CommandContext, MockGenericCommandRunnerResult>
     {
         public bool Called { get; private set; }
 
         public bool ThrowException { get; set; }
 
-        public override Task<MockGenericCommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override Task<MockGenericCommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             Called = true;
 

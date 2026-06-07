@@ -3,8 +3,7 @@ using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Apps.Test.Custom
 {
-    public class CustomContext(Dictionary<string, object> properties) : ICommandContext
+    public class CustomContext(Dictionary<string, object> properties) : CommandContext(properties)
     {
-        public Dictionary<string, object> Properties { get; } = properties;
     }
 }

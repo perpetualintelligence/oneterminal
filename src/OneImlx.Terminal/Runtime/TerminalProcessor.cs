@@ -277,7 +277,7 @@ namespace OneImlx.Terminal.Runtime
                     }
 
                     logger.LogDebug("Routing the command. raw={0} sender={1}", request.Raw, senderId);
-                    ICommandContext context = commandContextFactory.Create(request, terminalRouterContext, properties);
+                    CommandContext context = commandContextFactory.Create(request, terminalRouterContext, properties);
                     var routeTask = commandRouter.RouteCommandAsync(context);
                     if (await Task.WhenAny(routeTask, Task.Delay(timeout)).ConfigureAwait(false) == routeTask)
                     {

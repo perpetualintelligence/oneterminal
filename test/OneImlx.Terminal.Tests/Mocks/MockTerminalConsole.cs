@@ -1,14 +1,11 @@
-﻿/*
-    Copyright 2024 (c) Perpetual Intelligence L.L.C. All Rights Reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using OneImlx.Terminal.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using OneImlx.Terminal.Runtime;
 
 namespace OneImlx.Terminal.Mocks
 {

@@ -25,6 +25,8 @@ namespace OneImlx.Terminal.Commands.Checkers
         {
             LoggerFactory loggerFactory = new();
 
+            CommandContextFactory contextFactory = new();
+
             request = new CommandRequest(Guid.NewGuid().ToString(), "test_raw");
             terminalOptions = MockTerminalOptions.NewLegacyOptions();
             textHandler = new TerminalTextHandler(StringComparison.OrdinalIgnoreCase, Encoding.ASCII);
@@ -37,7 +39,7 @@ namespace OneImlx.Terminal.Commands.Checkers
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
             routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            commandContext = new CommandContext(request, routerContext, []);
+            commandContext = contextFactory.Create<CommandContext>(request, routerContext, []);
         }
 
         [Fact]

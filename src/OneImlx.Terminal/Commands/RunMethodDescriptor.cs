@@ -51,7 +51,7 @@ namespace OneImlx.Terminal.Commands
         /// THIS METHOD IS PART OF INTERNAL INFRASTRUCTURE AND IS NOT INTENDED FOR DIRECT USE BY APPLICATION CODE.
         /// </remarks>
         public async Task<TResult> RunAsync<TContext, TResult>(CommandRunner<TContext, TResult> commandRunner, TContext context)
-            where TContext : ICommandContext
+            where TContext : CommandContext
             where TResult : CommandRunnerResult
         {
             // Ensure command matches the passed context

@@ -2,27 +2,33 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using System.Collections.Generic;
 
 namespace OneImlx.Terminal.Commands
 {
     /// <summary>
-    /// Default implementation of <see cref="ICommandContextFactory"/>.
+    /// Default  <see cref="ICommandContextFactory"/>.
     /// </summary>
+    /// <remarks>
+    /// <see cref="CommandContextFactory"/> expects the <see cref="CommandContext"/> to have a constructor that accepts a <see cref="Dictionary{String, Object}"/> for properties. If the context type does not have such a constructor, an exception will be thrown at runtime.
+    /// </remarks>
     public sealed class CommandContextFactory : ICommandContextFactory
     {
-        /// <summary>
-        /// Creates a new <see cref="CommandContext"/>.
-        /// </summary>
-        /// <param name="request">The command request.</param>
-        /// <param name="context">The <see cref="TerminalRouterContext"/>.</param>
-        /// <param name="properties">Additional properties.</param>
-        /// <returns>A new <see cref="CommandContext"/> instance.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public ICommandContext Create(CommandRequest request, TerminalRouterContext context, Dictionary<string, object> properties)
+        /// <inheritdoc/>
+        public CommandContext Create(CommandRequest request, TerminalRouterContext routerContext, Dictionary<string, object> properties)
         {
-            return new CommandContext(request, context, properties);
+            return Create<CommandContext>(request, routerContext, properties);
+        }
+
+        /// <inheritdoc/>
+        public TContext Create<TContext>(CommandRequest request, TerminalRouterContext routerContext, Dictionary<string, object> properties) where TContext : CommandContext
+        {
+            TContext context = (TContext)System.Activator.CreateInstance(typeof(TContext), properties);
+            context.SetCommandRequest(request);
+            context.SetRouterContext(routerContext);
+            return context;
         }
     }
 }

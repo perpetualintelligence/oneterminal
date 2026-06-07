@@ -39,7 +39,7 @@ namespace OneImlx.Terminal.Commands.Parsers
         }
 
         /// <inheritdoc/>
-        public async Task ParseCommandAsync(ICommandContext context)
+        public async Task ParseCommandAsync(CommandContext context)
         {
             CommandRequest commandRequest = context.GetCommandRequest();
             logger.LogDebug("Parse request. request={0} raw={1}", commandRequest.Id, commandRequest.Raw);

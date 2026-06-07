@@ -49,7 +49,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", BehaviorFlags.None)]
         [ArgumentDescriptor(2, "arg2", nameof(String), "Second argument", BehaviorFlags.None)]
         [OptionDescriptor("opt1", nameof(String), "Option 1", BehaviorFlags.None)]
-        public async Task<CommandRunnerResult> Cmd4Async(ICommandContext context)
+        public async Task<CommandRunnerResult> Cmd4Async(CommandContext context)
         {
             logger.LogInformation("Cmd4 (Leaf under composite grp2)");
             context.GetCommand().TryGetArgumentValue<string>("arg1", out string? arg1);
@@ -65,7 +65,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
         [ArgumentValidation("arg1", typeof(RangeAttribute), 1, 100)]
         [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", BehaviorFlags.Required)]
-        public async Task<CommandRunnerResult> Cmd5Async(ICommandContext context)
+        public async Task<CommandRunnerResult> Cmd5Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 grp2 cmd5");
             int arg1 = context.GetCommand().GetRequiredArgumentValue<int>("arg1");
@@ -79,7 +79,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentDescriptor(1, "arg1", nameof(Boolean), "Boolean argument", BehaviorFlags.Required)]
         [OptionDescriptor("opt1", nameof(String), "String option", BehaviorFlags.Required)]
         [OptionValidation("opt1", typeof(RequiredAttribute))]
-        public async Task<CommandRunnerResult> Cmd6Async(ICommandContext context)
+        public async Task<CommandRunnerResult> Cmd6Async(CommandContext context)
         {
             logger.LogInformation("Executing grp1 grp2 cmd6");
             bool arg1 = context.GetCommand().GetRequiredArgumentValue<bool>("arg1");

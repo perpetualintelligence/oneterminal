@@ -17,12 +17,12 @@ using Xunit;
 
 namespace OneImlx.Terminal.Tests.Extensions
 {
-    public class ICommandContextExtensionsTests
+    public class CommandContextExtensionsTests
     {
         private readonly Command command;
         private readonly ParsedCommand parsedCommand;
 
-        public ICommandContextExtensionsTests()
+        public CommandContextExtensionsTests()
         {
             ITerminalTextHandler textHandler = new Mock<ITerminalTextHandler>().Object;
 
@@ -39,19 +39,16 @@ namespace OneImlx.Terminal.Tests.Extensions
             parsedCommand = new ParsedCommand(command, null);
         }
 
-        private static ICommandContext Context(Dictionary<string, object>? properties = null)
+        private static CommandContext Context(Dictionary<string, object>? properties = null)
         {
-            Mock<ICommandContext> mock = new();
-            Dictionary<string, object> props = properties ?? new Dictionary<string, object>();
-            mock.Setup(x => x.Properties).Returns(props);
-            return mock.Object;
+            return new CommandContext(properties ?? []);
         }
 
         [Fact]
         public void GetParsedCommand_Returns_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             ParsedCommand result = context.GetParsedCommand();
             result.Should().Be(parsedCommand);
         }
@@ -59,7 +56,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void GetParsedCommand_Throws_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             Action act = () => context.GetParsedCommand();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError)
                 .WithErrorDescription("The parsed command is missing in the context.");
@@ -69,7 +66,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetParsedCommand_Throws_WhenWrongType()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, "wrong" } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             Action act = () => context.GetParsedCommand();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError);
         }
@@ -78,7 +75,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void TryGetParsedCommand_ReturnsTrue_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetParsedCommand(out ParsedCommand? result);
             found.Should().BeTrue();
             result.Should().Be(parsedCommand);
@@ -87,7 +84,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void TryGetParsedCommand_ReturnsFalse_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             bool found = context.TryGetParsedCommand(out ParsedCommand? result);
             found.Should().BeFalse();
             result.Should().BeNull();
@@ -96,7 +93,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void SetParsedCommand_SetsValue()
         {
-            ICommandContext context = Context(new Dictionary<string, object>());
+            CommandContext context = Context([]);
             context.SetParsedCommand(parsedCommand);
             context.Properties[TerminalIdentifiers.ParsedCommand].Should().Be(parsedCommand);
         }
@@ -105,7 +102,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetCommand_Returns_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             Command result = context.GetCommand();
             result.Should().Be(command);
         }
@@ -113,7 +110,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void GetCommand_Throws_WhenParsedCommandMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             Action act = () => context.GetCommand();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError);
         }
@@ -123,7 +120,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         {
             CommandRequest request = new("req-1", "cmd");
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandRequest, request } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             CommandRequest result = context.GetCommandRequest();
             result.Should().BeSameAs(request);
         }
@@ -131,7 +128,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void GetCommandRequest_Throws_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             Action act = () => context.GetCommandRequest();
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError)
                 .WithErrorDescription("The command request is missing in the context.");
@@ -142,7 +139,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         {
             CommandRequest request = new("req-1", "cmd");
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandRequest, request } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetCommandRequest(out CommandRequest? result);
             found.Should().BeTrue();
             result.Should().BeSameAs(request);
@@ -151,7 +148,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void TryGetCommandRequest_ReturnsFalse_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             bool found = context.TryGetCommandRequest(out CommandRequest? result);
             found.Should().BeFalse();
             result.Should().BeNull();
@@ -161,7 +158,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void SetCommandRequest_SetsValue()
         {
             CommandRequest request = new("req-1", "cmd");
-            ICommandContext context = Context(new Dictionary<string, object>());
+            CommandContext context = Context([]);
             context.SetCommandRequest(request);
             context.Properties[TerminalIdentifiers.CommandRequest].Should().BeSameAs(request);
         }
@@ -171,7 +168,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         {
             MockRoutingContext routerContext = new(TerminalStartMode.Console, CancellationToken.None);
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.RouterContext, routerContext } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             TerminalRouterContext result = context.GetRouterContext();
             result.Should().BeSameAs(routerContext);
         }
@@ -179,9 +176,10 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void GetRouterContext_Throws_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             Action act = () => context.GetRouterContext();
-            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The router context is missing in the context.");
+            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError)
+                .WithErrorDescription("The router context is missing in the context.");
         }
 
         [Fact]
@@ -189,7 +187,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         {
             MockRoutingContext routerContext = new(TerminalStartMode.Console, CancellationToken.None);
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.RouterContext, routerContext } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetRouterContext(out TerminalRouterContext? result);
             found.Should().BeTrue();
             result.Should().BeSameAs(routerContext);
@@ -198,7 +196,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void TryGetRouterContext_ReturnsFalse_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             bool found = context.TryGetRouterContext(out TerminalRouterContext? result);
             found.Should().BeFalse();
             result.Should().BeNull();
@@ -208,7 +206,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void SetRouterContext_SetsValue()
         {
             MockRoutingContext routerContext = new(TerminalStartMode.Console, CancellationToken.None);
-            ICommandContext context = Context(new Dictionary<string, object>());
+            CommandContext context = Context([]);
             context.SetRouterContext(routerContext);
             context.Properties[TerminalIdentifiers.RouterContext].Should().BeSameAs(routerContext);
         }
@@ -218,7 +216,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         {
             CommandResult commandResult = new();
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandResult, commandResult } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             CommandResult result = context.GetCommandResult();
             result.Should().Be(commandResult);
         }
@@ -226,9 +224,10 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void GetCommandResult_Throws_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             Action act = () => context.GetCommandResult();
-            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError).WithErrorDescription("The command result is missing in the context.");
+            act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.ServerError)
+                .WithErrorDescription("The command result is missing in the context.");
         }
 
         [Fact]
@@ -236,7 +235,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         {
             CommandResult commandResult = new();
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.CommandResult, commandResult } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetCommandResult(out CommandResult? result);
             found.Should().BeTrue();
             result.Should().Be(commandResult);
@@ -245,7 +244,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         [Fact]
         public void TryGetCommandResult_ReturnsFalse_WhenMissing()
         {
-            ICommandContext context = Context();
+            CommandContext context = Context();
             bool found = context.TryGetCommandResult(out CommandResult? result);
             found.Should().BeFalse();
             result.Should().BeNull();
@@ -255,7 +254,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void SetCommandResult_SetsValue()
         {
             CommandResult commandResult = new();
-            ICommandContext context = Context(new Dictionary<string, object>());
+            CommandContext context = Context([]);
             context.SetCommandResult(commandResult);
             context.Properties[TerminalIdentifiers.CommandResult].Should().Be(commandResult);
         }
@@ -264,7 +263,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetRequiredOptionValue_Returns_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             int value = context.GetRequiredOptionValue<int>("opt1");
             value.Should().Be(123);
         }
@@ -278,7 +277,7 @@ namespace OneImlx.Terminal.Tests.Extensions
             Command cmd = new(commandDescriptor, arguments, null);
             ParsedCommand parsedCmd = new(cmd, null);
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCmd } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             Action act = () => context.GetRequiredOptionValue<int>("opt1");
             act.Should().Throw<TerminalException>().WithErrorCode(TerminalErrors.UnsupportedOption);
         }
@@ -287,7 +286,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void TryGetOptionValue_ReturnsTrue_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetOptionValue<int>("opt1", out int value);
             found.Should().BeTrue();
             value.Should().Be(123);
@@ -297,7 +296,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void TryGetOptionValue_ReturnsFalse_WhenNotAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetOptionValue<int>("notfound", out int value);
             found.Should().BeFalse();
         }
@@ -306,7 +305,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetRequiredArgumentValue_ById_Returns_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             int value = context.GetRequiredArgumentValue<int>("arg1");
             value.Should().Be(42);
         }
@@ -315,7 +314,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void GetRequiredArgumentValue_ByIndex_Returns_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             int value = context.GetRequiredArgumentValue<int>(0);
             value.Should().Be(42);
         }
@@ -324,7 +323,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void TryGetArgumentValue_ReturnsTrue_WhenAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetArgumentValue<int>("arg1", out int value);
             found.Should().BeTrue();
             value.Should().Be(42);
@@ -334,7 +333,7 @@ namespace OneImlx.Terminal.Tests.Extensions
         public void TryGetArgumentValue_ReturnsFalse_WhenNotAvailable()
         {
             Dictionary<string, object> properties = new() { { TerminalIdentifiers.ParsedCommand, parsedCommand } };
-            ICommandContext context = Context(properties);
+            CommandContext context = Context(properties);
             bool found = context.TryGetArgumentValue<int>("notfound", out int value);
             found.Should().BeFalse();
         }

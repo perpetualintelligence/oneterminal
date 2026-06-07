@@ -28,7 +28,7 @@ namespace OneImlx.Terminal.Mocks
 
         public List<string> MultipleRawString { get; set; }
 
-        public ICommandContext? PassedContext { get; private set; }
+        public CommandContext? PassedContext { get; private set; }
 
         public string? RawCommandString { get; set; }
 
@@ -39,7 +39,7 @@ namespace OneImlx.Terminal.Mocks
         //This is used in the context of singleton Router
         public int RouteCounter { get; set; }
 
-        public async Task RouteCommandAsync(ICommandContext context)
+        public async Task RouteCommandAsync(CommandContext context)
         {
             // For testing this is a singleton router so make sure it is thread safe
             await routeLock.WaitAsync();

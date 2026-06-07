@@ -22,7 +22,7 @@ namespace OneImlx.Terminal.Commands
             var routerContext = new MockRoutingContext(TerminalStartMode.Console, CancellationToken.None);
             var properties = new Dictionary<string, object> { ["key"] = "value" };
 
-            var result = factory.Create(request, routerContext, properties);
+            var result = factory.Create<CommandContext>(request, routerContext, properties);
 
             result.Properties.Should().BeSameAs(properties);
             result.GetCommandRequest().Should().BeSameAs(request);

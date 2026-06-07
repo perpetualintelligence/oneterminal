@@ -16,11 +16,11 @@ namespace OneImlx.Terminal.Commands.Runners
     /// modular and isolated command execution within a terminal application.
     /// </summary>
     public abstract class CommandRunner<TContext, TResult> : IDelegateCommandRunner, ICommandRunner<TContext, TResult>
-        where TContext : ICommandContext
+        where TContext : CommandContext
         where TResult : CommandRunnerResult
     {
         /// <inheritdoc/>
-        public async Task<CommandRunnerResult> DelegateHelpAsync(ICommandContext context, ITerminalHelpProvider helpProvider, ILogger? logger = null)
+        public async Task<CommandRunnerResult> DelegateHelpAsync(CommandContext context, ITerminalHelpProvider helpProvider, ILogger? logger = null)
         {
             this.helpProvider = helpProvider;
             this.logger = logger;
@@ -33,7 +33,7 @@ namespace OneImlx.Terminal.Commands.Runners
         }
 
         /// <inheritdoc/>
-        public async Task<CommandRunnerResult> DelegateRunAsync(ICommandContext context, ILogger? logger = null)
+        public async Task<CommandRunnerResult> DelegateRunAsync(CommandContext context, ILogger? logger = null)
         {
             this.logger = logger;
 

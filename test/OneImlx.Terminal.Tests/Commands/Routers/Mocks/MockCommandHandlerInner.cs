@@ -17,11 +17,11 @@ namespace OneImlx.Terminal.Commands.Routers.Mocks
 
         public bool Called { get; set; }
 
-        public ICommandContext PassedContext { get; internal set; }
+        public CommandContext PassedContext { get; internal set; }
 
         public bool IsExplicitError { get; internal set; }
 
-        public Task HandleCommandAsync(ICommandContext context)
+        public Task HandleCommandAsync(CommandContext context)
         {
             Called = true;
 

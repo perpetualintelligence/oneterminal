@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Mocks
 {
-    public class MockCommandRunner : ICommandRunner<ICommandContext, CommandRunnerResult>
+    public class MockCommandRunner : ICommandRunner<CommandContext, CommandRunnerResult>
     {
         public bool HelpCalled { get; set; }
 
         public bool RunCalled { get; set; }
 
-        public Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             RunCalled = true;
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        public Task RunHelpAsync(ICommandContext context)
+        public Task RunHelpAsync(CommandContext context)
         {
             HelpCalled = true;
             return Task.CompletedTask;
