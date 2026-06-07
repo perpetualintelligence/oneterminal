@@ -2,7 +2,7 @@
 
 namespace OneImlx.Terminal.Apps.Test.Custom
 {
-    public class CustomResult : CommandRunnerResult
+    public class CustomRunnerResult : CommandRunnerResult
     {
     }
 }

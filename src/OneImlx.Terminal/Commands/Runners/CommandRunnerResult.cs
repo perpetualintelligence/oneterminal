@@ -1,13 +1,9 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
-
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
 using OneImlx.Terminal.Shared;
 using System;
-using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Runners
 {
@@ -59,15 +55,6 @@ namespace OneImlx.Terminal.Commands.Runners
         public static CommandRunnerResult Empty()
         {
             return new CommandRunnerResult();
-        }
-
-        /// <summary>
-        /// Creates an empty <see cref="CommandRunnerResult"/> with no value.
-        /// </summary>
-        /// <returns>A task that creates a new instance of <see cref="CommandRunnerResult"/>.</returns>
-        public static Task<CommandRunnerResult> EmptyAsync()
-        {
-            return Task.FromResult(new CommandRunnerResult());
         }
 
         /// <summary>

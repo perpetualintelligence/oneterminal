@@ -1,15 +1,12 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using OneImlx.Terminal.Shared;
 using OneImlx.Test.FluentAssertions;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace OneImlx.Terminal.Commands.Runners
@@ -72,20 +69,6 @@ namespace OneImlx.Terminal.Commands.Runners
             var result1 = CommandRunnerResult.Empty();
             var result2 = CommandRunnerResult.Empty();
             result1.Should().NotBeSameAs(result2);
-
-            var result3 = await CommandRunnerResult.EmptyAsync();
-            var result4 = await CommandRunnerResult.EmptyAsync();
-            result3.Should().NotBeSameAs(result4);
-
-            result1.Should().NotBeSameAs(result3);
-        }
-
-        [Fact]
-        public Task EmptyAysnc_Returns_Task()
-        {
-            var result = CommandRunnerResult.EmptyAsync();
-            result.Should().BeOfType<Task<CommandRunnerResult>>();
-            return result;
         }
 
         [Fact]

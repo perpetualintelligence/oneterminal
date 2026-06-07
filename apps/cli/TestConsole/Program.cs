@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OneImlx.Shared.Licensing;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Apps.Test.Runners;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Extensions;
@@ -64,8 +65,8 @@ namespace OneImlx.Terminal.Apps.Test
                     options.Router.Caret = "> ";
                 });
 
-            // Default command context
-            terminalBuilder.AddCommandContextFactory<CommandContextFactory>();
+            // Custom command context
+            terminalBuilder.AddCommandContextFactory<CustomCommandContextFactory>();
 
             // Add commands using declarative syntax.
             terminalBuilder.AddDeclarativeAssembly<TestRunner>();

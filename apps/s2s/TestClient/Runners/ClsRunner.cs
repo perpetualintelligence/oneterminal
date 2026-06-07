@@ -10,25 +10,21 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// <summary>
     /// Clears the console.
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ClsRunner"/> class.
+    /// </remarks>
+    /// <param name="terminalConsole">The terminal console.</param>
     [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandTypes.Native)]
-    public class ClsRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
+    public class ClsRunner(ITerminalConsole terminalConsole) : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClsRunner"/> class.
-        /// </summary>
-        /// <param name="terminalConsole">The terminal console.</param>
-        public ClsRunner(ITerminalConsole terminalConsole)
-        {
-            this.terminalConsole = terminalConsole;
-        }
 
         /// <inheritdoc/>
         public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.ClearAsync();
-            return await CommandRunnerResult.EmptyAsync();
+            return CommandRunnerResult.Empty();
         }
 
-        private readonly ITerminalConsole terminalConsole;
+        private readonly ITerminalConsole terminalConsole = terminalConsole;
     }
 }
