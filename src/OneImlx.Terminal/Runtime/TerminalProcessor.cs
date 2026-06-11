@@ -276,7 +276,7 @@ namespace OneImlx.Terminal.Runtime
                         throw new TerminalException(TerminalErrors.InvalidRequest, "The command length exceeds the maximum allowed. max={0}", maxLength);
                     }
 
-                    logger.LogDebug("Process request. raw={0} sender={1}", request.Raw, senderId);
+                    logger.LogDebug("Process request. raw={0} request={1} sender={2}", request.Raw, request.Id, senderId);
                     CommandContext context = commandContextFactory.Create(request, terminalRouterContext, properties);
                     var routeTask = commandRouter.RouteCommandAsync(context);
                     if (await Task.WhenAny(routeTask, Task.Delay(timeout)).ConfigureAwait(false) == routeTask)

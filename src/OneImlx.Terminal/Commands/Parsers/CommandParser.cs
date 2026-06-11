@@ -42,7 +42,7 @@ namespace OneImlx.Terminal.Commands.Parsers
         public async Task ParseCommandAsync(CommandContext context)
         {
             CommandRequest commandRequest = context.GetCommandRequest();
-            logger.LogDebug("Parse request. request={0} raw={1}", commandRequest.Id, commandRequest.Raw);
+            logger.LogDebug("Parse request. request={0}", commandRequest.Id);
             TerminalParsedRequest parsedOutput = await terminalRequestParser.ParseRequestAsync(commandRequest).ConfigureAwait(false);
             context.SetParsedCommand(await MapParsedRequestAsync(commandRequest, parsedOutput).ConfigureAwait(false));
         }
