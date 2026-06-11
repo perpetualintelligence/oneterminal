@@ -1,9 +1,7 @@
-﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
-//  For license, terms, and data policies, go to:
-//  https://terms.perpetualintelligence.com/articles/intro.html
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Runners;
@@ -20,7 +18,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     [CommandDescriptor("test", "Test App", "Test application description.", CommandTypes.Root)]
     [OptionDescriptor("version", nameof(String), "Test version description", BehaviorFlags.None, "v")]
     [CommandChecker(typeof(CommandChecker))]
-    public class TestRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class TestRunner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<TestRunner> logger;
@@ -31,7 +29,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             await terminalConsole.WriteLineAsync("Test root command called.");
 
@@ -41,7 +39,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
                 await terminalConsole.WriteLineAsync("Version option passed.");
             }
 
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
     }
 }

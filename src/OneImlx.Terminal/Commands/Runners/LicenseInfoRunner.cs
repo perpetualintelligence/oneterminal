@@ -14,7 +14,7 @@ namespace OneImlx.Terminal.Commands.Runners
     /// <summary>
     /// The default license info runner that outputs the current licensing information to the <see cref="ITerminalConsole"/>.
     /// </summary>
-    public class LicenseInfoRunner : CommandRunner<CommandRunnerResult>
+    public class LicenseInfoRunner : CommandRunner<CommandContext, CommandRunnerResult>
     {
         /// <summary>
         /// Initialize a new instance.
@@ -27,7 +27,7 @@ namespace OneImlx.Terminal.Commands.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             // Recheck the license to get the current consumption.
             // TODO: This should be tolerant of over-consumption since it is printing the usage. At present CheckLicenseAsync

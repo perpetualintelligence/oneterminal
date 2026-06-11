@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Runners;
@@ -19,7 +20,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     [CommandDescriptor("grp2", "Group 2", "Group 2 CompositeGroup under grp1 with cmd4, cmd5, cmd6.", CommandTypes.CompositeGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "composite", "nested")]
-    public class Grp2Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Grp2Runner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Grp2Runner> logger;
@@ -30,7 +31,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             logger.LogInformation("Executing grp2 base command");
             await terminalConsole.WriteLineAsync("Group 2 (CompositeGroup under grp1)");
@@ -41,7 +42,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             await terminalConsole.WriteLineAsync("  cmd6 - Command 6");
             await terminalConsole.WriteLineAsync("");
             await terminalConsole.WriteLineAsync("Usage: grp1 grp2 <subcommand> [arguments] [options]");
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
 
         [CommandDescriptor("cmd4", "Command 4", "Command 4 in grp2.", CommandTypes.Leaf)]
@@ -49,14 +50,14 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentDescriptor(1, "arg1", nameof(String), "First argument", BehaviorFlags.None)]
         [ArgumentDescriptor(2, "arg2", nameof(String), "Second argument", BehaviorFlags.None)]
         [OptionDescriptor("opt1", nameof(String), "Option 1", BehaviorFlags.None)]
-        public async Task<CommandRunnerResult> Cmd4Async(ICommandContext context)
+        public async Task<CustomRunnerResult> Cmd4Async(CustomCommandContext context)
         {
             logger.LogInformation("Cmd4 (Leaf under composite grp2)");
             context.GetCommand().TryGetArgumentValue<string>("arg1", out string? arg1);
             context.GetCommand().TryGetArgumentValue<string>("arg2", out string? arg2);
             context.GetCommand().TryGetOptionValue<string>("opt1", out string? opt1);
             await terminalConsole.WriteLineAsync($"grp1 grp2 cmd4 executed: arg1={arg1}, arg2={arg2}, opt1={opt1}");
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
 
         [CommandDescriptor("cmd5", "Command 5", "Command 5 in grp2.", CommandTypes.Leaf)]
@@ -65,13 +66,13 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentValidation("arg1", typeof(RequiredAttribute))]
         [ArgumentValidation("arg1", typeof(RangeAttribute), 1, 100)]
         [OptionDescriptor("opt1", nameof(Boolean), "Boolean option", BehaviorFlags.Required)]
-        public async Task<CommandRunnerResult> Cmd5Async(ICommandContext context)
+        public async Task<CustomRunnerResult> Cmd5Async(CustomCommandContext context)
         {
             logger.LogInformation("Executing grp1 grp2 cmd5");
             int arg1 = context.GetCommand().GetRequiredArgumentValue<int>("arg1");
             bool opt1 = context.GetCommand().GetRequiredOptionValue<bool>("opt1");
             await terminalConsole.WriteLineAsync($"grp1 grp2 cmd5 executed: arg1={arg1}, opt1={opt1}");
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
 
         [CommandDescriptor("cmd6", "Command 6", "Command 6 in grp2.", CommandTypes.Leaf)]
@@ -79,13 +80,13 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         [ArgumentDescriptor(1, "arg1", nameof(Boolean), "Boolean argument", BehaviorFlags.Required)]
         [OptionDescriptor("opt1", nameof(String), "String option", BehaviorFlags.Required)]
         [OptionValidation("opt1", typeof(RequiredAttribute))]
-        public async Task<CommandRunnerResult> Cmd6Async(ICommandContext context)
+        public async Task<CustomRunnerResult> Cmd6Async(CustomCommandContext context)
         {
             logger.LogInformation("Executing grp1 grp2 cmd6");
             bool arg1 = context.GetCommand().GetRequiredArgumentValue<bool>("arg1");
             string opt1 = context.GetCommand().GetRequiredOptionValue<string>("opt1");
             await terminalConsole.WriteLineAsync($"grp1 grp2 cmd6 executed: arg1={arg1}, opt1={opt1}");
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
     }
 }

@@ -1,12 +1,9 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using OneImlx.Terminal.Shared;
 using System.Threading.Tasks;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Commands.Parsers
 {
@@ -19,6 +16,6 @@ namespace OneImlx.Terminal.Commands.Parsers
         /// Extracts <see cref="Command"/> asynchronously.
         /// </summary>
         /// <param name="context">The option extraction context.</param>
-        public Task ParseCommandAsync(ICommandContext context);
+        public Task ParseCommandAsync(CommandContext context);
     }
 }

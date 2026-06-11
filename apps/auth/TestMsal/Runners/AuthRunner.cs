@@ -13,7 +13,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
     /// </summary>
     [CommandOwners("test")]
     [CommandDescriptor("auth", "Auth group", "Test auth group description.", CommandTypes.IsolatedGroup)]
-    public class AuthRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class AuthRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole _terminalConsole;
         private readonly ILogger<AuthRunner> _logger;
@@ -34,7 +34,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
         /// </summary>
         /// <param name="context">Command runner context.</param>
         /// <returns>Command runner result.</returns>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await _terminalConsole.WriteLineAsync("Auth group command called.");
 

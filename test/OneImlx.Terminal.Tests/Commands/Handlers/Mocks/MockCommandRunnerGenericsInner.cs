@@ -2,19 +2,19 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System.Threading.Tasks;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Shared;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Handlers.Mocks
 {
-    internal class MockGenericCommandRunnerInner : CommandRunner<MockGenericCommandRunnerResult>
+    internal class MockGenericCommandRunnerInner : CommandRunner<CommandContext, MockGenericCommandRunnerResult>
     {
         public bool Called { get; private set; }
 
         public bool ThrowException { get; set; }
 
-        public override Task<MockGenericCommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override Task<MockGenericCommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             Called = true;
 

@@ -1,13 +1,10 @@
-﻿/*
-    Copyright (c) 2023 Perpetual Intelligence L.L.C. All Rights Reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using OneImlx.Terminal.Shared;
 using System.Collections;
 using System.Collections.Generic;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Commands
 {
@@ -45,7 +42,6 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="id">The argument identifier.</param>
         /// <returns></returns>
-
         public Argument this[string id]
         {
             get
@@ -59,7 +55,6 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="index">The argument index.</param>
         /// <returns></returns>
-
         public Argument this[int index]
         {
             get

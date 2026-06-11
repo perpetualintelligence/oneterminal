@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Checkers;
 using OneImlx.Terminal.Commands.Runners;
@@ -16,7 +17,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     [CommandDescriptor("grp3", "Group 3", "Group 3 IsolatedGroup (independent) with cmd7, cmd8, cmd9.", CommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(CommandChecker))]
     [CommandTags("group", "isolated", "independent")]
-    public class Grp3Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Grp3Runner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Grp3Runner> logger;
@@ -27,7 +28,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             logger.LogInformation("Executing grp3 command");
             await terminalConsole.WriteLineAsync("Group 3 (IsolatedGroup - independent)");
@@ -39,7 +40,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
             await terminalConsole.WriteLineAsync("  cmd9 - Command 9");
             await terminalConsole.WriteLineAsync("");
             await terminalConsole.WriteLineAsync("Usage: grp3 <command>");
-            return new CommandRunnerResult();
+            return new CustomRunnerResult();
         }
     }
 }

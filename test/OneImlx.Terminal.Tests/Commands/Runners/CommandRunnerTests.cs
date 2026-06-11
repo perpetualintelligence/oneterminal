@@ -2,9 +2,6 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using OneImlx.Terminal.Commands.Handlers.Mocks;
 using OneImlx.Terminal.Commands.Parsers;
@@ -12,6 +9,9 @@ using OneImlx.Terminal.Commands.Runners.Mocks;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OneImlx.Terminal.Commands.Runners
@@ -23,7 +23,8 @@ namespace OneImlx.Terminal.Commands.Runners
             terminalTokenSource = new CancellationTokenSource();
             commandTokenSource = new CancellationTokenSource();
             routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            commandContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routerContext, []);
+            commandContextFactory = new CommandContextFactory();
+            commandContext = commandContextFactory.Create<CommandContext>(new(Guid.NewGuid().ToString(), "test"), routerContext, []);
         }
 
         [Fact]
@@ -74,5 +75,6 @@ namespace OneImlx.Terminal.Commands.Runners
         private readonly CommandContext commandContext = null!;
         private readonly TerminalRouterContext routerContext = null!;
         private readonly CancellationTokenSource terminalTokenSource = null!;
+        private readonly CommandContextFactory commandContextFactory = null!;
     }
 }

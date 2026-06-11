@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OneImlx.Terminal.Apps.Test.Custom;
 using OneImlx.Terminal.Commands;
 using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
@@ -11,7 +12,7 @@ namespace OneImlx.Terminal.Apps.Test.Runners
     /// Clears the console.
     /// </summary>
     [CommandDescriptor("cls", "Clear Console", "Clears the console.", CommandTypes.Native)]
-    public class ClearRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class ClearRunner : CommandRunner<CustomCommandContext, CustomRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClearRunner"/> class.
@@ -23,10 +24,10 @@ namespace OneImlx.Terminal.Apps.Test.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CustomRunnerResult> RunCommandAsync(CustomCommandContext context)
         {
             await terminalConsole.ClearAsync();
-            return await CommandRunnerResult.EmptyAsync();
+            return new CustomRunnerResult();
         }
 
         private readonly ITerminalConsole terminalConsole;

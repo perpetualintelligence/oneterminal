@@ -106,5 +106,15 @@ namespace OneImlx.Terminal.Shared
         /// The current running command result.
         /// </summary>
         public const string CommandResult = "oneimlx_command_result";
+
+        /// <summary>
+        /// The current running router context.
+        /// </summary>
+        public const string RouterContext = "oneimlx_router_context";
+
+        /// <summary>
+        /// The current running command request.
+        /// </summary>
+        public const string CommandRequest = "oneimlx_command_request";
     }
 }

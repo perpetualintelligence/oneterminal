@@ -15,12 +15,13 @@ using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Client.Grpc;
 using OneImlx.Terminal.Shared.Declarative;
+using OneImlx.Terminal.Extensions;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
     [CommandDescriptor("grpc", "gRPC test", "Send gRPC commands to the terminal server.", CommandTypes.Leaf)]
-    public class SendGrpcRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class SendGrpcRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         public SendGrpcRunner(IConfiguration configuration, ITerminalConsole terminalConsole)
         {
@@ -28,7 +29,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.terminalConsole = terminalConsole ?? throw new ArgumentNullException(nameof(terminalConsole));
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             string ip = configuration["testclient:testserver:ip"] ?? throw new InvalidOperationException("Server IP address is missing.");
             string port = configuration.GetValue<string>("testclient:testserver:port") ?? throw new InvalidOperationException("Server port is missing.");
@@ -45,7 +46,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 var clientTasks = new Task[maxClients];
                 for (int idx = 0; idx < clientTasks.Length; idx++)
                 {
-                    clientTasks[idx] = StartClientAsync(serverAddress, idx, context.RouterContext.TerminalCancellationToken);
+                    clientTasks[idx] = StartClientAsync(serverAddress, idx, context.GetRouterContext().TerminalCancellationToken);
                 }
 
                 await Task.WhenAll(clientTasks);

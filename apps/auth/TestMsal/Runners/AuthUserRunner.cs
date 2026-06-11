@@ -16,7 +16,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
     /// </summary>
     [CommandOwners("auth")]
     [CommandDescriptor("user", "Get user", "Fetches user information from Microsoft Graph API.", CommandTypes.IsolatedGroup)]
-    public class AuthUserRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class AuthUserRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance.
@@ -36,7 +36,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
         /// </summary>
         /// <param name="context">Command runner context.</param>
         /// <returns>Command runner result.</returns>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             
             // Get the HTTP client from the factory with the name "demo-http" since this name is configured to use the

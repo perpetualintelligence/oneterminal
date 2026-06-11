@@ -3,6 +3,7 @@
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
 using FluentAssertions;
+using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Mocks;
 using OneImlx.Terminal.Shared;
 using System.Collections.Generic;
@@ -21,11 +22,11 @@ namespace OneImlx.Terminal.Commands
             var routerContext = new MockRoutingContext(TerminalStartMode.Console, CancellationToken.None);
             var properties = new Dictionary<string, object> { ["key"] = "value" };
 
-            var result = factory.Create(request, routerContext, properties);
+            var result = factory.Create<CommandContext>(request, routerContext, properties);
 
-            result.Request.Should().BeSameAs(request);
-            result.RouterContext.Should().BeSameAs(routerContext);
             result.Properties.Should().BeSameAs(properties);
+            result.GetCommandRequest().Should().BeSameAs(request);
+            result.GetRouterContext().Should().BeSameAs(routerContext);
         }
     }
 }

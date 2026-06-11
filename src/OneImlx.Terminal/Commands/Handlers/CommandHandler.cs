@@ -34,9 +34,10 @@ namespace OneImlx.Terminal.Commands.Handlers
         }
 
         /// <inheritdoc/>
-        public async Task HandleCommandAsync(ICommandContext context)
+        public async Task HandleCommandAsync(CommandContext context)
         {
-            logger.LogDebug("Handle request. request={0}", context.Request.Id);
+            CommandRequest commandRequest = context.GetCommandRequest();
+            logger.LogDebug("Handle request. request={0}", commandRequest.Id);
 
             // Check and run the command
             (CommandCheckerResult checkerResult, CommandRunnerResult runnerResult) = await CheckAndRunCommandInnerAsync(context).ConfigureAwait(false);
@@ -45,7 +46,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             context.SetCommandResult(new CommandResult(checkerResult, runnerResult));
         }
 
-        private async Task<(CommandCheckerResult, CommandRunnerResult)> CheckAndRunCommandInnerAsync(ICommandContext context)
+        private async Task<(CommandCheckerResult, CommandRunnerResult)> CheckAndRunCommandInnerAsync(CommandContext context)
         {
             Command command = context.GetCommand();
 
@@ -65,7 +66,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             return (checkerResult, runResult);
         }
 
-        private async Task<CommandCheckerResult> CheckCommandInnerAsync(ICommandContext context, Command command)
+        private async Task<CommandCheckerResult> CheckCommandInnerAsync(CommandContext context, Command command)
         {
             // Issue a before check event if configured
             if (terminalEventHandler != null)
@@ -88,7 +89,7 @@ namespace OneImlx.Terminal.Commands.Handlers
             return result;
         }
 
-        private async Task<CommandRunnerResult> RunCommandInnerAsync(ICommandContext context, Command command, bool runHelp)
+        private async Task<CommandRunnerResult> RunCommandInnerAsync(CommandContext context, Command command, bool runHelp)
         {
             // Issue a before run event if configured
             if (terminalEventHandler != null)

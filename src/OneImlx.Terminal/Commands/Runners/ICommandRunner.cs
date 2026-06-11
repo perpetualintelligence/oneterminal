@@ -10,20 +10,22 @@ namespace OneImlx.Terminal.Commands.Runners
     /// <summary>
     /// An abstraction of a command runner.
     /// </summary>
-    public interface ICommandRunner<TResult> where TResult : CommandRunnerResult
+    public interface ICommandRunner<TContext, TResult>
+        where TContext : CommandContext
+        where TResult : CommandRunnerResult
     {
         /// <summary>
         /// Runs a command asynchronously.
         /// </summary>
         /// <param name="context">The runner context.</param>
         /// <returns>The runner result.</returns>
-        Task<TResult> RunCommandAsync(ICommandContext context);
+        Task<TResult> RunCommandAsync(TContext context);
 
         /// <summary>
         /// Runs a command help asynchronously.
         /// </summary>
         /// <param name="context">The runner context.</param>
         /// <returns>The runner result.</returns>
-        Task RunHelpAsync(ICommandContext context);
+        Task RunHelpAsync(TContext context);
     }
 }

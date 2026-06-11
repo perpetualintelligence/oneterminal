@@ -1,7 +1,4 @@
-﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
-//  For license, terms, and data policies, go to:
-//  https://terms.perpetualintelligence.com/articles/intro.html
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Commands;
@@ -20,7 +17,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
     [CommandDescriptor("test", "Test App", "Test application description.", CommandTypes.Root)]
     [OptionDescriptor("version", nameof(String), "Test version description", BehaviorFlags.None, "v")]
     [CommandChecker(typeof(CommandChecker))]
-    public class TestRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class TestRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance.
@@ -38,7 +35,7 @@ namespace OneImlx.Terminal.Apps.TestAuth.Runners
         /// </summary>
         /// <param name="context">Command runner context.</param>
         /// <returns>Command runner result.</returns>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await _terminalConsole.WriteLineAsync("Test root command called.");
 

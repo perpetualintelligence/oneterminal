@@ -34,11 +34,12 @@ namespace OneImlx.Terminal.Mocks
         //This is used in the context of singleton Router
         public int RouteCounter { get; set; }
 
-        public async Task RouteCommandAsync(ICommandContext context)
+        public async Task RouteCommandAsync(CommandContext context)
         {
             // Stats
+            CommandRequest commandRequest  = context.GetCommandRequest();
             RouteCalled = true;
-            RawCommandStrings.Add(context.Request.Raw);
+            RawCommandStrings.Add(commandRequest.Raw);
             RouteCounter += 1;
 
             // Add delay

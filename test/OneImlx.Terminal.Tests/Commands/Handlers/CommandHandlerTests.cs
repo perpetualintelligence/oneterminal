@@ -324,7 +324,8 @@ namespace OneImlx.Terminal.Commands.Handlers
             licenseChecker = new MockLicenseCheckerInner();
             command = MockCommands.NewCommandDefinition("id1", "name1", "desc1", CommandTypes.Leaf);
             routerContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            commandContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routerContext, []);
+            commandContextFactory = new CommandContextFactory();
+            commandContext = commandContextFactory.Create<CommandContext>(new(Guid.NewGuid().ToString(), "test"), routerContext, []);
             commandRuntime = new MockCommandResolver();
             terminalHelpProvider = new MockTerminalHelpProvider();
             terminalEventHandler = new MockTerminalEventHandler();
@@ -480,5 +481,6 @@ namespace OneImlx.Terminal.Commands.Handlers
         private MockTerminalHelpProvider terminalHelpProvider = null!;
         private IOptions<TerminalOptions> terminalOptions = null!;
         private CancellationTokenSource terminalTokenSource = null!;
+        private CommandContextFactory commandContextFactory = null!;
     }
 }

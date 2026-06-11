@@ -23,7 +23,9 @@ namespace OneImlx.Terminal.Commands
             parsedCommand = new ParsedCommand(command);
             commandTokenSource = new CancellationTokenSource();
             routingContext = new MockTerminalRouterContext(TerminalStartMode.Custom, commandTokenSource.Token);
-            routerContext = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, []);
+
+            commandContextFactory = new CommandContextFactory();
+            routerContext = commandContextFactory.Create<CommandContext>(new(Guid.NewGuid().ToString(), "test"), routingContext, []);
             routerContext.SetParsedCommand(parsedCommand);
         }
 
@@ -122,7 +124,7 @@ namespace OneImlx.Terminal.Commands
         {
             MockRunnerWithBaseResult runner = new();
             var runMethod = new RunMethodDescriptor("cmd-id", nameof(MockRunnerWithBaseResult.TestMethodBase));
-            var contextWithoutParsedCommand = new CommandContext(new(Guid.NewGuid().ToString(), "test"), routingContext, []);
+            var contextWithoutParsedCommand = commandContextFactory.Create<CommandContext>(new(Guid.NewGuid().ToString(), "test"), routingContext, []);
             Func<Task> act = async () => await runMethod.RunAsync(runner, contextWithoutParsedCommand);
             await act.Should().ThrowAsync<TerminalException>().WithMessage("The parsed command is missing in the context.");
         }
@@ -163,5 +165,6 @@ namespace OneImlx.Terminal.Commands
         private readonly CancellationTokenSource commandTokenSource = null!;
         private readonly CommandContext routerContext = null!;
         private readonly TerminalRouterContext routingContext = null!;
+        private readonly CommandContextFactory commandContextFactory = null!;
     }
 }

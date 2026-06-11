@@ -127,7 +127,7 @@ namespace OneImlx.Terminal.Runtime
                 throw new TerminalException(TerminalErrors.ServerError, "The terminal processor is not running.");
             }
 
-            await RouteRequestsAsync(terminalIO, terminalRouterContext).ConfigureAwait(false);
+            await ProcessRequestsAsync(terminalIO, terminalRouterContext).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -241,7 +241,7 @@ namespace OneImlx.Terminal.Runtime
             this.handler = handler ?? throw new TerminalException(TerminalErrors.InvalidRequest, "The response handler cannot be null.");
         }
 
-        private async Task RouteRequestsAsync(TerminalInputOutput terminalOutput, TerminalRouterContext terminalRouterContext)
+        private async Task ProcessRequestsAsync(TerminalInputOutput terminalOutput, TerminalRouterContext terminalRouterContext)
         {
             // Cache options for the loop to avoid repeated property access
             int maxLength = terminalOptions.Value.Router.MaxLength;
@@ -276,8 +276,8 @@ namespace OneImlx.Terminal.Runtime
                         throw new TerminalException(TerminalErrors.InvalidRequest, "The command length exceeds the maximum allowed. max={0}", maxLength);
                     }
 
-                    logger.LogDebug("Routing the command. raw={0} sender={1}", request.Raw, senderId);
-                    ICommandContext context = commandContextFactory.Create(request, terminalRouterContext, properties);
+                    logger.LogDebug("Process request. raw={0} request={1} sender={2}", request.Raw, request.Id, senderId);
+                    CommandContext context = commandContextFactory.Create(request, terminalRouterContext, properties);
                     var routeTask = commandRouter.RouteCommandAsync(context);
                     if (await Task.WhenAny(routeTask, Task.Delay(timeout)).ConfigureAwait(false) == routeTask)
                     {
@@ -336,7 +336,7 @@ namespace OneImlx.Terminal.Runtime
                         if (output != null)
                         {
                             // Request is processed and results are populated in the output
-                            await RouteRequestsAsync(output, terminalRouterContext).ConfigureAwait(false);
+                            await ProcessRequestsAsync(output, terminalRouterContext).ConfigureAwait(false);
                         }
                         else
                         {

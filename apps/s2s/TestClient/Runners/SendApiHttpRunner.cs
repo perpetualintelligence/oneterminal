@@ -12,12 +12,13 @@ using OneImlx.Terminal.Commands.Runners;
 using OneImlx.Terminal.Runtime;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Declarative;
+using OneImlx.Terminal.Extensions;
 
 namespace OneImlx.Terminal.Apps.TestClient.Runners
 {
     [CommandOwners("send")]
     [CommandDescriptor("apihttp", "HTTP test", "Send HTTP commands to both Terminal router and ASP.NET API server.", CommandTypes.Leaf)]
-    public class SendApiHttpRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class SendApiHttpRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         public SendApiHttpRunner(IConfiguration configuration, ITerminalConsole terminalConsole, IHttpClientFactory httpClientFactory)
         {
@@ -26,7 +27,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             string ip = configuration["testclient:testserver:ip"] ?? throw new InvalidOperationException("Server IP address is missing.");
             string port = configuration.GetValue<string>("testclient:testserver:port") ?? throw new InvalidOperationException("Server port is missing.");
@@ -44,7 +45,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 var clientTasks = new Task[maxClients];
                 for (int idx = 0; idx < clientTasks.Length; idx++)
                 {
-                    clientTasks[idx] = StartHttpClientAsync(serverAddress, idx, context.RouterContext.TerminalCancellationToken);
+                    clientTasks[idx] = StartHttpClientAsync(serverAddress, idx, context.GetRouterContext().TerminalCancellationToken);
                 }
 
                 await Task.WhenAll(clientTasks);
@@ -55,7 +56,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 stopwatch.Stop();
                 await terminalConsole.WriteLineColorAsync(ConsoleColor.Green, $"{_commandCount} Terminal HTTP, {_requestCount} ASP.NET HTTP, {maxClients} Clients, {stopwatch.Elapsed.TotalMilliseconds} Milliseconds");
             }
-        }  
+        }
 
         private async Task SendTerminalHttpCommandsAsync(HttpClient client, int clientIndex, CancellationToken cToken)
         {

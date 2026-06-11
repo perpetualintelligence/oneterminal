@@ -12,7 +12,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
     /// Runs native OS commands.
     /// </summary>
     [CommandDescriptor("exit", "Exit", "Exits the client terminal application.", CommandTypes.Native)]
-    public class ExitRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class ExitRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ExitRunner"/> class.
@@ -24,7 +24,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         }
 
         /// <inheritdoc/>
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             string answer = await terminalConsole.ReadAnswerAsync("Are you sure you want to exit ?", "y", "Y");
             if (answer == "y" || answer == "Y")
@@ -33,7 +33,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 await Task.Delay(2000);
             }
 
-            return CommandRunnerResult.Empty();
+            return new CommandRunnerResult();
         }
 
         private readonly IHostApplicationLifetime _applicationLifetime;

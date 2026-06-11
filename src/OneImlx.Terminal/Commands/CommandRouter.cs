@@ -24,7 +24,6 @@ namespace OneImlx.Terminal.Commands
         /// Initializes a new instance.
         /// </summary>
         /// <param name="terminalOptions">The configuration options.</param>
-        /// <param name="licenseExtractor">The license extractor.</param>
         /// <param name="commandParser">The command parser.</param>
         /// <param name="commandHandler">The command handler.</param>
         /// <param name="logger">The logger.</param>
@@ -43,16 +42,16 @@ namespace OneImlx.Terminal.Commands
         /// </summary>
         /// <param name="context">The router context.</param>
         /// <returns>The <see cref="CommandResult"/> instance.</returns>
-        public async Task RouteCommandAsync(ICommandContext context)
+        public async Task RouteCommandAsync(CommandContext context)
         {
             ParsedCommand? parsedCommand = null;
             CommandResult? commandResult = null!;
-            CommandRequest request = context.Request;
+            CommandRequest request = context.GetCommandRequest();
             string requestId = request.Id;
 
             try
             {
-                logger.LogDebug("Start command router. type={0} request={1}", GetType().Name, requestId);
+                logger.LogDebug("Start route request. request={0}", requestId);
 
                 // Issue a before request event if configured
                 if (asyncEventHandler != null)
@@ -78,7 +77,7 @@ namespace OneImlx.Terminal.Commands
                     await asyncEventHandler.AfterCommandRouteAsync(request, parsedCommand?.Command, commandResult).ConfigureAwait(false);
                 }
 
-                logger.LogDebug("End command router. request={0}", requestId);
+                logger.LogDebug("End route request. request={0}", requestId);
             }
         }
 

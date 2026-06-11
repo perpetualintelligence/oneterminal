@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands
 {
-    public class MockRunnerWithBaseResult : CommandRunner<CommandRunnerResult>
+    public class MockRunnerWithBaseResult : CommandRunner<CommandContext, CommandRunnerResult>
     {
         public bool MethodCalled { get; private set; }
 
-        public override Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             MethodCalled = false;
             return Task.FromResult(new CommandRunnerResult());
         }
 
-        public Task<CommandRunnerResult> TestMethodBase(ICommandContext context)
+        public Task<CommandRunnerResult> TestMethodBase(CommandContext context)
         {
             MethodCalled = true;
             return Task.FromResult(new CommandRunnerResult());

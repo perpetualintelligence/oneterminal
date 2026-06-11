@@ -15,7 +15,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
     [CommandOwners("ts")]
     [CommandDescriptor("grp1", "Group 1", "Group1 description.", CommandTypes.IsolatedGroup)]
     [CommandChecker(typeof(CommandChecker))]
-    public class Grp1Runner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class Grp1Runner : CommandRunner <CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<Grp1Runner> logger;
@@ -26,7 +26,7 @@ namespace OneImlx.Terminal.Apps.TestServer.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.WriteLineAsync("Group1 command called.");
             return new CommandRunnerResult("Response from grp1");

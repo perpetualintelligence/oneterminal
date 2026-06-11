@@ -15,7 +15,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer.Runners
     /// </summary>
     [CommandDescriptor("ts", "Test Server", "Test server description.", CommandTypes.Root)]
     [OptionDescriptor("version", nameof(String), "Test server version description", BehaviorFlags.None, "v")]
-    public class TestApiServerRunner : CommandRunner<CommandRunnerResult>, IDeclarativeRunner
+    public class TestApiServerRunner : CommandRunner<CommandContext, CommandRunnerResult>, IDeclarativeRunner
     {
         private readonly ITerminalConsole terminalConsole;
         private readonly ILogger<TestApiServerRunner> logger;
@@ -26,7 +26,7 @@ namespace OneImlx.Terminal.Apps.TestApiServer.Runners
             this.logger = logger;
         }
 
-        public override async Task<CommandRunnerResult> RunCommandAsync(ICommandContext context)
+        public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.WriteLineAsync("Test API server root command called.");
 
