@@ -36,7 +36,7 @@ namespace OneImlx.Terminal.Apps.TestAuth
 
             // Configure logging of your choice, here we are configuring Serilog
             var loggerConfig = new LoggerConfiguration();
-            loggerConfig.MinimumLevel.Error();
+            loggerConfig.MinimumLevel.Verbose();
             loggerConfig.WriteTo.Console();
             Log.Logger = loggerConfig.CreateLogger();
             builder.AddSerilog(Log.Logger);

@@ -2,13 +2,13 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OneImlx.Terminal.Configuration.Options;
 using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Shared.Extensions;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Commands.Checkers
 {
@@ -35,20 +35,20 @@ namespace OneImlx.Terminal.Commands.Checkers
         /// <inheritdoc/>
         public virtual async Task<CommandCheckerResult> CheckCommandAsync(CommandContext context)
         {
-            Command command = context.GetCommand();
-            logger.LogDebug("Check command. command={0}", command.Id);
+            var request = context.GetCommandRequest();
+            var command = context.GetCommand();
+            logger.LogDebug("Check request. request={0}", request.Id);
 
-            await CheckArgumentsAsync(context);
+            await CheckArgumentsAsync(command);
 
-            await CheckOptionsAsync(context);
+            await CheckOptionsAsync(command);
 
             return new CommandCheckerResult();
         }
 
-        private async Task CheckArgumentsAsync(CommandContext context)
+        private async Task CheckArgumentsAsync(Command command)
         {
             // Cache commonly accessed properties
-            var command = context.GetCommand();
             ArgumentDescriptors? argumentDescriptors = command.Descriptor.ArgumentDescriptors;
 
             // If the command itself does not support any arguments then there's nothing to check. Parser will reject
@@ -92,10 +92,9 @@ namespace OneImlx.Terminal.Commands.Checkers
             }
         }
 
-        private async Task CheckOptionsAsync(CommandContext context)
+        private async Task CheckOptionsAsync(Command command)
         {
             // Cache commonly accessed properties
-            var command = context.GetCommand();
             OptionDescriptors? optionDescriptors = command.Descriptor.OptionDescriptors;
 
             // If the command itself does not support any options then there's nothing to check. Parser will reject any

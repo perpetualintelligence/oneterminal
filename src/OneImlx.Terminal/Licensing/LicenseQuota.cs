@@ -1,14 +1,11 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System;
-using System.Collections.Generic;
 using OneImlx.Shared.Licensing;
 using OneImlx.Terminal.Shared;
+using System;
+using System.Collections.Generic;
 
 namespace OneImlx.Terminal.Licensing
 {
@@ -116,6 +113,11 @@ namespace OneImlx.Terminal.Licensing
         }
 
         /// <summary>
+        /// The declarations.
+        /// </summary>
+        public IReadOnlyList<string> Declarations => Features["declarations"];
+
+        /// <summary>
         /// Creates a new instance of <see cref="LicenseQuota"/> based on the specified SaaS plan.
         /// </summary>
         /// <param name="licensePlan">The license plan.</param>
@@ -196,8 +198,9 @@ namespace OneImlx.Terminal.Licensing
                     { "authentications", new[] { "msal", "oauth", "oidc", "none" } },
                     { "encodings", new [] { "ascii", "utf8", "utf16", "utf32" } },
                     { "stores", new [] { "memory", "custom" } },
-                    { "routers", new [] { "console", "tcp", "udp", "grpc", "http", "custom" } },
+                    { "routers", new [] { "console", "tcp", "udp", "grpc", "http", "pulsar", "custom" } },
                     { "deployments", new [] { "standard", "air_gapped" } },
+                    { "declarations", new [] {"standard", "custom" } }
                 }
             };
         }
@@ -230,6 +233,7 @@ namespace OneImlx.Terminal.Licensing
                     { "stores", (string[]) customClaims["stores"] },
                     { "routers", (string[]) customClaims["routers"] },
                     { "deployments", (string[]) customClaims["deployments"] },
+                    { "declarations", (string[]) customClaims["declarations"] },
                 }
             };
         }
@@ -260,8 +264,9 @@ namespace OneImlx.Terminal.Licensing
                     { "authentications", new[] { "msal", "oauth", "oidc", "none" } },
                     { "encodings", new [] { "ascii", "utf8", "utf16", "utf32" } },
                     { "stores", new [] { "memory" } },
-                    { "routers", new [] { "console", "tcp", "udp", "grpc", "http" } },
+                    { "routers", new [] { "console", "tcp", "udp", "grpc", "http", "pulsar" } },
                     { "deployments", new [] { "standard" } },
+                    { "declarations", new [] {"standard" } }
                 }
             };
         }
@@ -292,8 +297,9 @@ namespace OneImlx.Terminal.Licensing
                     { "authentications", new[] { "msal", "oauth", "oidc", "none" } },
                     { "encodings", new [] { "ascii", "utf8", "utf16", "utf32" } },
                     { "stores", new [] { "memory", "custom" } },
-                    { "routers", new [] { "console", "tcp", "udp", "grpc", "http", "custom" } },
+                    { "routers", new [] { "console", "tcp", "udp", "grpc", "http", "pulsar", "custom" } },
                     { "deployments", new [] { "standard", "air_gapped" } },
+                    { "declarations", new [] {"standard", "custom" } }
                 }
             };
         }
@@ -326,6 +332,7 @@ namespace OneImlx.Terminal.Licensing
                     { "stores", new [] { "memory" } },
                     { "routers", new [] { "console" } },
                     { "deployments", new [] { "standard" } },
+                    { "declarations", new [] {"standard" } }
                 }
             };
         }
@@ -358,6 +365,7 @@ namespace OneImlx.Terminal.Licensing
                     { "stores", new [] { "memory" } },
                     { "routers", new [] { "console", "tcp", "udp" } },
                     { "deployments", new [] { "standard" } },
+                    { "declarations", new [] {"standard" } }
                 }
             };
         }
@@ -390,6 +398,7 @@ namespace OneImlx.Terminal.Licensing
                     { "stores", new [] { "memory" } },
                     { "routers", new [] { "console" } },
                     { "deployments", new [] { "standard" } },
+                    { "declarations", new [] {"standard" } }
                 }
             };
         }

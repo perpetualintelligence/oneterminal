@@ -38,7 +38,7 @@ namespace OneImlx.Terminal.Commands.Runners
             this.logger = logger;
 
             Command command = context.GetCommand();
-            logger?.LogDebug("Run command. command={0} type={1}", command.Id, command.Descriptor.Type);
+            logger?.LogDebug("Run command. id={0} type={1}", command.Id, command.Descriptor.Type);
 
             TContext typedContext = (TContext)context;
             TResult result;

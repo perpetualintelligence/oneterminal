@@ -108,7 +108,7 @@ namespace OneImlx.Terminal.Licensing
 
         private Task CheckOptionsAsync(License license)
         {
-            // Follow the pricing http://localhost:8080/articles/pi-cli/pricing.html We drive all customization through
+            // Follow the pricing http://localhost:8080/articles/pi-cli/pricing.html. We drive all customization through
             // options and the License sets the allowed options. So here we don't need to check the license plan, just
             // check the options value with license value.
             LicenseQuota quota = license.Quota;
