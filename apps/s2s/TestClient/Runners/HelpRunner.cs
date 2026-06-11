@@ -32,7 +32,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
             {
                 await _console.WriteLineAsync($"{command.Key} ({command.Value.Name}) --> {command.Value.Description}");
             }
-            return CommandRunnerResult.Empty();
+            return new CommandRunnerResult();
         }
 
         private readonly ITerminalConsole _console;

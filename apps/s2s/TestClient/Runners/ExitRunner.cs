@@ -33,7 +33,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
                 await Task.Delay(2000);
             }
 
-            return CommandRunnerResult.Empty();
+            return new CommandRunnerResult();
         }
 
         private readonly IHostApplicationLifetime _applicationLifetime;

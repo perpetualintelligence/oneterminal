@@ -66,8 +66,8 @@ namespace OneImlx.Terminal.Commands.Runners
         [Fact]
         public async Task Empty_Returns_New_Instance()
         {
-            var result1 = CommandRunnerResult.Empty();
-            var result2 = CommandRunnerResult.Empty();
+            var result1 = new CommandRunnerResult();
+            var result2 = new CommandRunnerResult();
             result1.Should().NotBeSameAs(result2);
         }
 

@@ -2,8 +2,8 @@
 //  For license, terms, and data policies, go to:
 //  https://terms.perpetualintelligence.com/articles/intro.html
 
-using OneImlx.Terminal.Shared;
 using System;
+using OneImlx.Terminal.Shared;
 
 namespace OneImlx.Terminal.Commands.Runners
 {
@@ -46,15 +46,6 @@ namespace OneImlx.Terminal.Commands.Runners
                 }
                 return value;
             }
-        }
-
-        /// <summary>
-        /// Creates an empty <see cref="CommandRunnerResult"/> with no value.
-        /// </summary>
-        /// <returns>A new instance of <see cref="CommandRunnerResult"/>.</returns>
-        public static CommandRunnerResult Empty()
-        {
-            return new CommandRunnerResult();
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace OneImlx.Terminal.Apps.TestClient.Runners
         public override async Task<CommandRunnerResult> RunCommandAsync(CommandContext context)
         {
             await terminalConsole.ClearAsync();
-            return CommandRunnerResult.Empty();
+            return new CommandRunnerResult();
         }
 
         private readonly ITerminalConsole terminalConsole = terminalConsole;
