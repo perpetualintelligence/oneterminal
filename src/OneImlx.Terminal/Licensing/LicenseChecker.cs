@@ -1,21 +1,18 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
+using Microsoft.Extensions.Logging;
+using OneImlx.Shared.Infrastructure;
+using OneImlx.Terminal.Configuration.Options;
+using OneImlx.Terminal.Shared;
+using OneImlx.Terminal.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using OneImlx.Shared.Infrastructure;
-using OneImlx.Terminal.Configuration.Options;
-using OneImlx.Terminal.Shared;
-using OneImlx.Terminal.Stores;
 
 namespace OneImlx.Terminal.Licensing
 {
@@ -108,9 +105,9 @@ namespace OneImlx.Terminal.Licensing
 
         private Task CheckOptionsAsync(License license)
         {
-            // Follow the pricing http://localhost:8080/articles/pi-cli/pricing.html. We drive all customization through
+            // Follow the pricing http://localhost:8080/articles/pi-cli/pricing.html. We drive all licensing through
             // options and the License sets the allowed options. So here we don't need to check the license plan, just
-            // check the options value with license value.
+            // check the option value against the allowed license value.
             LicenseQuota quota = license.Quota;
 
             // Strict Data Type
@@ -125,10 +122,10 @@ namespace OneImlx.Terminal.Licensing
                 throw new TerminalException(TerminalErrors.InvalidLicense, "The terminal driver is not allowed for your license plan.");
             }
 
-            // Dynamics
-            if (!OptionsValid(quota.Dynamics, terminalOptions.Dynamics.Enabled))
+            // Command source
+            if (!OptionsValid(quota.Dynamics, terminalOptions.Runtime.CommandSourceEnabled))
             {
-                throw new TerminalException(TerminalErrors.InvalidLicense, "The terminal dynamics is not allowed for your license plan.");
+                throw new TerminalException(TerminalErrors.InvalidLicense, "The terminal command source is not allowed for your license plan.");
             }
 
             // Authentications
@@ -143,11 +140,10 @@ namespace OneImlx.Terminal.Licensing
                 throw new TerminalException(TerminalErrors.InvalidLicense, $"The terminal deployment `{terminalOptions.Licensing.Deployment}` is not allowed for your license plan.");
             }
 
-            // Stores
-            string acutualStore = commandStore.GetType().IsAssignableFrom(typeof(TerminalInMemoryCommandStore)) ? "memory" : "custom";
-            if (!OptionsValid(quota.Stores, acutualStore))
+            // Store
+            if (!OptionsValid(quota.Stores, terminalOptions.Runtime.Store))
             {
-                throw new TerminalException(TerminalErrors.InvalidLicense, $"The terminal store `{acutualStore}` is not allowed for your license plan.");
+                throw new TerminalException(TerminalErrors.InvalidLicense, $"The terminal store `{terminalOptions.Runtime.Store}` is not allowed for your license plan.");
             }
 
             // Encodings
@@ -161,6 +157,13 @@ namespace OneImlx.Terminal.Licensing
             if (!OptionsValid(quota.Routers, terminalOptions.Router.Name))
             {
                 throw new TerminalException(TerminalErrors.InvalidLicense, $"The terminal router `{terminalOptions.Router.Name}` is not allowed for your license plan.");
+            }
+
+            // Declarations
+            string declaration = terminalOptions.Descriptor.CustomDeclarations ? "custom" : "standard";
+            if (!OptionsValid(quota.Declarations, declaration))
+            {
+                throw new TerminalException(TerminalErrors.InvalidLicense, $"The terminal declaration `{declaration}` is not allowed for your license plan.");
             }
 
             return Task.CompletedTask;

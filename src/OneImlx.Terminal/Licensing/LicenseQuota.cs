@@ -40,7 +40,7 @@ namespace OneImlx.Terminal.Licensing
         public bool Driver => Switches["driver"];
 
         /// <summary>
-        /// The terminal dynamics command mode. Defaults to <c>false</c> or not supported.
+        /// The terminal runtime. Defaults to <c>false</c> or not supported.
         /// </summary>
         public bool Dynamics => Switches["dynamics"];
 

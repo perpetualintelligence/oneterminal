@@ -23,7 +23,7 @@ namespace OneImlx.Terminal.Configuration.Options
             options.Licensing.Should().NotBeNull();
             options.Router.Should().NotBeNull();
             options.Help.Should().NotBeNull();
-            options.Dynamics.Should().NotBeNull();
+            options.Runtime.Should().NotBeNull();
             options.Descriptor.Should().NotBeNull();
         }
     }

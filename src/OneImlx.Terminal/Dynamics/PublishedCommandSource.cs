@@ -1,13 +1,7 @@
-﻿/*
-    Copyright © 2019-2025 Perpetual Intelligence L.L.C. All rights reserved.
+﻿//  Copyright © 2019-2026 Perpetual Intelligence L.L.C. All rights reserved.
+//  For license, terms, and data policies, go to:
+//  https://terms.perpetualintelligence.com/articles/intro.html
 
-    For license, terms, and data policies, go to:
-    https://terms.perpetualintelligence.com/articles/intro.html
-*/
-
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,6 +11,9 @@ using OneImlx.Terminal.Extensions;
 using OneImlx.Terminal.Hosting;
 using OneImlx.Terminal.Shared;
 using OneImlx.Terminal.Stores;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace OneImlx.Terminal.Dynamics
 {
@@ -87,9 +84,9 @@ namespace OneImlx.Terminal.Dynamics
         public async Task LoadCommandSourceAsync(PublishedCommandSourceContext context)
         {
             // Ensure integration is enabled
-            if (!terminalOptions.Value.Dynamics.Enabled)
+            if (!terminalOptions.Value.Runtime.CommandSourceEnabled)
             {
-                throw new TerminalException(TerminalErrors.InvalidConfiguration, "The terminal dynamics is not enabled.");
+                throw new TerminalException(TerminalErrors.InvalidConfiguration, "The terminal command source is not enabled.");
             }
 
             // Checks the terminal source.

@@ -33,7 +33,7 @@ namespace OneImlx.Terminal.Dynamics
             logger = mockListLoggerFactory.CreateLogger<PublishedCommandSource>();
 
             TerminalOptions options = MockTerminalOptions.NewAliasOptions();
-            options.Dynamics.Enabled = true;
+            options.Runtime.CommandSourceEnabled = true;
             terminalOptions = Microsoft.Extensions.Options.Options.Create<TerminalOptions>(options);
 
             publishedCommandSource = new PublishedCommandSource(textHandler, assemblyLoader, terminalCommandSourceChecker, mutableCommandStore, terminalOptions, logger);
@@ -66,7 +66,7 @@ namespace OneImlx.Terminal.Dynamics
         [Fact]
         public async Task LoadCommandSourceAsync_Throws_If_Integration_Disabled()
         {
-            terminalOptions.Value.Dynamics.Enabled = false;
+            terminalOptions.Value.Runtime.CommandSourceEnabled = false;
 
             PublishedCommandSourceContext commandSourceContext = new();
             commandSourceContext.PublishedAssemblies.Add("MockAssembly1.dll", "mock//path//to//assembly");
